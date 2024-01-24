@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 public class Account {
   private BigDecimal balance = BigDecimal.valueOf(0);
 
+  public Account(String name, double balance) {
+  }
+
   public void withdraw(BigDecimal amount) {
     // TODO: This should probably throw an error instead.
     if (amount.doubleValue() < 0)
