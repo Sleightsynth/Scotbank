@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import java.util.ArrayList;
+
 public class App extends Jooby {
 
     {
@@ -55,7 +57,7 @@ public class App extends Jooby {
     public void onStart() {
         Logger log = getLog();
         log.info("Starting Up...");
-
+//        new ArrayList TO BE WORKED ON
         // Fetch DB Source
         DataSource ds = require(DataSource.class);
         // Open Connection to DB
