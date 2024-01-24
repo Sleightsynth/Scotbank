@@ -35,5 +35,20 @@ public class AccountTests {
     a.withdraw(20);
     assertTrue(a.getBalance() == 20);
   }
-  //test
+
+  @Test
+  public void checkMultiple() {
+    Account a = new Account();
+    a.deposit(20);
+    for(int i = 0; i < 8; i++) {
+      if (i < 5) {
+        a.deposit(10);
+      } else {
+        a.withdraw(20);
+      }
+    }
+    assertTrue(a.getBalance() == 10);
+  }
 }
+
+
