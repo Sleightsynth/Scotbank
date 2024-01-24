@@ -17,4 +17,12 @@ public class AccountTests {
     Assertions.assertTrue(a.getBalance() == 0);
   }
 
+  @Test
+  public void checkAccountSumOk() {
+    Account a = new Account();
+    a.deposit(20);
+    a.deposit(50);
+    Assertions.assertTrue(a.getBalance() == 70);
+  }
+
 }
