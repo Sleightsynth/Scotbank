@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import javax.security.auth.login.AccountException;
+
 public class AccountTests {
 
   @Test
@@ -24,6 +26,14 @@ public class AccountTests {
     a.deposit(20);
     a.deposit(50);
     assertTrue(a.getBalance() == 70);
+  }
+
+  @Test
+  public void checkAccountWithdrawOk() {
+    Account a = new Account();
+    a.deposit(40);
+    a.withdraw(20);
+    assertTrue(a.getBalance() == 20);
   }
 
 }
