@@ -1,20 +1,21 @@
 package uk.co.asepstrath.bank;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AccountTests {
 
   @Test
   public void createAccount() {
     Account a = new Account();
-    Assertions.assertTrue(a != null);
+    assertTrue(a != null);
   }
 
   @Test
   public void checkAccountHasZeroValue() {
     Account a = new Account();
-    Assertions.assertTrue(a.getBalance() == 0);
+    assertTrue(a.getBalance() == 0);
   }
 
   @Test
@@ -22,7 +23,7 @@ public class AccountTests {
     Account a = new Account();
     a.deposit(20);
     a.deposit(50);
-    Assertions.assertTrue(a.getBalance() == 70);
+    assertTrue(a.getBalance() == 70);
   }
 
 }
