@@ -5,11 +5,16 @@ import org.junit.jupiter.api.Test;
 
 public class AccountTests {
 
-    @Test
-    public void createAccount(){
-        Account a = new Account();
-        Assertions.assertTrue(a != null);
-    }
+  @Test
+  public void createAccount() {
+    Account a = new Account();
+    Assertions.assertTrue(a != null);
+  }
 
+  @Test
+  public void checkAccountHasZeroValue() {
+    Account a = new Account();
+    Assertions.assertTrue(a.getBalance() == 0);
+  }
 
 }
