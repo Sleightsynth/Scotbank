@@ -4,14 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import javax.security.auth.login.AccountException;
 import java.math.BigDecimal;
 
 public class AccountTests {
   @Test
   public void createAccount() {
     Account a = new Account();
-    assertTrue(a != null);
+      assertNotNull(a);
   }
 
   @Test
@@ -56,6 +55,12 @@ public class AccountTests {
     a.deposit(BigDecimal.valueOf(5.45));
     a.deposit(BigDecimal.valueOf(17.56));
     assertEquals(a.getBalance().compareTo(BigDecimal.valueOf(23.01)), 0);
+  }
+  @Test
+  public void checkNoOverdraft() {
+    Account a = new Account();
+    a.deposit(BigDecimal.valueOf(20));
+    assertThrows(ArithmeticException.class,() -> a.withdraw(BigDecimal.valueOf(40)));
   }
 }
 
