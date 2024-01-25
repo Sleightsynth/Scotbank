@@ -10,7 +10,7 @@ public class AccountTests {
   @Test
   public void createAccount() {
     Account a = new Account();
-      assertNotNull(a);
+    assertNotNull(a);
   }
 
   @Test
@@ -22,8 +22,8 @@ public class AccountTests {
   @Test
   public void checkAccountSumOk() {
     Account a = new Account();
-    a.deposit(BigDecimal.valueOf(50));
-    a.deposit(BigDecimal.valueOf(20));
+    a.deposit(50);
+    a.deposit(20);
     System.out.println(a.getBalance());
     assertEquals(a.getBalance().compareTo(BigDecimal.valueOf(70)), 0);
   }
@@ -31,8 +31,8 @@ public class AccountTests {
   @Test
   public void checkAccountWithdrawOk() {
     Account a = new Account();
-    a.deposit(BigDecimal.valueOf(40));
-    a.withdraw(BigDecimal.valueOf(20));
+    a.deposit(40);
+    a.withdraw(20);
     assertEquals(a.getBalance().compareTo(BigDecimal.valueOf(20)), 0);
   }
 
@@ -40,29 +40,28 @@ public class AccountTests {
   public void checkMultiple() {
     Account a = new Account();
     a.deposit(BigDecimal.valueOf(20));
-    for(int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++) {
       if (i < 5) {
-        a.deposit(BigDecimal.valueOf(10));
+        a.deposit(10);
       } else {
-        a.withdraw(BigDecimal.valueOf(20));
+        a.withdraw(20);
       }
     }
     assertEquals(a.getBalance().compareTo(BigDecimal.valueOf(10)), 0);
   }
+
   @Test
   public void checkDecimals() {
     Account a = new Account();
-    a.deposit(BigDecimal.valueOf(5.45));
-    a.deposit(BigDecimal.valueOf(17.56));
+    a.deposit(5.45);
+    a.deposit(17.56);
     assertEquals(a.getBalance().compareTo(BigDecimal.valueOf(23.01)), 0);
   }
+
   @Test
   public void checkNoOverdraft() {
     Account a = new Account();
-    a.deposit(BigDecimal.valueOf(20));
-    assertThrows(ArithmeticException.class,() -> a.withdraw(BigDecimal.valueOf(40)));
+    a.deposit(20);
+    assertThrows(ArithmeticException.class, () -> a.withdraw(BigDecimal.valueOf(40)));
   }
 }
-
-
-

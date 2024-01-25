@@ -12,11 +12,19 @@ public class Account {
   }
 
   public Account() {
-//    For JUnit Testing
+    // For JUnit Testing
+  }
+
+  public void withdraw(double amount) {
+    this.withdraw(BigDecimal.valueOf(amount));
+  }
+
+  public void deposit(double amount) {
+    this.deposit(BigDecimal.valueOf(amount));
   }
 
   public void withdraw(BigDecimal amount) {
-    if (amount.doubleValue() < 0|(amount.compareTo(balance)>0))
+    if (amount.doubleValue() < 0 | (amount.compareTo(balance) > 0))
       throw new ArithmeticException();
     balance = balance.subtract(amount);
   }
