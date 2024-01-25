@@ -71,8 +71,14 @@ public class App extends Jooby {
         // Open Connection to DB
         try (Connection connection = ds.getConnection()) {
             Statement stmt = connection.createStatement();
-            stmt.executeUpdate("CREATE TABLE `Example` (`Key` varchar(255),`Value` varchar(255))");
-            stmt.executeUpdate("INSERT INTO Example " + "VALUES ('WelcomeMessage', 'Welcome to A Bank')");
+            stmt.executeUpdate("CREATE TABLE `Friends` (`Key` varchar(255),`Name` varchar(255),`AccountBalance` decimal)");
+
+            int i=0;
+
+            for(Account acc : accounts){
+                stmt.executeUpdate(String.format("INSERT INTO Friends " + "VALUES ('%d','%s', '%f')", i, acc.getName(), acc.getBalance().floatValue()));
+                i++;
+            }
         } catch (SQLException e) {
             log.error("Database Creation Error",e);
         }

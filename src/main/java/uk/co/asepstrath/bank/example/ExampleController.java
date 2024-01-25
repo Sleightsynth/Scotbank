@@ -6,6 +6,7 @@ import io.jooby.annotation.*;
 import io.jooby.exception.StatusCodeException;
 import kong.unirest.core.Unirest;
 import org.slf4j.Logger;
+import uk.co.asepstrath.bank.Account;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -21,7 +22,7 @@ import java.util.Random;
     The @Path Annotation will tell Jooby what /path this Controller can respond to,
     in this case the controller will respond to requests from <host>/example
  */
-@Path("/example")
+@Path("/")
 public class ExampleController {
 
     private final DataSource dataSource;
@@ -40,9 +41,50 @@ public class ExampleController {
     The @GET annotation denotes that this function should be invoked when a GET HTTP request is sent to <host>/example
     The returned string will then be sent to the requester
      */
-    @GET
-    public String welcome() {
-        return "Welcome to Jooby!";
+    @GET("/friends/{name}")
+    public String getSingleFriend(@PathParam("name") String name) {
+        try (Connection connection = dataSource.getConnection()) {
+            // Create Statement (batch of SQL Commands)
+            Statement statement = connection.createStatement();
+            // Perform SQL Query
+            ResultSet set = statement.executeQuery("SELECT * FROM `Friends` WHERE name='%s'".formatted(name));
+
+            if(!set.next()){
+                throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+            };
+
+            Account account = new Account(set.getString("Name"),set.getBigDecimal("AccountBalance"));
+
+            return account.toString();
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred",e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
+    }
+
+    @GET("/friends")
+    public String getAllFriends() {
+        try (Connection connection = dataSource.getConnection()) {
+            StringBuilder toReturn = new StringBuilder();
+            // Create Statement (batch of SQL Commands)
+            Statement statement = connection.createStatement();
+            // Perform SQL Query
+            ResultSet set = statement.executeQuery("SELECT * FROM `Friends`");
+
+            while(set.next()){
+                Account account = new Account(set.getString("Name"),set.getBigDecimal("AccountBalance"));
+                toReturn.append("\n%s".formatted(account.toString()));
+            }
+
+            return toReturn.toString();
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred",e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
     /*
@@ -65,7 +107,7 @@ public class ExampleController {
             // Create Statement (batch of SQL Commands)
             Statement statement = connection.createStatement();
             // Perform SQL Query
-            ResultSet set = statement.executeQuery("SELECT * FROM `Example` Where `Key` = '"+welcomeMessageKey+"'");
+            ResultSet set = statement.executeQuery("SELECT * FROM `Friends` Where `Key` = '"+welcomeMessageKey+"'");
             // Read First Result
             set.next();
             // Extract value from Result

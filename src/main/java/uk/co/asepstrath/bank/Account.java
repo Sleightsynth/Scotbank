@@ -1,6 +1,8 @@
 package uk.co.asepstrath.bank;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class Account {
   private String name;
@@ -39,8 +41,16 @@ public class Account {
     return balance;
   }
 
+  public String getName(){
+    return name;
+  };
+
   @Override
   public String toString() {
-    return "Name: " + name + ", Balance: £" + balance;
+    //Using US locale because Jooby hates '£' for some reason
+    NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
+    String formattedBalanceString = numberFormat.format(balance);
+
+    return "Name: " + name + ", Balance: " + formattedBalanceString;
   }
 }
