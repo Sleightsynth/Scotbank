@@ -79,6 +79,9 @@ public class App extends Jooby {
                 stmt.executeUpdate(String.format("INSERT INTO Friends " + "VALUES ('%d','%s', '%f')", i, acc.getName(), acc.getBalance().floatValue()));
                 i++;
             }
+
+            stmt.executeUpdate("CREATE TABLE `Example` (`Key` varchar(255),`Value` varchar(255))");
+            stmt.executeUpdate("INSERT INTO Example " + "VALUES ('WelcomeMessage', 'Welcome to A Bank')");
         } catch (SQLException e) {
             log.error("Database Creation Error",e);
         }

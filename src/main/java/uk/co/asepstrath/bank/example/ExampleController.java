@@ -96,6 +96,11 @@ public class ExampleController {
         return "Hello " + Unirest.get("http://faker.hook.io/").asString().getBody();
     }
 
+    @GET("/example")
+    public String sayHiFromJooby() {
+        return "Welcome to Jooby!";
+    }
+
     /*
     This request makes a call to the passed in data source (The Database) which has been set up in App.java
      */
@@ -107,7 +112,7 @@ public class ExampleController {
             // Create Statement (batch of SQL Commands)
             Statement statement = connection.createStatement();
             // Perform SQL Query
-            ResultSet set = statement.executeQuery("SELECT * FROM `Friends` Where `Key` = '"+welcomeMessageKey+"'");
+            ResultSet set = statement.executeQuery("SELECT * FROM `Example` Where `Key` = '"+welcomeMessageKey+"'");
             // Read First Result
             set.next();
             // Extract value from Result
