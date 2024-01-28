@@ -18,11 +18,13 @@ Group members:
 
 ## Tech Stack
 Currently identified tech stack:
+- Maven (build/test/package/run)
 - Jooby (backend server)
 - Handlebars (dynamic templates)
 - Bootstrap (css class bundle)
 
 Pipeline
+- Maven (compile test)
 - Sonarqube/Sonarlint Extension (no connected mode ATM)
 
 
