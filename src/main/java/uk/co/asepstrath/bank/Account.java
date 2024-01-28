@@ -41,13 +41,13 @@ public class Account {
     return balance;
   }
 
-  public String getName(){
+  public String getName() {
     return name;
   };
 
   @Override
   public String toString() {
-    //Using US locale because Jooby hates '£' for some reason
+    // Using US locale because Jooby hates '£' for some reason
     NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
     String formattedBalanceString = numberFormat.format(balance);
 
