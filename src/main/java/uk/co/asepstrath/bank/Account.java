@@ -26,7 +26,7 @@ public class Account {
   }
 
   public void withdraw(BigDecimal amount) {
-    if (amount.doubleValue() < 0 | (amount.compareTo(balance) > 0))
+    if (amount.doubleValue() < 0 || (amount.compareTo(balance) > 0))
       throw new ArithmeticException();
     balance = balance.subtract(amount);
   }
@@ -43,7 +43,7 @@ public class Account {
 
   public String getName() {
     return name;
-  };
+  }
 
   @Override
   public String toString() {
