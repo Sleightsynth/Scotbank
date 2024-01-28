@@ -1,12 +1,27 @@
-# Your-Bank
+# Scotbank Ltd
 
-Welcome to your-bank!!
+Welcome to "Scotbank Ltd" by Team 1!!
 
-## running
+Group members:
 
-    ./mvnw.cmd clean jooby:run
+- Michael Skraburski (maikerudev)
 
-## building
+- Murray Buchanan
 
-    ./mvnw.cmd clean package
+- Connor Waiter
 
+- Daniel Steven
+
+- Ryan Tompson
+
+- Stuart Gordon
+
+## Running
+
+    Windows machines: `./mvnw.cmd clean jooby:run`
+    Linux machines: `./mvnw clean jooby:run`
+
+## Building
+
+    Windows machines: `./mvnw.cmd clean package`
+    Linux machines: `./mvn clean package`
