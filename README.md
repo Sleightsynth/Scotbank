@@ -16,8 +16,17 @@ Group members:
 
 - Stuart Gordon
 
-## Running
+## Tech Stack
+Currently identified tech stack:
+- Jooby (backend server)
+- Handlebars (dynamic templates)
+- Bootstrap (css class bundle)
 
+Pipeline
+- Sonarqube/Sonarlint Extension (no connected mode ATM)
+
+
+## Running
     Windows machines: `./mvnw.cmd clean jooby:run`
     Linux machines: `./mvnw clean jooby:run`
 
