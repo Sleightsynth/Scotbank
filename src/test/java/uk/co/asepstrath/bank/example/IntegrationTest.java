@@ -40,4 +40,26 @@ public class IntegrationTest {
             assertEquals(StatusCode.OK.value(), rsp.code());
         }
     }
+
+    @Test
+    public void shouldDisplayFriendsData(int serverPort) throws IOException {
+        Request req = new Request.Builder()
+                .url("http://localhost:" + serverPort+"/friends")
+                .build();
+
+        try (Response rsp = client.newCall(req).execute()) {
+            assertEquals(StatusCode.OK.value(), rsp.code());
+        }
+    }
+
+    @Test
+    public void shouldDisplayFriendData(int serverPort) throws IOException {
+        Request req = new Request.Builder()
+                .url("http://localhost:" + serverPort+"/friends/Joey")
+                .build();
+
+        try (Response rsp = client.newCall(req).execute()) {
+            assertEquals(StatusCode.OK.value(), rsp.code());
+        }
+    }
 }
