@@ -1,21 +1,29 @@
 package uk.co.asepstrath.bank.example;
 
-import io.jooby.ModelAndView;
-import io.jooby.StatusCode;
-import io.jooby.annotation.*;
-import io.jooby.exception.StatusCodeException;
-import kong.unirest.core.Unirest;
-import org.slf4j.Logger;
-import uk.co.asepstrath.bank.Account;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+
+import io.jooby.ModelAndView;
+import io.jooby.StatusCode;
+import io.jooby.annotation.GET;
+import io.jooby.annotation.POST;
+import io.jooby.annotation.Path;
+import io.jooby.annotation.PathParam;
+import io.jooby.annotation.QueryParam;
+import io.jooby.exception.StatusCodeException;
+import kong.unirest.core.Unirest;
+import uk.co.asepstrath.bank.Account;
 
 /*
     Example Controller is a Controller from the MVC paradigm.
@@ -35,6 +43,35 @@ public class ExampleController {
   public ExampleController(DataSource ds, Logger log) {
     dataSource = ds;
     logger = log;
+  }
+
+  @GET("/whatsqlinjection")
+  public ModelAndView printAllAccounts() {
+    try (Connection connection = dataSource.getConnection()) {
+      // Create Statement (batch of SQL Commands)
+      Statement statement = connection.createStatement();
+      // Perform SQL Query
+      ResultSet set = statement.executeQuery("SELECT * FROM `Friends`");
+
+      if (!set.next()) {
+        throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+      }
+      ;
+
+      List<Account> accounts = new ArrayList<>();
+
+      while (set.next()) {
+        accounts.add(new Account(set.getString("Name"), set.getBigDecimal("AccountBalance")));
+      }
+
+      return new ModelAndView("accountTable.hbs").put("accounts", accounts);
+
+    } catch (SQLException e) {
+      // If something does go wrong this will log the stack trace
+      logger.error("Database Error Occurred", e);
+      // And return a HTTP 500 error to the requester
+      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+    }
   }
 
   /*
