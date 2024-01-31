@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Accounts full</title>
+</head>
+<body>
+    <h1>Main View Content</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Account Name</th>
+            <th>Account ID</th>
+        </tr>
+    </thead>
+    {{#each accounts}}
+        {{> header.hbs this}}
+    {{/each}}
+</table>
+    
+</body>
+</html>
+
