@@ -26,7 +26,7 @@ public class Account {
   }
 
   public void withdraw(BigDecimal amount) {
-    if (amount.doubleValue() < 0 | (amount.compareTo(balance) > 0))
+    if (amount.doubleValue() < 0 || (amount.compareTo(balance) > 0))
       throw new ArithmeticException();
     balance = balance.subtract(amount);
   }
@@ -41,13 +41,13 @@ public class Account {
     return balance;
   }
 
-  public String getName(){
+  public String getName() {
     return name;
-  };
+  }
 
   @Override
   public String toString() {
-    //Using US locale because Jooby hates '£' for some reason
+    // Using US locale because Jooby hates '£' for some reason
     NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
     String formattedBalanceString = numberFormat.format(balance);
 

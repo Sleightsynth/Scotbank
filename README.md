@@ -1,12 +1,31 @@
-# Your-Bank
+# Scotbank Ltd
+Welcome to Scotbank Ltd. This is a group project for the University of Strathclyde's CS217 Agile Software Engineering in Practice by JP Morgan Chase & Co.
 
-Welcome to your-bank!!
+## Team 1 group members:
+- Michael/Maikerudev Skraburski
+- Murray Buchanan
+- Connor Waiter
+- Daniel Steven
+- Ryan Thomson
+- Stuart Gordon
 
-## running
+## Tech Stack
+### Currently identified tech stack:
+- Maven (build/test/package/run)
+- Jooby (backend server)
+- Handlebars (dynamic templates)
+- Bootstrap (css class bundle)
 
-    ./mvnw.cmd clean jooby:run
+### Pipeline
+- Maven (compile test)
+- Sonarqube/Sonarlint Extension (no connected mode ATM)
 
-## building
 
-    ./mvnw.cmd clean package
+## Running
+    Windows machines: `./mvnw.cmd clean jooby:run`
+    Linux machines: `./mvnw clean jooby:run`
 
+## Building
+
+    Windows machines: `./mvnw.cmd clean package`
+    Linux machines: `./mvn clean package`
