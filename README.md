@@ -1,4 +1,3 @@
-
 # Scotbank Ltd
 Welcome to Scotbank Ltd. This is a group project for the University of Strathclyde's CS217 Agile Software Engineering in Practice by JP Morgan Chase & Co.
 
@@ -7,7 +6,7 @@ Welcome to Scotbank Ltd. This is a group project for the University of Strathcly
 - Murray Buchanan
 - Connor Waiter
 - Daniel Steven
-- Ryan Tompson
+- Ryan Thomson
 - Stuart Gordon
 
 ## Tech Stack
