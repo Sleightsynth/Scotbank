@@ -1,29 +1,23 @@
+
 # Scotbank Ltd
+Welcome to Scotbank Ltd. This is a group project for the University of Strathclyde's CS217 Agile Software Engineering in Practice by JP Morgan Chase & Co.
 
-Welcome to "Scotbank Ltd" by Team 1!!!!!!
-
-Group members:
-
-- Michael Skraburski (maikerudev)
-
+## Team 1 group members:
+- Michael/Maikerudev Skraburski
 - Murray Buchanan
-
 - Connor Waiter
-
 - Daniel Steven
-
 - Ryan Tompson
-
 - Stuart Gordon
 
 ## Tech Stack
-Currently identified tech stack:
+### Currently identified tech stack:
 - Maven (build/test/package/run)
 - Jooby (backend server)
 - Handlebars (dynamic templates)
 - Bootstrap (css class bundle)
 
-Pipeline
+### Pipeline
 - Maven (compile test)
 - Sonarqube/Sonarlint Extension (no connected mode ATM)
 
