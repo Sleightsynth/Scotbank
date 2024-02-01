@@ -6,14 +6,13 @@ import java.util.Locale;
 
 public class Account {
   private String name = "";
-  private Locale locale = null;
+  private Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
   private BigDecimal balance = BigDecimal.valueOf(0);
   private String formattedBalance = ""; // yes it is being used in the hbs
 
   public Account(String name, BigDecimal balance) {
     this.name = name;
     this.balance = balance;
-    this.locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
 
     updateFormattedBalance();
   }
