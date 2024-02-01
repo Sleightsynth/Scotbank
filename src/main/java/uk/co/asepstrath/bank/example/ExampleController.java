@@ -44,8 +44,11 @@ public class ExampleController {
     dataSource = ds;
     logger = log;
   }
-
-  @GET("/whatsqlinjection")
+  @GET("/")
+  public ModelAndView homepage(){
+      return new ModelAndView("homePage.hbs");
+  }
+  @GET("/friends")
   public ModelAndView printAllAccounts() {
     try (Connection connection = dataSource.getConnection()) {
       // Create Statement (batch of SQL Commands)
@@ -91,7 +94,6 @@ public class ExampleController {
       if (!set.next()) {
         throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
       }
-      ;
 
       Account account = new Account(set.getString("Name"), set.getBigDecimal("AccountBalance"));
 
@@ -104,7 +106,7 @@ public class ExampleController {
     }
   }
 
-  @GET("/friends")
+  /*@GET("/friends")
   public String getAllFriends() {
     try (Connection connection = dataSource.getConnection()) {
       StringBuilder toReturn = new StringBuilder();
@@ -125,7 +127,7 @@ public class ExampleController {
       // And return a HTTP 500 error to the requester
       throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
     }
-  }
+  }*/
 
   /*
    * This @Get annotation takes an optional path parameter which denotes the
@@ -173,18 +175,18 @@ public class ExampleController {
   /*
    * The dice endpoint displays two features of the Jooby framework, Parameters
    * and Templates
-   * 
+   *
    * You can see that this function takes in a String name, the
    * annotation @QueryParam tells the framework that
    * the value of name should come from the URL Query String
    * (<host>/example/dice?name=<value>)
-   * 
+   *
    * The function then uses this value and others to create a Map of values to be
    * injected into a template.
    * The ModelAndView constructor takes a template name and the model.
    * The Template name is the name of the file containing the template, this name
    * is relative to the folder src/main/resources/views
-   * 
+   *
    * We have set the Jooby framework up to use the Handlebars templating system
    * which you can read more on here:
    * https://handlebarsjs.com/guide/
