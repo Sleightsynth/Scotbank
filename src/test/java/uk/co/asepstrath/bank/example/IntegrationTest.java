@@ -15,51 +15,51 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @JoobyTest(App.class)
 public class IntegrationTest {
 
-    static OkHttpClient client = new OkHttpClient();
+  static OkHttpClient client = new OkHttpClient();
 
-    @Test
-    public void shouldSayHi(int serverPort) throws IOException {
-        Request req = new Request.Builder()
-                .url("http://localhost:" + serverPort+"/example")
-                .build();
+  @Test
+  public void shouldSayHi(int serverPort) throws IOException {
+    Request req = new Request.Builder()
+        .url("http://localhost:" + serverPort + "/example")
+        .build();
 
-        try (Response rsp = client.newCall(req).execute()) {
-            assertEquals("Welcome to Jooby!", rsp.body().string());
-            assertEquals(StatusCode.OK.value(), rsp.code());
-        }
+    try (Response rsp = client.newCall(req).execute()) {
+      assertEquals("Welcome to Jooby!", rsp.body().string());
+      assertEquals(StatusCode.OK.value(), rsp.code());
     }
+  }
 
-    @Test
-    public void shouldSayHiFromDB(int serverPort) throws IOException {
-        Request req = new Request.Builder()
-                .url("http://localhost:" + serverPort+"/welcome")
-                .build();
+  @Test
+  public void shouldSayHiFromDB(int serverPort) throws IOException {
+    Request req = new Request.Builder()
+        .url("http://localhost:" + serverPort + "/welcome")
+        .build();
 
-        try (Response rsp = client.newCall(req).execute()) {
-            assertEquals("Welcome to A Bank", rsp.body().string());
-            assertEquals(StatusCode.OK.value(), rsp.code());
-        }
+    try (Response rsp = client.newCall(req).execute()) {
+      assertEquals("Welcome to A Bank", rsp.body().string());
+      assertEquals(StatusCode.OK.value(), rsp.code());
     }
+  }
 
-    @Test
-    public void shouldDisplayFriendsData(int serverPort) throws IOException {
-        Request req = new Request.Builder()
-                .url("http://localhost:" + serverPort+"/friends")
-                .build();
+  @Test
+  public void shouldDisplayaccountsData(int serverPort) throws IOException {
+    Request req = new Request.Builder()
+        .url("http://localhost:" + serverPort + "/accounts")
+        .build();
 
-        try (Response rsp = client.newCall(req).execute()) {
-            assertEquals(StatusCode.OK.value(), rsp.code());
-        }
+    try (Response rsp = client.newCall(req).execute()) {
+      assertEquals(StatusCode.OK.value(), rsp.code());
     }
+  }
 
-    @Test
-    public void shouldDisplayFriendData(int serverPort) throws IOException {
-        Request req = new Request.Builder()
-                .url("http://localhost:" + serverPort+"/friends/Joey")
-                .build();
+  @Test
+  public void shouldDisplayFriendData(int serverPort) throws IOException {
+    Request req = new Request.Builder()
+        .url("http://localhost:" + serverPort + "/accounts/Joey")
+        .build();
 
-        try (Response rsp = client.newCall(req).execute()) {
-            assertEquals(StatusCode.OK.value(), rsp.code());
-        }
+    try (Response rsp = client.newCall(req).execute()) {
+      assertEquals(StatusCode.OK.value(), rsp.code());
     }
+  }
 }
