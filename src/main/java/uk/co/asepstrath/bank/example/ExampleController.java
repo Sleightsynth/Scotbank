@@ -44,17 +44,19 @@ public class ExampleController {
     dataSource = ds;
     logger = log;
   }
+
   @GET("/")
-  public ModelAndView homepage(){
-      return new ModelAndView("homePage.hbs");
+  public ModelAndView homepage() {
+    return new ModelAndView("homePage.hbs");
   }
-  @GET("/friends")
+
+  @GET("/accounts")
   public ModelAndView printAllAccounts() {
     try (Connection connection = dataSource.getConnection()) {
       // Create Statement (batch of SQL Commands)
       Statement statement = connection.createStatement();
       // Perform SQL Query
-      ResultSet set = statement.executeQuery("SELECT * FROM `Friends`");
+      ResultSet set = statement.executeQuery("SELECT * FROM `Accounts`");
 
       if (!set.next()) {
         throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
@@ -62,7 +64,6 @@ public class ExampleController {
       ;
 
       List<Account> accounts = new ArrayList<>();
-
       while (set.next()) {
         accounts.add(new Account(set.getString("Name"), set.getBigDecimal("AccountBalance")));
       }
@@ -83,13 +84,13 @@ public class ExampleController {
    * HTTP request is sent to <host>/example
    * The returned string will then be sent to the requester
    */
-  @GET("/friends/{name}")
+  @GET("/accounts/{name}")
   public String getSingleFriend(@PathParam("name") String name) {
     try (Connection connection = dataSource.getConnection()) {
       // Create Statement (batch of SQL Commands)
       Statement statement = connection.createStatement();
       // Perform SQL Query
-      ResultSet set = statement.executeQuery("SELECT * FROM `Friends` WHERE name='%s'".formatted(name));
+      ResultSet set = statement.executeQuery("SELECT * FROM `Accounts` WHERE name='%s'".formatted(name));
 
       if (!set.next()) {
         throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
@@ -106,28 +107,32 @@ public class ExampleController {
     }
   }
 
-  /*@GET("/friends")
-  public String getAllFriends() {
-    try (Connection connection = dataSource.getConnection()) {
-      StringBuilder toReturn = new StringBuilder();
-      // Create Statement (batch of SQL Commands)
-      Statement statement = connection.createStatement();
-      // Perform SQL Query
-      ResultSet set = statement.executeQuery("SELECT * FROM `Friends`");
-
-      while (set.next()) {
-        Account account = new Account(set.getString("Name"), set.getBigDecimal("AccountBalance"));
-        toReturn.append("\n%s".formatted(account.toString()));
-      }
-
-      return toReturn.toString();
-    } catch (SQLException e) {
-      // If something does go wrong this will log the stack trace
-      logger.error("Database Error Occurred", e);
-      // And return a HTTP 500 error to the requester
-      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-    }
-  }*/
+  /*
+   * @GET("/accounts")
+   * public String getAllAccounts() {
+   * try (Connection connection = dataSource.getConnection()) {
+   * StringBuilder toReturn = new StringBuilder();
+   * // Create Statement (batch of SQL Commands)
+   * Statement statement = connection.createStatement();
+   * // Perform SQL Query
+   * ResultSet set = statement.executeQuery("SELECT * FROM `Accounts`");
+   * 
+   * while (set.next()) {
+   * Account account = new Account(set.getString("Name"),
+   * set.getBigDecimal("AccountBalance"));
+   * toReturn.append("\n%s".formatted(account.toString()));
+   * }
+   * 
+   * return toReturn.toString();
+   * } catch (SQLException e) {
+   * // If something does go wrong this will log the stack trace
+   * logger.error("Database Error Occurred", e);
+   * // And return a HTTP 500 error to the requester
+   * throw new StatusCodeException(StatusCode.SERVER_ERROR,
+   * "Database Error Occurred");
+   * }
+   * }
+   */
 
   /*
    * This @Get annotation takes an optional path parameter which denotes the
