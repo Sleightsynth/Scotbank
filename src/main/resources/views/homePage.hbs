@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Scotbank - Home</title>
+    {{> style.hbs}}
+</head>
+<body>
+
+{{> navbar.hbs}}
+
+<!-- Header -->
+<header class="w3-container w3-light-blue w3-center" style="padding:128px 16px">
+    <h1 class="w3-margin w3-jumbo">Scotbank</h1>
+</header>
+
+<!-- First Grid -->
+<div class="w3-row-padding w3-padding-64 w3-container">
+    <div class="w3-content">
+        <div class="w3-twothird">
+            <h1>Never gonna give you up</h1>
+            <h5 class="w3-padding-32">
+                Desert you
+                Ooh-ooh-ooh-ooh
+                Hurt you
+
+                We're no strangers to love
+                You know the rules and so do I (Do I)
+                A full commitment's what I'm thinking of
+                You wouldn't get this from any other guy
+
+                I just wanna tell you how I'm feeling
+                Gotta make you understand
+
+                Never gonna give you up
+                Never gonna let you down
+                Never gonna run around and desert you
+                Never gonna make you cry
+                Never gonna say goodbye
+                Never gonna tell a lie and hurt you
+            </h5>
+
+            <p class="w3-text-grey">
+                We've known each other for so long
+                Your heart's been aching, but you're too shy to say it (To say it)
+                Inside, we both know what's been going on (Going on)
+                We know the game, and we're gonna play it
+
+                And if you ask me how I'm feeling
+                Don't tell me you're too blind to see
+
+                Never gonna give you up
+                Never gonna let you down
+                Never gonna run around and desert you
+                Never gonna make you cry
+                Never gonna say goodbye
+                Never gonna tell a lie and hurt you
+                Never gonna give you up
+                Never gonna let you down
+                Never gonna run around and desert you
+                Never gonna make you cry
+                Never gonna say goodbye
+                Never gonna tell a lie and hurt you
+            </p>
+        </div>
+
+        <div class="w3-third w3-center">
+            <i class="fa fa-anchor w3-padding-64 w3-text-light-blue"></i>
+        </div>
+    </div>
+</div>
+
+<!-- Second Grid -->
+<div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
+    <div class="w3-content">
+        <div class="w3-third w3-center">
+            <i class="fa fa-coffee w3-padding-64 w3-text-light-blue w3-margin-right"></i>
+        </div>
+
+        <div class="w3-twothird">
+            <h1>Get RickRolled lol</h1>
+            <h5 class="w3-padding-32">
+                Ooh (Give you up)
+                Ooh-ooh (Give you up)
+                Ooh-ooh
+                Never gonna give, never gonna give (Give you up)
+                Ooh-ooh
+                Never gonna give, never gonna give (Give you up)
+
+                We've known each other for so long
+                Your heart's been aching, but you're too shy to say it (To say it)
+                Inside, we both know what's been going on (Going on)
+                We know the game, and we're gonna play it
+
+                I just wanna tell you how I'm feeling
+                Gotta make you understand
+            </h5>
+
+            <p class="w3-text-grey">Never gonna give you up
+                Never gonna let you down
+                Never gonna run around and desert you
+                Never gonna make you cry
+                Never gonna say goodbye
+                Never gonna tell a lie and hurt you
+                Never gonna give you up
+                Never gonna let you down
+                Never gonna run around and desert you
+                Never gonna make you cry
+                Never gonna say goodbye
+                Never gonna tell a lie and hurt you
+                Never gonna give you up
+                Never gonna let you down
+                Never gonna run around and desert you
+                Never gonna make you cry
+                Never gonna say goodbye
+                Never gonna tell a lie and hurt you
+            </p>
+        </div>
+    </div>
+</div>
+
+{{> footer.hbs}}
+
+<script>
+    // Used to toggle the menu on small screens when clicking on the menu button
+    function myFunction() {
+      var x = document.getElementById("navDemo");
+      if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+      } else {
+        x.className = x.className.replace(" w3-show", "");
+      }
+    }
+</script>
+
+</body>
+</html>

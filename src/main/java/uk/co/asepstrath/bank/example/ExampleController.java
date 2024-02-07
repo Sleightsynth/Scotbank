@@ -1,21 +1,29 @@
 package uk.co.asepstrath.bank.example;
 
-import io.jooby.ModelAndView;
-import io.jooby.StatusCode;
-import io.jooby.annotation.*;
-import io.jooby.exception.StatusCodeException;
-import kong.unirest.core.Unirest;
-import org.slf4j.Logger;
-import uk.co.asepstrath.bank.Account;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+
+import io.jooby.ModelAndView;
+import io.jooby.StatusCode;
+import io.jooby.annotation.GET;
+import io.jooby.annotation.POST;
+import io.jooby.annotation.Path;
+import io.jooby.annotation.PathParam;
+import io.jooby.annotation.QueryParam;
+import io.jooby.exception.StatusCodeException;
+import kong.unirest.core.Unirest;
+import uk.co.asepstrath.bank.Account;
 
 /*
     Example Controller is a Controller from the MVC paradigm.
@@ -36,6 +44,38 @@ public class ExampleController {
     dataSource = ds;
     logger = log;
   }
+  @GET("/")
+  public ModelAndView homepage(){
+      return new ModelAndView("homePage.hbs");
+  }
+  @GET("/friends")
+  public ModelAndView printAllAccounts() {
+    try (Connection connection = dataSource.getConnection()) {
+      // Create Statement (batch of SQL Commands)
+      Statement statement = connection.createStatement();
+      // Perform SQL Query
+      ResultSet set = statement.executeQuery("SELECT * FROM `Friends`");
+
+      if (!set.next()) {
+        throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+      }
+      ;
+
+      List<Account> accounts = new ArrayList<>();
+
+      while (set.next()) {
+        accounts.add(new Account(set.getString("Name"), set.getBigDecimal("AccountBalance")));
+      }
+
+      return new ModelAndView("accountTable.hbs").put("accounts", accounts);
+
+    } catch (SQLException e) {
+      // If something does go wrong this will log the stack trace
+      logger.error("Database Error Occurred", e);
+      // And return a HTTP 500 error to the requester
+      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+    }
+  }
 
   /*
    * This is the simplest action a controller can perform
@@ -54,7 +94,6 @@ public class ExampleController {
       if (!set.next()) {
         throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
       }
-      ;
 
       Account account = new Account(set.getString("Name"), set.getBigDecimal("AccountBalance"));
 
@@ -67,7 +106,7 @@ public class ExampleController {
     }
   }
 
-  @GET("/friends")
+  /*@GET("/friends")
   public String getAllFriends() {
     try (Connection connection = dataSource.getConnection()) {
       StringBuilder toReturn = new StringBuilder();
@@ -88,7 +127,7 @@ public class ExampleController {
       // And return a HTTP 500 error to the requester
       throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
     }
-  }
+  }*/
 
   /*
    * This @Get annotation takes an optional path parameter which denotes the
@@ -136,18 +175,18 @@ public class ExampleController {
   /*
    * The dice endpoint displays two features of the Jooby framework, Parameters
    * and Templates
-   * 
+   *
    * You can see that this function takes in a String name, the
    * annotation @QueryParam tells the framework that
    * the value of name should come from the URL Query String
    * (<host>/example/dice?name=<value>)
-   * 
+   *
    * The function then uses this value and others to create a Map of values to be
    * injected into a template.
    * The ModelAndView constructor takes a template name and the model.
    * The Template name is the name of the file containing the template, this name
    * is relative to the folder src/main/resources/views
-   * 
+   *
    * We have set the Jooby framework up to use the Handlebars templating system
    * which you can read more on here:
    * https://handlebarsjs.com/guide/

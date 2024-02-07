@@ -21,6 +21,7 @@ public class App extends Jooby {
     /*
      * This section is used for setting up the Jooby Framework modules
      */
+
     install(new UniRestExtension());
     install(new HandlebarsModule());
     install(new HikariModule("mem"));
