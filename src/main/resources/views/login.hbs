@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Scotbank - Login</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{> style.hbs}}
+</head>
+<body>
+
+{{> navbar.hbs}}
+<form action="login.php" method = "POST">
+
+    <label for="email">Email</label>
+    <input id="email" name="email" placeholder="Enter Email Address Here" required="" maxlength="50" type="email"><br>
+
+    <label>Create a password</label>
+    <input type="password" id="password" name="pass" required="" type="text"><br>
+
+<!--    <label>Choose you memorable question</label>-->
+
+    <input name="submit" id="submit" tabindex="5" value="register" type="submit"><br>
+
+    <a href="register">Create a new account?</a><br>
+</form>
+</body>
+</html>
+

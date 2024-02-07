@@ -77,6 +77,16 @@ public class ExampleController {
     }
   }
 
+  @GET("/register")
+  public ModelAndView register(){
+    return new ModelAndView("register.hbs");
+  }
+
+  @GET("/login")
+  public ModelAndView login(){
+    return new ModelAndView("login.hbs");
+  }
+
   /*
    * This is the simplest action a controller can perform
    * The @GET annotation denotes that this function should be invoked when a GET
