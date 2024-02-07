@@ -73,7 +73,23 @@ public class App extends Jooby {
     // Open Connection to DB
     try (Connection connection = ds.getConnection()) {
       Statement stmt = connection.createStatement();
-      stmt.executeUpdate("CREATE TABLE `Friends` (`Key` varchar(255),`Name` varchar(255),`AccountBalance` decimal)");
+      stmt.executeUpdate(
+          "CREATE TABLE `Friends` (`Key` varchar(255) PRIMARY KEY UNIQUE,`Name` varchar(255),`AccountBalance` decimal)");
+      stmt.executeUpdate("CREATE TABLE `Transcation` "
+          + "("
+          + "`Timestamp` timestamp,"
+          + "`Amount` decimal,"
+          + "`Ref` varchar(30),"
+          + "`Category` varchar(255),"
+          + "`Status` varchar(30),"
+          + "`Type` varchar(30),"
+          + "`Id` INTEGER PRIMARY KEY," // For impractical purposes, this is an Integer. UUID's do not exist here.
+          + "`Recipient` varchar(255),"
+          + "`Sender` varchar(255),"
+          + "PRIMARY KEY ( `Id` ),"
+          + "FOREIGN KEY ( `Recipient` ) REFERENCES Friends(`Key`),"
+          + "FOREIGN KEY ( `Sender` ) REFERENCES Friends(`Key`)"
+          + ")");
 
       int i = 0;
 
