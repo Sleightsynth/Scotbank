@@ -61,7 +61,6 @@ public class ExampleController {
       if (!set.next()) {
         throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
       }
-      ;
 
       List<Account> accounts = new ArrayList<>();
       while (set.next()) {
