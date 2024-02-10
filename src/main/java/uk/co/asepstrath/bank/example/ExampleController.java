@@ -1,14 +1,18 @@
 package uk.co.asepstrath.bank.example;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.sql.DataSource;
 
@@ -24,6 +28,9 @@ import io.jooby.annotation.QueryParam;
 import io.jooby.exception.StatusCodeException;
 import kong.unirest.core.Unirest;
 import uk.co.asepstrath.bank.Account;
+import uk.co.asepstrath.bank.util.AccountCategory;
+import uk.co.asepstrath.bank.util.Transaction;
+import uk.co.asepstrath.bank.util.TransactionStatus;
 
 /*
     Example Controller is a Controller from the MVC paradigm.
@@ -43,6 +50,76 @@ public class ExampleController {
   public ExampleController(DataSource ds, Logger log) {
     dataSource = ds;
     logger = log;
+  }
+
+  /**
+   * This "attempts" to complete a transaction.
+   * 
+   * @param sender    Payment from
+   * @param recipient Payment to
+   * @return
+   */
+  private UUID tryTransaction(Account sender, Account recipient, BigDecimal amount, String reference) {
+    if (sender == null || recipient == null)
+      return null; // TODO: This should probably be an unchecked error.
+
+    // Defining things so verbosely might look like a terrible idea,
+    // but I implore you to reflect on what it accomplishes.
+    // If you dislike this, I suggest you refactor it. :)
+
+    Transaction ts = new Transaction();
+    ts.category = recipient.getAccountCategory();
+    ts.time = new Timestamp(System.currentTimeMillis());
+    ts.status = recipient.isForeign() ? TransactionStatus.PROCESS_DUE : TransactionStatus.OK;
+    ts.sender = sender;
+    ts.recipient = recipient;
+    ts.amount = amount;
+    ts.id = UUID.randomUUID();
+    ts.reference = reference;
+
+    // Now try committing a transaction.
+    // Note: Roleplay is happening here. Say we do have foreign accounts, the sender
+    // cannot been foreign if the transaction is happening through our service.
+    try {
+      sender.withdraw(amount);
+
+      if (recipient.isForeign()) {
+        // recipient.deposit(int amount) does not exist here.
+        // Maybe a new class is needed to handle this
+      } else {
+        sender.deposit(amount);
+      }
+    } catch (ArithmeticException e) {
+      ts.status = TransactionStatus.FAILED;
+    }
+
+    PreparedStatement prepStmt;
+
+    try (Connection connection = dataSource.getConnection()) {
+      prepStmt = connection
+          .prepareStatement("INSERT into Transaction (TIME,AMOUNT,REFERENCE,CATEGORY,STATUS,ID,RECIPIENT,SENDER)"
+              + "values (?, ?, ?, ?, ?, ?, ?, ?)");
+
+      prepStmt.setTimestamp(1, ts.time);
+      prepStmt.setDouble(2, ts.amount.doubleValue());
+      prepStmt.setString(3, ts.reference);
+      prepStmt.setString(4, ts.category.toString());
+      prepStmt.setString(5, ts.status.toString());
+      prepStmt.setObject(6, ts.id);
+      prepStmt.setObject(7, ts.recipient.getUUID());
+      prepStmt.setObject(8, ts.sender.getUUID());
+
+      // SEND IT!
+      prepStmt.execute();
+
+    } catch (SQLException e) {
+      // If something does go wrong this will log the stack trace
+      logger.error("Database Error Occurred", e);
+      // And return a HTTP 500 error to the requester
+      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+
+    }
+    return ts.id;
   }
 
   @GET("/")
