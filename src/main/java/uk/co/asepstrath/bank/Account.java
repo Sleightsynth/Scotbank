@@ -3,16 +3,40 @@ package uk.co.asepstrath.bank;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.UUID;
+
+import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class Account {
-  private String name = "";
-  private Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
-  private BigDecimal balance = BigDecimal.valueOf(0);
-  private String formattedBalance = ""; // yes it is being used in the hbs
+  protected UUID id = null;
+  protected String name = "";
+  protected Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
+  protected BigDecimal balance = BigDecimal.valueOf(0);
+  protected String formattedBalance = ""; // yes it is being used in the hbs
+
+  protected AccountCategory accountCategory;
+  protected Boolean foreign;
+
+  // What happens when we pull a UUID from somewhere?
 
   public Account(String name, BigDecimal balance) {
+    this(name, balance, Boolean.FALSE, AccountCategory.Payment);
+
+  }
+
+  public Account(String name, BigDecimal balance, AccountCategory accountType) {
+    this(name, balance, Boolean.FALSE, accountType);
+  }
+
+  public Account(String name, BigDecimal balance, Boolean foreign) {
+    this(name, balance, foreign, AccountCategory.Payment);
+  }
+
+  public Account(String name, BigDecimal balance, Boolean foreign, AccountCategory accountType) {
+    this.id = UUID.randomUUID();
     this.name = name;
     this.balance = balance;
+    this.accountCategory = accountType;
 
     updateFormattedBalance();
   }
@@ -53,7 +77,18 @@ public class Account {
 
   public String getName() {
     return name;
+  }
 
+  public AccountCategory getAccountCategory() {
+    return accountCategory;
+  }
+
+  public Boolean isForeign() {
+    return foreign;
+  }
+
+  public UUID getUUID() {
+    return id;
   }
 
   // Note: This will not display on HTML if the char set is not Unicode.
