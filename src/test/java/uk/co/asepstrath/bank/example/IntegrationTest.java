@@ -42,7 +42,7 @@ public class IntegrationTest {
   }
 
   @Test
-  public void shouldDisplayaccountsData(int serverPort) throws IOException {
+  public void shouldDisplayAccountsData(int serverPort) throws IOException {
     Request req = new Request.Builder()
         .url("http://localhost:" + serverPort + "/accounts")
         .build();

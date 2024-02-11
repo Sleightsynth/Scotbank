@@ -84,7 +84,7 @@ public class App extends Jooby {
           + "`Category` varchar(255),"
           + "`Status` varchar(30),"
           + "`Type` varchar(30),"
-          + "`Id` UUID PRIMARY KEY UNIQUE," // For impractical purposes, this is an Integer. UUID's do not exist.
+          + "`Id` UUID PRIMARY KEY UNIQUE,"
           + "`Recipient` varchar(255),"
           + "`Sender` varchar(255),"
           + "PRIMARY KEY ( `Id` ),"
@@ -94,7 +94,7 @@ public class App extends Jooby {
 
       for (Account acc : accounts) {
         PreparedStatement prepStmt = connection.prepareStatement(
-            String.format("INSERT INTO Accounts " + "VALUES (?,'%s', '%f')", acc.getName(),
+            String.format("INSERT INTO Accounts " + "VALUES (?, '%s', '%f')", acc.getName(),
                 acc.getBalance().floatValue()));
         prepStmt.setObject(1, acc.getUUID());
         prepStmt.execute();
