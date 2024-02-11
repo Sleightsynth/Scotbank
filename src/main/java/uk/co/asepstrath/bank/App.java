@@ -74,27 +74,56 @@ public class App extends Jooby {
     // Open Connection to DB
     try (Connection connection = ds.getConnection()) {
       Statement stmt = connection.createStatement();
+
       stmt.executeUpdate(
-          "CREATE TABLE `Accounts` (`Key` UUID PRIMARY KEY UNIQUE,`Name` varchar(255),`AccountBalance` decimal)");
-      stmt.executeUpdate("CREATE TABLE `Transcation` "
-          + "("
-          + "`Timestamp` timestamp,"
-          + "`Amount` decimal,"
-          + "`Ref` varchar(30),"
-          + "`Category` varchar(255),"
-          + "`Status` varchar(30),"
-          + "`Type` varchar(30),"
-          + "`Id` UUID PRIMARY KEY UNIQUE,"
-          + "`Recipient` varchar(255),"
-          + "`Sender` varchar(255),"
-          + "PRIMARY KEY ( `Id` ),"
-          + "FOREIGN KEY ( `Recipient` ) REFERENCES Accounts(`Key`),"
-          + "FOREIGN KEY ( `Sender` ) REFERENCES Accounts(`Key`)"
-          + ")");
+          "CREATE TABLE `Users`"
+              + "("
+              + "`Id` UUID PRIMARY KEY UNIQUE, "
+              + "`Name` varchar(30),"
+              + "`Email` varchar(50),"
+              + "`Hash_pass` varchar(32)," // use md5 for hashing
+              + "PRIMARY KEY (`Id`)"
+              + ")");
+      stmt.executeUpdate(
+          "CREATE TABLE `Session`"
+              + "("
+              + "`Id` UUID PRIMARY KEY UNIQUE, "
+              + "`User_id` UUID," // This can be Null.
+              + "`Expiry` timestamp,"
+              + "PRIMARY KEY (`Id`),"
+              + "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)"
+              + ")");
+
+      stmt.executeUpdate(
+          "CREATE TABLE `Accounts` "
+              + "("
+              + "`Id` UUID PRIMARY KEY UNIQUE,"
+              + "`User_id` UUID,"
+              + "`Name` varchar(255),"
+              + "`AccountBalance` decimal,"
+              + "PRIMARY KEY (`Id`),"
+              + "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)"
+              + ")");
+      stmt.executeUpdate(
+          "CREATE TABLE `Transcation` "
+              + "("
+              + "`Timestamp` timestamp,"
+              + "`Amount` decimal,"
+              + "`Ref` varchar(30),"
+              + "`Category` varchar(255),"
+              + "`Status` varchar(30),"
+              + "`Type` varchar(30),"
+              + "`Id` UUID PRIMARY KEY UNIQUE,"
+              + "`Recipient` varchar(255),"
+              + "`Sender` varchar(255),"
+              + "PRIMARY KEY ( `Id` ),"
+              + "FOREIGN KEY ( `Recipient` ) REFERENCES Accounts(`Id`),"
+              + "FOREIGN KEY ( `Sender` ) REFERENCES Accounts(`Id`)"
+              + ")");
 
       for (Account acc : accounts) {
         PreparedStatement prepStmt = connection.prepareStatement(
-            String.format("INSERT INTO Accounts " + "VALUES (?, '%s', '%f')", acc.getName(),
+            String.format("INSERT INTO Accounts " + "VALUES (?, NULL, '%s', '%f')", acc.getName(),
                 acc.getBalance().floatValue()));
         prepStmt.setObject(1, acc.getUUID());
         prepStmt.execute();
@@ -104,6 +133,7 @@ public class App extends Jooby {
       stmt.executeUpdate("INSERT INTO Example " + "VALUES ('WelcomeMessage', 'Welcome to A Bank')");
     } catch (SQLException e) {
       log.error("Database Creation Error", e);
+      this.stop();
     }
   }
 
