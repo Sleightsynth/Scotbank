@@ -123,6 +123,11 @@ public class WebsiteController {
         }
     }
 
+    @GET("/transactionForm")
+    public ModelAndView transactionpage() {
+        return new ModelAndView("transactionForm.hbs");
+    }
+
     /*
      * This is the simplest action a controller can perform
      * The @GET annotation denotes that this function should be invoked when a GET

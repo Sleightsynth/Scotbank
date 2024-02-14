@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Scotbank - Transactions</title>
+    {{> style.hbs}}
+</head>
+<body>
+{{> navbar.hbs}}
+<div class="w3-row-padding w3-padding-64 w3-container">
+    <table border="1">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        {{#each }}
+            {{> tableRow.hbs this}}
+        {{/each}}
+    </table>
+</div>
+{{> footer.hbs}}
+</body>
+</html>
+
