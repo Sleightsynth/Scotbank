@@ -51,8 +51,7 @@ public class WebsiteController {
      * @param recipient Payment to
      * @return
      */
-    private UUID tryTransaction(
-            Account sender, Account recipient, BigDecimal amount, String reference) {
+    private UUID tryTransaction(Account sender, Account recipient, BigDecimal amount, String reference) {
         if (sender == null || recipient == null)
             return null; // TODO: This should probably be an unchecked error.
 
@@ -85,8 +84,6 @@ public class WebsiteController {
         } catch (ArithmeticException e) {
             ts.status = TransactionStatus.FAILED;
         }
-
-        PreparedStatement prepStmt;
 
         try {
             dbController.addTransaction(ts);
@@ -141,41 +138,5 @@ public class WebsiteController {
             // And return a HTTP 500 error to the requester
             throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
         }
-    }
-
-    /*
-     * The dice endpoint displays two features of the Jooby framework, Parameters
-     * and Templates
-     *
-     * You can see that this function takes in a String name, the
-     * annotation @QueryParam tells the framework that
-     * the value of name should come from the URL Query String
-     * (<host>/example/dice?name=<value>)
-     *
-     * The function then uses this value and others to create a Map of values to be
-     * injected into a template.
-     * The ModelAndView constructor takes a template name and the model.
-     * The Template name is the name of the file containing the template, this name
-     * is relative to the folder src/main/resources/views
-     *
-     * We have set the Jooby framework up to use the Handlebars templating system
-     * which you can read more on here:
-     * https://handlebarsjs.com/guide/
-     */
-    @GET("/dice")
-    public ModelAndView dice(@QueryParam String name) {
-        // If no name has been sent within the query URL
-        if (name == null) {
-            name = "Your";
-        } else {
-            name = name + "'s";
-        }
-
-        // we must create a model to pass to the "dice" template
-        Map<String, Object> model = new HashMap<>();
-        model.put("random", new Random().nextInt(6));
-        model.put("name", name);
-
-        return new ModelAndView("dice.hbs", model);
     }
 }

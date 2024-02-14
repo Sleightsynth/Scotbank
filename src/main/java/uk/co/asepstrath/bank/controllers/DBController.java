@@ -18,7 +18,7 @@ public class DBController {
     /**
      * This is the link to the database
      */
-    private final DataSource dataSource;
+    private static DataSource dataSource;
 
     /**
      * Creates an instance of the DBController
@@ -62,7 +62,7 @@ public class DBController {
                         + "`Id` UUID PRIMARY KEY UNIQUE,"
                         + "`User_id` UUID,"
                         + "`Name` varchar(255),"
-                        + "`AccountBalance` decimal,"
+                        + "`AccountBalance` decimal(15,2),"
                         + "PRIMARY KEY (`Id`),"
                         + "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)"
                         + ")");
@@ -70,7 +70,7 @@ public class DBController {
                 "CREATE TABLE `Transcation` "
                         + "("
                         + "`Timestamp` timestamp,"
-                        + "`Amount` decimal,"
+                        + "`Amount` decimal(15,2),"
                         + "`Ref` varchar(30),"
                         + "`Category` varchar(255),"
                         + "`Status` varchar(30),"
@@ -115,14 +115,18 @@ public class DBController {
      * @throws SQLException
      */
     public void addAccounts(List<Account> accounts) throws SQLException{
-        Connection connection = dataSource.getConnection();
         for (Account acc : accounts) {
-            PreparedStatement prepStmt = connection.prepareStatement(
-                    String.format("INSERT INTO Accounts " + "VALUES (?, NULL, '%s', '%f')", acc.getName(),
-                            acc.getBalance().floatValue()));
-            prepStmt.setObject(1, acc.getUUID());
-            prepStmt.execute();
+            this.addAccount(acc);
         }
+    }
+
+    public void addAccount(Account acc) throws SQLException{
+        Connection connection = dataSource.getConnection();
+        PreparedStatement prepStmt = connection.prepareStatement(
+                String.format("INSERT INTO Accounts " + "VALUES (?, NULL, '%s', '%f')", acc.getName(),
+                        acc.getBalance().floatValue()));
+        prepStmt.setObject(1, acc.getUUID());
+        prepStmt.execute();
     }
 
     /**
