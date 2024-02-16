@@ -87,6 +87,11 @@ public class ExampleController {
     return new ModelAndView("login.hbs");
   }
 
+  @GET("/profile")
+  public ModelAndView profile(){
+    return new ModelAndView("profile.hbs");
+  }
+
   /*
    * This is the simplest action a controller can perform
    * The @GET annotation denotes that this function should be invoked when a GET
