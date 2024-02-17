@@ -108,4 +108,12 @@ public class AccountTests {
 
         assertEquals("Test Person", a.getName());
     }
+
+    @Test
+    public void checkCategoryToString(){
+        Account a = new Account("Test Person", BigDecimal.valueOf(50.01), Boolean.FALSE, AccountCategory.Payment);
+        assertNotNull(a);
+
+        assertEquals("Payment", a.getAccountCategory().toString());
+    }
 }
