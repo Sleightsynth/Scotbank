@@ -74,7 +74,7 @@ public class App extends Jooby {
     try (Connection connection = ds.getConnection()) {
       Statement stmt = connection.createStatement();
       stmt.executeUpdate(
-          "CREATE TABLE `Friends` (`Key` varchar(255) PRIMARY KEY UNIQUE,`Name` varchar(255),`AccountBalance` decimal)");
+          "CREATE TABLE `Accounts` (`Key` varchar(255) PRIMARY KEY UNIQUE,`Name` varchar(255),`AccountBalance` decimal)");
       stmt.executeUpdate("CREATE TABLE `Transcation` "
           + "("
           + "`Timestamp` timestamp,"
@@ -83,18 +83,18 @@ public class App extends Jooby {
           + "`Category` varchar(255),"
           + "`Status` varchar(30),"
           + "`Type` varchar(30),"
-          + "`Id` INTEGER PRIMARY KEY," // For impractical purposes, this is an Integer. UUID's do not exist here.
+          + "`Id` INTEGER PRIMARY KEY UNIQUE," // For impractical purposes, this is an Integer. UUID's do not exist.
           + "`Recipient` varchar(255),"
           + "`Sender` varchar(255),"
           + "PRIMARY KEY ( `Id` ),"
-          + "FOREIGN KEY ( `Recipient` ) REFERENCES Friends(`Key`),"
-          + "FOREIGN KEY ( `Sender` ) REFERENCES Friends(`Key`)"
+          + "FOREIGN KEY ( `Recipient` ) REFERENCES Accounts(`Key`),"
+          + "FOREIGN KEY ( `Sender` ) REFERENCES Accounts(`Key`)"
           + ")");
 
       int i = 0;
 
       for (Account acc : accounts) {
-        stmt.executeUpdate(String.format("INSERT INTO Friends " + "VALUES ('%d','%s', '%f')", i, acc.getName(),
+        stmt.executeUpdate(String.format("INSERT INTO Accounts " + "VALUES ('%d','%s', '%f')", i, acc.getName(),
             acc.getBalance().floatValue()));
         i++;
       }
