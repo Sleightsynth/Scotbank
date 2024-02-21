@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Scotbank - Home</title>
+    {{> style.hbs}}
+</head>
+<body>
+{{> navbar.hbs}}
+<div class="w3-row-padding w3-padding-64 w3-container">
+    <div class="fullSection">
+        <h1>Welcome [name],</h1>
+    </div>
+
+<!--    Balance Section-->
+    <div class="card">
+        <div class="balance">£20,000</div>
+        <div class="side-by-side">
+            <div class="number">80-30-13</div>
+            <div class="number">38139933</div>
+        </div>
+    </div>
+
+<!--    Pay someone / Deposit cheque / Request Payment buttons-->
+
+<!--    Transactions and sorting - Clickable will provide more details-->
+    <div class="fullSection gray">
+        Transactions
+    </div>
+</div>
+{{> footer.hbs}}
+</body>
+</html>
+

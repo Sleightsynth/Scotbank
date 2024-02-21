@@ -1,6 +1,6 @@
 package uk.co.asepstrath.bank;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import io.jooby.StatusCode;
 import io.jooby.test.JoobyTest;
@@ -24,11 +24,12 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldDisplaySingleAccountData(int serverPort) throws IOException {
+    public void shouldDisplayCorrectDataForJoey(int serverPort) throws IOException {
         Request req = new Request.Builder().url("http://localhost:" + serverPort + "/accounts/Joey").build();
-
         try (Response rsp = client.newCall(req).execute()) {
             assertEquals(StatusCode.OK.value(), rsp.code());
+            assert rsp.body() != null;
+            assertTrue(rsp.body().string().contains("23.90"));
         }
     }
 

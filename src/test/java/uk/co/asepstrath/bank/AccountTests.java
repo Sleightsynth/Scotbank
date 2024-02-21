@@ -4,12 +4,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
+import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class AccountTests {
     @Test
     public void createAccount() {
         Account a = new Account();
         assertNotNull(a);
+
+        Account b = new Account("Test Person", BigDecimal.valueOf(50.01), Boolean.FALSE, AccountCategory.Payment);
+        assertNotNull(b);
+
+        Account c = new Account("Test Person", BigDecimal.valueOf(50.01), Boolean.TRUE);
+        assertNotNull(c);
+
+        Account d = new Account("Test Person", BigDecimal.valueOf(50.01), AccountCategory.Bills);
+        assertNotNull(d);
+
+        Account e = new Account("Test Person", BigDecimal.valueOf(50.01));
+        assertNotNull(e);
     }
 
     @Test
@@ -62,5 +75,45 @@ public class AccountTests {
         Account a = new Account();
         a.deposit(20);
         assertThrows(ArithmeticException.class, () -> a.withdraw(BigDecimal.valueOf(40)));
+    }
+
+    @Test
+    public void checkAccountCategory(){
+        Account a = new Account("Test Person", BigDecimal.valueOf(50.01), Boolean.FALSE, AccountCategory.Food);
+        assertNotNull(a);
+
+        assertEquals(AccountCategory.Food, a.getAccountCategory());
+    }
+
+    @Test
+    public void checkIsForeign(){
+        Account a = new Account("Test Person", BigDecimal.valueOf(50.01), Boolean.FALSE, AccountCategory.Entertainment);
+        assertNotNull(a);
+
+        assertEquals(Boolean.FALSE, a.isForeign());
+    }
+
+    @Test
+    public void checkGetUUID(){
+        Account a = new Account("Test Person", BigDecimal.valueOf(50.01), Boolean.FALSE, AccountCategory.Grocery);
+        assertNotNull(a);
+
+        assertNotNull(a.getUUID());
+    }
+
+    @Test
+    public void checkGetName(){
+        Account a = new Account("Test Person", BigDecimal.valueOf(50.01), Boolean.FALSE, AccountCategory.Payment);
+        assertNotNull(a);
+
+        assertEquals("Test Person", a.getName());
+    }
+
+    @Test
+    public void checkCategoryToString(){
+        Account a = new Account("Test Person", BigDecimal.valueOf(50.01), Boolean.FALSE, AccountCategory.Payment);
+        assertNotNull(a);
+
+        assertEquals("Payment", a.getAccountCategory().toString());
     }
 }

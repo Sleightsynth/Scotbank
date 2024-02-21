@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.UUID;
-
 import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class Account {
@@ -13,6 +12,7 @@ public class Account {
   protected Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
   protected BigDecimal balance = BigDecimal.valueOf(0);
   protected String formattedBalance = ""; // yes it is being used in the hbs
+  protected String pass = "";
 
   protected AccountCategory accountCategory;
   protected Boolean foreign;
@@ -21,7 +21,6 @@ public class Account {
 
   public Account(String name, BigDecimal balance) {
     this(name, balance, Boolean.FALSE, AccountCategory.Payment);
-
   }
 
   public Account(String name, BigDecimal balance, AccountCategory accountType) {
@@ -37,6 +36,7 @@ public class Account {
     this.name = name;
     this.balance = balance;
     this.accountCategory = accountType;
+    this.foreign = foreign;
 
     updateFormattedBalance();
   }
@@ -47,6 +47,29 @@ public class Account {
 
   protected void updateFormattedBalance() {
     formattedBalance = getFormattedBalance();
+  }
+
+  // For account creation
+  public Account(String username, String password) {
+    this.id = UUID.randomUUID();
+    this.name = username;
+    this.pass = password;
+  }
+
+  public String getUsername() {
+    return name;
+  }
+
+  public void setUsername(String username) {
+    this.name = username;
+  }
+
+  public String getPassword() {
+    return pass;
+  }
+
+  public void setPassword(String password) {
+    this.pass = password;
   }
 
   public void withdraw(double amount) {

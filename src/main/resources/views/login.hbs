@@ -5,28 +5,66 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{> style.hbs}}
-</head>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    input[type=text], input[type=password], select {
+        width: 100%;
+        padding: 12px 0;
+        margin: 8px 0;
+        display: block;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+
+    input[type=text]:focus, input[type=password]:focus,
+    input[type=text]:not(:placeholder-shown), input[type=password]:not(:placeholder-shown) {
+        border-bottom: 1px solid #708090;
+    }
+
+    input[type=submit] {
+        width: 70%;
+        background-color: #fff;
+        text-transform: uppercase;
+        padding: 8px 10px;
+        margin: 12px 0;
+        color: #4CAF50;
+        border: 2px solid #4CAF50;
+        border-radius: 10em;
+        cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+        border: 2px solid #45a049;
+        color: #45a049;
+
+    }
+
+    form {
+        width: 100%;
+        max-width: 40vw;
+        text-align: center;
+    }
+</style>
 <body>
 
 {{> navbar.hbs}}
-<div class="w3-row-padding w3-padding-64 w3-container">
-    <h1>Fill out the register form below to create your account.</h1>
-    <form action="login.php" method = "POST">
+<form action="/loginSave" method="post">
+    <h1>Login to account</h1>
+    <input id="username" name="username" placeholder="Enter Username" required="" maxlength="20" tabindex="1" type="text">
 
-        <label for="email">Enter an email:</label>
-        <input id="email" name="email" placeholder="Enter Email Here" required="" maxlength="50" type="email"><br><br>
+    <input id="password" name="password" placeholder="Enter Password" required="" tabindex="2" type="password">
 
-        <label>Create a password:</label>
-        <input type="password" id="password" name="pass" required="" type="text"><br><br>
+    <input name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
 
-<!--    <label>Choose you memorable question</label>-->
-
-        <input name="submit" id="submit" tabindex="5" value="register" type="submit"><br><br>
-
-        <a href="register.hbs">Create a new account?</a><br><br>
-    </form>
-</div>
-{{> footer.hbs}}
+</form>
 </body>
 </html>
-
+>>>>>>> transaction
