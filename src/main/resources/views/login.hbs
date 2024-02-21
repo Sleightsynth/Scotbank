@@ -7,11 +7,13 @@
     {{> style.hbs}}
 <style>
     body {
+        margin: 0;
+    }
+    .container {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-        margin: 0;
+        height: 80vh;
     }
 
     input[type=text], input[type=password], select {
@@ -54,16 +56,18 @@
     }
 </style>
 <body>
-
 {{> navbar.hbs}}
-<form action="/loginSave" method="post">
-    <h1>Login to account</h1>
-    <input id="username" name="username" placeholder="Enter Username" required="" maxlength="20" tabindex="1" type="text">
+<div class="container">
+    <form action="/loginSave" method="post">
+        <h1>Login to account</h1>
+        <input id="username" name="username" placeholder="Enter Username" required="" maxlength="20" tabindex="1" type="text">
 
-    <input id="password" name="password" placeholder="Enter Password" required="" tabindex="2" type="password">
+        <input id="password" name="password" placeholder="Enter Password" required="" tabindex="2" type="password">
 
-    <input name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
+        <input name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
 
-</form>
+    </form>
+</div>
+{{> footer.hbs}}
 </body>
 </html>

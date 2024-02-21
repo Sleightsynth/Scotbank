@@ -120,6 +120,12 @@ public class WebsiteController {
     return new ModelAndView("login.hbs");
   }
 
+  @GET("/contact")
+  public ModelAndView contact() {
+    return new ModelAndView("contact.hbs");
+  }
+
+
   @POST("/loginSave")
   public ModelAndView login(String username, String password) {
     Account newAccount = new Account(username, password);
