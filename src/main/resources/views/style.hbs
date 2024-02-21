@@ -13,17 +13,17 @@
         text-align: center;
     }
 
-    body {
+    body, html {
         margin: 0;
+        padding:0;
     }
     .full-section {
-        padding: 2em;
-        margin: 1em;
+        margin: 3em;
     }
-    .full-section {
-        padding: 2em;
-        margin: 1em;
-    }
+
+    /*.full-section h2 {*/
+    /*    padding: 3em;*/
+    /*}*/
 
     .side-by-side {
         display: flex;
@@ -34,17 +34,18 @@
     }
 
     .card {
-        width: 300px;
-        height: 175px;
-        background-color: #0047ab;
-        border-radius: 18px;
+        width: 400px;
+        height: 225px;
+        background-color: #FC5130;
+        border-radius: 22px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         color: white;
         position: relative;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
     }
     .balance {
         font-size: 24px;
@@ -52,12 +53,117 @@
     }
     .number {
         font-size: 18px;
-        padding: 0 1em 0 1em;
+        padding: 0 2em 1em 0;
     }
 
-    .gray {
-        background-color: aliceblue;
+    .buttons {
+        text-align: center;
+        margin-top: 20px;
     }
 
+    .buttons .button {
+        padding: 10px 20px;
+        margin: 1em;
+        font-size: 16px;
+        border: 2px solid #4CAF50;
+        background-color: rgb(0,0,0,0);
+        color: #4CAF50;
+        cursor: pointer;
+        border-radius: 10em;
+        transition: all 0.3s ease;
+    }
+
+    .buttons .button:hover {
+        /*Darker varient*/
+    }
+
+
+    .sub-section {
+        background-color: #fafafa;
+        padding: 3em 10em 3em 10em;
+    }
+
+    .right {
+        float: right;
+        text-align: right;
+    }
+
+    .container {
+        display: flex;
+
+        /*display: flex;*/
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+    }
+
+    .small-column {
+        flex: 1;
+    }
+
+    .large-column {
+        flex: 5;
+        margin: 0.2em;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        padding: 0.5em 0 0.5em 0;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+
+    .row .small-column {
+        flex: 1;
+    }
+
+    .row .large-column {
+        flex: 2;
+    }
+
+    /*Form Formatting*/
+
+    input[type=text], input[type=password], select {
+        width: 100%;
+        padding: 12px 0;
+        margin: 8px 0;
+        display: block;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+
+    input[type=text]:focus, input[type=password]:focus,
+    input[type=text]:not(:placeholder-shown), input[type=password]:not(:placeholder-shown) {
+        border-bottom: 1px solid #708090;
+    }
+
+    input[type=submit] {
+        width: 70%;
+        background-color: #fff;
+        text-transform: uppercase;
+        padding: 8px 10px;
+        margin: 12px 0;
+        color: #4CAF50;
+        border: 2px solid #4CAF50;
+        border-radius: 10em;
+        cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+        border: 2px solid #45a049;
+        color: #45a049;
+
+    }
+
+    form {
+        width: 100%;
+        max-width: 40vw;
+        text-align: center;
+    }
 
 </style>
