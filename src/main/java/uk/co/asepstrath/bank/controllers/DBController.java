@@ -61,6 +61,8 @@ public class DBController {
                         + "("
                         + "`Id` UUID PRIMARY KEY UNIQUE,"
                         + "`User_id` UUID,"
+                        + "`AccountNumber` varchar(8),"
+                        + "`SortCode` varchar(8),"
                         + "`Name` varchar(255),"
                         + "`AccountBalance` decimal(15,2),"
                         + "PRIMARY KEY (`Id`),"
@@ -123,8 +125,8 @@ public class DBController {
     public void addAccount(Account acc) throws SQLException{
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Accounts " + "VALUES (?, NULL, '%s', '%f')", acc.getName(),
-                        acc.getBalance().floatValue()));
+                String.format("INSERT INTO Accounts " + "VALUES (?, NULL, '%s', '%s' ,'%s', '%f')",
+                        acc.getAccountNumber(),acc.getSortCode(), acc.getName(), acc.getBalance().floatValue()));
         prepStmt.setObject(1, acc.getUUID());
         prepStmt.execute();
     }
@@ -143,7 +145,7 @@ public class DBController {
         List<Account> accounts = new ArrayList<>();
 
         while (set.next()) {
-            accounts.add(new Account(set.getString("Name"), set.getBigDecimal("AccountBalance")));
+            accounts.add(new Account(set.getString("Name"), set.getString("AccountNumber"), set.getString("SortCode"), set.getBigDecimal("AccountBalance")));
         }
 
         return accounts;
