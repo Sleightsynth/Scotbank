@@ -28,4 +28,4 @@ Welcome to Scotbank Ltd. This is a group project for the University of Strathcly
 ## Building
 
     Windows machines: `./mvnw.cmd clean package`
-    Linux machines: `./mvn clean package`
+    Linux machines: `./mvnw clean package`
