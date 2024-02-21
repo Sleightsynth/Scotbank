@@ -34,7 +34,6 @@ public class Account {
     }
 
     public Account(String name, String accountNumber, String sortCode, BigDecimal balance) {
-        ;
         this.id = UUID.randomUUID();
         this.name = name;
         this.accountNumber = accountNumber;

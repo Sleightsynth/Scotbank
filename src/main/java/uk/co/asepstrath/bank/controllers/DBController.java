@@ -161,14 +161,30 @@ public class DBController {
         // Create Statement (batch of SQL Commands)
         Statement statement = connection.createStatement();
         // Perform SQL Query
-        ResultSet set =
-                statement.executeQuery("SELECT * FROM `Accounts` WHERE name='%s'".formatted(name));
+        ResultSet set = statement.executeQuery("SELECT * FROM `Accounts` WHERE name='%s'".formatted(name));
 
         if (!set.next()) {
             throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
         }
 
-        Account account = new Account(set.getString("Name"), set.getBigDecimal("AccountBalance"));
+        Account account = new Account(set.getString("Name"), set.getString("AccountNumber"), set.getString("SortCode"),set.getBigDecimal("AccountBalance"));
+
+        return account;
+
+    }
+
+    public Account returnAccount(String accountNumber, String sortCode) throws SQLException{
+        Connection connection = dataSource.getConnection();
+        // Create Statement (batch of SQL Commands)
+        Statement statement = connection.createStatement();
+        // Perform SQL Query
+        ResultSet set = statement.executeQuery("SELECT * FROM `Accounts` WHERE AccountNumber='%s' and SortCode='%s'".formatted(accountNumber,sortCode));
+
+        if (!set.next()) {
+            throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+        }
+
+        Account account = new Account(set.getString("Name"), set.getString("AccountNumber"), set.getString("SortCode"),set.getBigDecimal("AccountBalance"));
 
         return account;
 
