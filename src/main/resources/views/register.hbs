@@ -9,39 +9,43 @@
 <body>
 
 {{> navbar.hbs}}
-<form action="register.php" method = "POST">
+<div class="w3-row-padding w3-padding-64 w3-container">
+    <h1>Fill out the register form below to create your account.</h1>
+    <form action="register.php" method = "POST">
 
-    <label>First name</label><br>
-    <input id="firstName" name="firstName" placeholder="Enter First Name Here" required="" maxlength="20" tabindex="1" type="text">
+        <label>Enter first name:</label><br>
+        <input id="firstName" name="firstName" placeholder="Enter First Name Here" required="" maxlength="20" tabindex="1" type="text"><br><br>
 
-    <label>Last name</label><br>
-    <input id="lastName" name="lastName" placeholder="Enter Last Name Here" required="" maxlength="20" tabindex="1" type="text">
+        <label>Enter last name:</label><br>
+        <input id="lastName" name="lastName" placeholder="Enter Last Name Here" required="" maxlength="20" tabindex="1" type="text"><br><br>
 
-    <label for="email">Email</label><br>
-    <input id="email" name="email" placeholder="Enter Email Address Here" required="" maxlength="50" type="email">
+        <label for="email">Enter an email:</label><br>
+        <input id="email" name="email" placeholder="Enter Email Here" required="" maxlength="50" type="email"><br><br>
 
-    <label>Create a password</label><br>
-    <input type="password" id="password" name="pass" required="" type="text">
+        <label>Create a password:</label><br>
+        <input type="password" id="password" name="pass" required="" type="text"><br><br>
 
-    <label>Confirm your password</label><br>
-    <input type="password" id="password" name="confirmPass" required="" type="text">
+        <label>Confirm your password:</label><br>
+        <input type="password" id="password" name="confirmPass" required="" type="text"><br><br>
 
-    <label>Birthday</label><br>
-    <input type="date" id="dob" name="dob">
+        <label>Enter birthday:</label><br>
+        <input type="date" id="dob" name="dob"><br><br>
 
-    <label>Choose you memorable question</label><br>
-    <select id="memorable" name="memorable" required >
-        <option value="1">What is your mother maiden name?</option>
-        <option value="2">What is the name of your first pet?</option>
-        <option value="3">What is the name of your imaginary friend?</option>
-        <option value="4">What city did your parents meet?</option>
-        <option value="5">Who was your childhood best friend?</option>
-    </select>
+        <label>Choose your memorable question:</label><br>
+        <select id="memorable" name="memorable" required >
+            <option value="1">What is your mother maiden name?</option>
+            <option value="2">What is the name of your first pet?</option>
+            <option value="3">What is the name of your imaginary friend?</option>
+            <option value="4">What city did your parents meet?</option>
+            <option value="5">Who was your childhood best friend?</option>
+        </select>
 
-    <input name="submit" id="submit" tabindex="5" value="register" type="submit"><br>
+        <input name="submit" id="submit" tabindex="5" value="register" type="submit"><br><br>
 
-    <a href="login">Already have an account?</a><br>
-</form>
+        <a href="login.hbs">Already have an account?</a><br><br>
+    </form>
+</div>
+{{> footer.hbs}}
 </body>
 </html>
 

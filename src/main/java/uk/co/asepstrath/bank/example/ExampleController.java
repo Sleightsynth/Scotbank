@@ -312,8 +312,10 @@ public class ExampleController {
    * It will look at the body of the POST request and try to deserialise into a
    * MyMessage object
    */
+  /*
   @POST
   public String post(MyMessage message) {
     return "You successfully POSTed: " + message.Message + " To: " + message.Recipient;
   }
+   */
 }

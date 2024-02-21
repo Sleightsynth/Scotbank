@@ -9,20 +9,24 @@
 <body>
 
 {{> navbar.hbs}}
-<form action="login.php" method = "POST">
+<div class="w3-row-padding w3-padding-64 w3-container">
+    <h1>Fill out the register form below to create your account.</h1>
+    <form action="login.php" method = "POST">
 
-    <label for="email">Email</label>
-    <input id="email" name="email" placeholder="Enter Email Address Here" required="" maxlength="50" type="email"><br>
+        <label for="email">Enter an email:</label>
+        <input id="email" name="email" placeholder="Enter Email Here" required="" maxlength="50" type="email"><br><br>
 
-    <label>Create a password</label>
-    <input type="password" id="password" name="pass" required="" type="text"><br>
+        <label>Create a password:</label>
+        <input type="password" id="password" name="pass" required="" type="text"><br><br>
 
 <!--    <label>Choose you memorable question</label>-->
 
-    <input name="submit" id="submit" tabindex="5" value="register" type="submit"><br>
+        <input name="submit" id="submit" tabindex="5" value="register" type="submit"><br><br>
 
-    <a href="register">Create a new account?</a><br>
-</form>
+        <a href="register.hbs">Create a new account?</a><br><br>
+    </form>
+</div>
+{{> footer.hbs}}
 </body>
 </html>
 

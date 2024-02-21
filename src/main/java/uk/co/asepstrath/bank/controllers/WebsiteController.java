@@ -123,6 +123,21 @@ public class WebsiteController {
         }
     }
 
+    @GET("/register")
+    public ModelAndView registerpage() {
+        return new ModelAndView("register.hbs");
+    }
+
+    @GET("/login")
+    public ModelAndView loginpage() {
+        return new ModelAndView("login.hbs");
+    }
+
+    @GET("/profile")
+    public ModelAndView profilepage() {
+        return new ModelAndView("profile.hbs");
+    }
+
     @GET("/transactionForm")
     public ModelAndView transactionpage() {
         return new ModelAndView("transactionForm.hbs");
