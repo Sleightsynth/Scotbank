@@ -128,7 +128,7 @@ public class WebsiteController {
 
     logger.info("New account created: " + newAccount);
     // Currently redirects to homepage - must add a confirm message
-    return new ModelAndView("homePage.hbs");
+    return new ModelAndView("profile.hbs");
   }
 
   @GET("/register")
