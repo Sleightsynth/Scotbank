@@ -2,20 +2,15 @@ package uk.co.asepstrath.bank.controllers;
 
 import io.jooby.ModelAndView;
 import io.jooby.StatusCode;
-import io.jooby.annotation.GET;
-import io.jooby.annotation.Path;
-import io.jooby.annotation.PathParam;
-import io.jooby.annotation.QueryParam;
+import io.jooby.annotation.*;
 import io.jooby.exception.StatusCodeException;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import org.slf4j.Logger;
 import uk.co.asepstrath.bank.Account;
@@ -123,6 +118,27 @@ public class WebsiteController {
         }
     }
 
+    @GET("/login")
+    public ModelAndView login() {
+        return new ModelAndView("login.hbs");
+    }
+
+    @POST("/loginSave")
+    public ModelAndView login(String username, String password) {
+        Account newAccount = new Account(username, password);
+//        Currently creating account should take in and compare to current accounts
+//        saveAccount(newAccount);
+
+        logger.info("New account created: " + newAccount);
+        // Currently redirects to homepage - must add a confirm message
+        return new ModelAndView("homePage.hbs");
+    }
+
+    @GET("/overview")
+    public ModelAndView overview() {
+        return new ModelAndView("overview.hbs");
+    }
+
     /*
      * This is the simplest action a controller can perform
      * The @GET annotation denotes that this function should be invoked when a GET
@@ -143,39 +159,23 @@ public class WebsiteController {
         }
     }
 
-    /*
-     * The dice endpoint displays two features of the Jooby framework, Parameters
-     * and Templates
-     *
-     * You can see that this function takes in a String name, the
-     * annotation @QueryParam tells the framework that
-     * the value of name should come from the URL Query String
-     * (<host>/example/dice?name=<value>)
-     *
-     * The function then uses this value and others to create a Map of values to be
-     * injected into a template.
-     * The ModelAndView constructor takes a template name and the model.
-     * The Template name is the name of the file containing the template, this name
-     * is relative to the folder src/main/resources/views
-     *
-     * We have set the Jooby framework up to use the Handlebars templating system
-     * which you can read more on here:
-     * https://handlebarsjs.com/guide/
-     */
-    @GET("/dice")
-    public ModelAndView dice(@QueryParam String name) {
-        // If no name has been sent within the query URL
-        if (name == null) {
-            name = "Your";
-        } else {
-            name = name + "'s";
-        }
 
-        // we must create a model to pass to the "dice" template
-        Map<String, Object> model = new HashMap<>();
-        model.put("random", new Random().nextInt(6));
-        model.put("name", name);
-
-        return new ModelAndView("dice.hbs", model);
-    }
+//    @POST
+//    @Path("/loginSave")
+//    protected void doPost(Account account ) {
+//
+//        ArrayList acc = new ArrayList<Account>();
+//        acc.add(account);
+//
+//        try {
+////            dbController.getAccount(username);
+////            dbController.getAccount(password);
+//
+//        }catch (Exception e){
+//            // If something does go wrong this will log the stack trace
+//            logger.error("Database Error Occurred", e);
+//            // And return a HTTP 500 error to the requester
+//            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+//        }
+//    }
 }
