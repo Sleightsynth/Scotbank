@@ -41,4 +41,13 @@ public class IntegrationTest {
             assertEquals(StatusCode.OK.value(), rsp.code());
         }
     }
+
+    @Test
+    public void shouldCallApi(int serverPort) throws IOException {
+        Request req = new Request.Builder().url("http://localhost:" + serverPort + "/api/transactions").build();
+
+        try (Response rsp = client.newCall(req).execute()) {
+            assertEquals(StatusCode.OK.value(), rsp.code());
+        }
+    }
 }

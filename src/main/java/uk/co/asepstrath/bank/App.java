@@ -35,6 +35,7 @@ public class App extends Jooby {
         DataSource ds = require(DataSource.class);
         Logger log = getLog();
         mvc(new WebsiteController(ds,log));
+        mvc(new APIController(ds,log));
 
         /*
          * Finally we register our application lifecycle methods

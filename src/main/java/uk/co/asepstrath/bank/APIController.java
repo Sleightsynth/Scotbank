@@ -23,13 +23,13 @@ public class APIController {
         logger = log;
     }
 
-    @GET("/test")
-    public JSONObject test(){
-        Account test2 = new Account("API Testerson",new BigDecimal(12));
+    @GET("/transactions")
+    public String test(){
+        /*Account test2 = new Account("API Testerson",new BigDecimal(12));
         JSONObject jo = new JSONObject("{ \"abc\" : \"def\" }");
         jo.put("name", "jon doe");
         jo.put("age", "22");
-        jo.put("city", "chicago");
-        return jo;
+        jo.put("city", "chicago");*/
+        return "Hi from API";
     }
 }
