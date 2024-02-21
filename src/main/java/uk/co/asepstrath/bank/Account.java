@@ -12,7 +12,6 @@ public class Account {
   protected Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
   protected BigDecimal balance = BigDecimal.valueOf(0);
   protected String formattedBalance = ""; // yes it is being used in the hbs
-  protected String pass = "";
 
   protected AccountCategory accountCategory;
   protected Boolean foreign;
@@ -49,27 +48,12 @@ public class Account {
     formattedBalance = getFormattedBalance();
   }
 
-  // For account creation
-  public Account(String username, String password) {
-    this.id = UUID.randomUUID();
-    this.name = username;
-    this.pass = password;
-  }
-
   public String getUsername() {
     return name;
   }
 
   public void setUsername(String username) {
     this.name = username;
-  }
-
-  public String getPassword() {
-    return pass;
-  }
-
-  public void setPassword(String password) {
-    this.pass = password;
   }
 
   public void withdraw(double amount) {
@@ -125,4 +109,5 @@ public class Account {
 
     return "Name: " + name + ", Balance: " + formattedBalanceString;
   }
+
 }
