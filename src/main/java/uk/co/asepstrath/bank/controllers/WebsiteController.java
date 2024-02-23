@@ -6,12 +6,16 @@ import io.jooby.StatusCode;
 import io.jooby.annotation.*;
 import io.jooby.exception.StatusCodeException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import uk.co.asepstrath.bank.Account;
+import uk.co.asepstrath.bank.User;
 import uk.co.asepstrath.bank.util.Transaction;
 import uk.co.asepstrath.bank.util.TransactionStatus;
 
@@ -118,15 +122,20 @@ public class WebsiteController {
 
     @POST("/login/save")
     public void login(String username, String password, Context ctx) {
-        Account newAccount = new Account(username, password);
-        // Currently creating account should take in and compare to current accounts
         try {
-            dbController.addAccount(newAccount);
+            String passwordHash = dbController.getSha256Hash(password);
 
-            logger.info("New account created: " + newAccount);
+            User user = new User(username, passwordHash);
+
+            dbController.loginUser(user);
 
             ctx.sendRedirect("/profile");
 
+        } catch(StatusCodeException se){
+            //Username or password is incorrect, should probably redirect to a new view saying their login is incorrect
+            ctx.sendRedirect("/login");
+
+            logger.error("Login Error Occurred", se);
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
             logger.error("Database Error Occurred", e);

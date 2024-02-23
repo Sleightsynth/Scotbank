@@ -6,6 +6,7 @@ import io.jooby.helper.UniRestExtension;
 import io.jooby.hikari.HikariModule;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.UUID;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import uk.co.asepstrath.bank.controllers.WebsiteController;
@@ -68,9 +69,12 @@ public class App extends Jooby {
 
         DBController db = new DBController(ds);
 
+        User testUser = new User(UUID.randomUUID(),"connor.waiter.2022@uni.strath.ac.uk",db.getSha256Hash("123"),"Connor Waiter");
+
         try {
             db.createTables();
             db.addAccounts(accounts);
+            db.addUser(testUser);
         } catch (Exception e) {
             log.error("Database Creation Error", e);
             this.stop();

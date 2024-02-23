@@ -3,9 +3,13 @@ package uk.co.asepstrath.bank.controllers;
 import io.jooby.StatusCode;
 import io.jooby.exception.StatusCodeException;
 import uk.co.asepstrath.bank.Account;
+import uk.co.asepstrath.bank.User;
 import uk.co.asepstrath.bank.util.Transaction;
 
 import javax.sql.DataSource;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +47,7 @@ public class DBController {
                         + "`Id` UUID PRIMARY KEY UNIQUE, "
                         + "`Name` varchar(30),"
                         + "`Email` varchar(50),"
-                        + "`Hash_pass` varchar(32)," // use md5 for hashing
+                        + "`Hash_pass` char(64)," //Using SHA-256 for encryption
                         + "PRIMARY KEY (`Id`)"
                         + ")");
         stmt.executeUpdate(
@@ -170,5 +174,63 @@ public class DBController {
 
         return account;
 
+    }
+
+    /**
+     * Returns the user details
+     * @param user
+     * @throws SQLException
+     */
+    public User loginUser(User user) throws SQLException{
+        Connection connection = dataSource.getConnection();
+        // Create Statement (batch of SQL Commands)
+        Statement statement = connection.createStatement();
+        // Perform SQL Query
+        ResultSet set = statement.executeQuery("SELECT * FROM `Users` WHERE email='%s' and Hash_pass='%s'"
+                .formatted(user.getEmail(),user.getPasswordHash()));
+
+        if (!set.next()) {
+            throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+        }
+
+        String userId = set.getString("Id");
+        //Account account = new Account(set.getString("Name"), set.getBigDecimal("AccountBalance"));
+
+        return user;
+    }
+
+    public void addUser(User user) throws SQLException{
+        Connection connection = dataSource.getConnection();
+        PreparedStatement prepStmt = connection.prepareStatement(
+                String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s')",
+                        user.getId(),user.getName(),user.getEmail(),user.getPasswordHash()));
+        prepStmt.execute();
+    }
+
+    public String getSha256Hash(String password) {
+        try {
+
+            // Static getInstance method is called with hashing MD5
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+            // digest() method is called to calculate message digest
+            // of an input digest() return array of byte
+            byte[] messageDigest = md.digest(password.getBytes());
+
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+
+            // Convert message digest into hex value
+            StringBuilder hashtext = new StringBuilder(no.toString(16));
+            while (hashtext.length() < 32) {
+                hashtext.insert(0, "0");
+            }
+            return hashtext.toString();
+        }
+
+        // For specifying wrong message digest algorithms
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
