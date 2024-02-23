@@ -4,6 +4,7 @@ import io.jooby.StatusCode;
 import io.jooby.exception.StatusCodeException;
 import uk.co.asepstrath.bank.Account;
 import uk.co.asepstrath.bank.User;
+import uk.co.asepstrath.bank.util.AccountCategory;
 import uk.co.asepstrath.bank.util.Transaction;
 
 import javax.sql.DataSource;
@@ -13,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class communicates directly with the database, providing methods to access the data in the various tables
@@ -127,9 +129,10 @@ public class DBController {
     public void addAccount(Account acc) throws SQLException{
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Accounts " + "VALUES (?, NULL, '%s', '%f')", acc.getName(),
+                String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s', '%f')", acc.getName(),
                         acc.getBalance().floatValue()));
         prepStmt.setObject(1, acc.getUUID());
+        prepStmt.setObject(2, acc.getUser_id());
         prepStmt.execute();
     }
 
@@ -173,7 +176,23 @@ public class DBController {
         Account account = new Account(set.getString("Name"), set.getBigDecimal("AccountBalance"));
 
         return account;
+    }
 
+    public Account returnAccount(UUID userID) throws SQLException{
+        Connection connection = dataSource.getConnection();
+        // Create Statement (batch of SQL Commands)
+        Statement statement = connection.createStatement();
+        // Perform SQL Query
+        ResultSet set =
+                statement.executeQuery("SELECT * FROM `Accounts` WHERE User_id='%s'".formatted(userID.toString()));
+
+        if (!set.next()) {
+            throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+        }
+
+        Account account = new Account(set.getString("Name"), userID, set.getBigDecimal("AccountBalance"),Boolean.FALSE, AccountCategory.Payment);
+
+        return account;
     }
 
     /**
@@ -181,7 +200,7 @@ public class DBController {
      * @param user
      * @throws SQLException
      */
-    public User loginUser(User user) throws SQLException{
+    public UUID loginUser(User user) throws SQLException{
         Connection connection = dataSource.getConnection();
         // Create Statement (batch of SQL Commands)
         Statement statement = connection.createStatement();
@@ -196,7 +215,7 @@ public class DBController {
         String userId = set.getString("Id");
         //Account account = new Account(set.getString("Name"), set.getBigDecimal("AccountBalance"));
 
-        return user;
+        return UUID.fromString(userId);
     }
 
     public void addUser(User user) throws SQLException{

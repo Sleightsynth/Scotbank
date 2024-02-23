@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import uk.co.asepstrath.bank.controllers.WebsiteController;
 import uk.co.asepstrath.bank.controllers.DBController;
+import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class App extends Jooby {
     {
@@ -64,17 +65,21 @@ public class App extends Jooby {
         accounts.add(new Account("Chandler", BigDecimal.valueOf(3.00)));
         accounts.add(new Account("Ross", BigDecimal.valueOf(54.32)));
 
+        UUID connorUUID = UUID.randomUUID();
+
+        accounts.add(new Account("Connor test", connorUUID, BigDecimal.valueOf(100.01),Boolean.FALSE, AccountCategory.Payment));
+
         // Fetch DB Source
         DataSource ds = require(DataSource.class);
 
         DBController db = new DBController(ds);
 
-        User testUser = new User(UUID.randomUUID(),"connor.waiter.2022@uni.strath.ac.uk",db.getSha256Hash("123"),"Connor Waiter");
+        User testUser = new User(connorUUID,"connor.waiter.2022@uni.strath.ac.uk",db.getSha256Hash("123"),"Connor Waiter");
 
         try {
             db.createTables();
-            db.addAccounts(accounts);
             db.addUser(testUser);
+            db.addAccounts(accounts);
         } catch (Exception e) {
             log.error("Database Creation Error", e);
             this.stop();

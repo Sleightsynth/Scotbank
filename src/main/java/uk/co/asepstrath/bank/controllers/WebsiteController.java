@@ -2,6 +2,7 @@ package uk.co.asepstrath.bank.controllers;
 
 import io.jooby.Context;
 import io.jooby.ModelAndView;
+import io.jooby.Session;
 import io.jooby.StatusCode;
 import io.jooby.annotation.*;
 import io.jooby.exception.StatusCodeException;
@@ -127,15 +128,17 @@ public class WebsiteController {
 
             User user = new User(username, passwordHash);
 
-            dbController.loginUser(user);
-
+            UUID userId = dbController.loginUser(user);
+            Session session = ctx.session();
+            session.put("User_Id",userId.toString());
             ctx.sendRedirect("/profile");
 
         } catch(StatusCodeException se){
             //Username or password is incorrect, should probably redirect to a new view saying their login is incorrect
-            ctx.sendRedirect("/login");
 
             logger.error("Login Error Occurred", se);
+
+            ctx.sendRedirect("/login");
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
             logger.error("Database Error Occurred", e);
@@ -150,13 +153,44 @@ public class WebsiteController {
     }
 
     @GET("/login")
-    public ModelAndView loginpage() {
-        return new ModelAndView("login.hbs");
+    public ModelAndView loginpage(Context ctx) {
+        Session session = ctx.session();
+        try {
+            UUID uuid = UUID.fromString(String.valueOf(session.get("User_Id")));
+        } catch (IllegalArgumentException e){
+            //User not logged in
+            return new ModelAndView("login.hbs");
+        }
+
+        //User logged in
+        ctx.sendRedirect("/profile");
+
+        //Was complaining about no return statement so had to return a status code
+        throw new StatusCodeException(StatusCode.FOUND);
     }
 
     @GET("/profile")
-    public ModelAndView profilepage() {
-        return new ModelAndView("profile.hbs");
+    public ModelAndView profilepage(Context ctx) {
+        Session session = ctx.session();
+
+        try {
+            UUID uuid = UUID.fromString(String.valueOf(session.get("User_Id")));
+
+            Account account = dbController.returnAccount(uuid);
+
+            return new ModelAndView("profile.hbs").put("account",account);
+        } catch (IllegalArgumentException e){
+            //User not logged in
+            ctx.sendRedirect("/login");
+
+            //Was complaining about no return statement so had to return a status code
+            throw new StatusCodeException(StatusCode.FOUND);
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
     @GET("/transactionForm")

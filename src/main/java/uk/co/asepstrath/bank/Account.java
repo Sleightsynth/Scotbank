@@ -8,6 +8,7 @@ import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class Account {
   protected UUID id = null;
+  protected UUID user_id=null;
   protected String name = "";
   protected Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
   protected BigDecimal balance = BigDecimal.valueOf(0);
@@ -31,6 +32,17 @@ public class Account {
 
   public Account(String name, BigDecimal balance, Boolean foreign, AccountCategory accountType) {
     this.id = UUID.randomUUID();
+    this.name = name;
+    this.balance = balance;
+    this.accountCategory = accountType;
+    this.foreign = foreign;
+
+    updateFormattedBalance();
+  }
+
+  public Account(String name, UUID user_id, BigDecimal balance, Boolean foreign, AccountCategory accountType) {
+    this.id = UUID.randomUUID();
+    this.user_id = user_id;
     this.name = name;
     this.balance = balance;
     this.accountCategory = accountType;
@@ -100,6 +112,10 @@ public class Account {
   // Note: This will not display on HTML if the char set is not Unicode.
   public String getFormattedBalance() {
     return NumberFormat.getCurrencyInstance(locale).format(balance);
+  }
+
+  public UUID getUser_id() {
+    return user_id;
   }
 
   @Override
