@@ -149,6 +149,15 @@ public class WebsiteController {
         }
     }
 
+    @POST("/logout")
+    public void logout(Context ctx){
+        Session session = ctx.session();
+
+        session.destroy();
+
+        ctx.sendRedirect("/");
+    }
+
     @GET("/register")
     public ModelAndView registerpage() {
         return new ModelAndView("register.hbs");
@@ -231,11 +240,11 @@ public class WebsiteController {
     private static UUID getUUIDOrNull(Context ctx){
         Session session = ctx.session();
         Instant sessionCreated = session.getCreationTime();
-        long sessionLifeSpan = Duration.between(sessionCreated, Instant.now()).toMinutes();
+        long sessionLifeSpan = Duration.between(sessionCreated, Instant.now()).toSeconds();
 
         //Expire the session if it is older than 10 minutes
-        if (sessionLifeSpan > 10){
-            session.clear();
+        if (sessionLifeSpan > 600){
+            session.destroy();
         }
 
         try {

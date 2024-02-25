@@ -10,50 +10,55 @@
 
     <div class="w3-row-padding w3-padding-64 w3-container">
         <h1>View your profile below.</h1>
+    </div>
 
-        <div class="sub-section">
-            <h3>Full Name</h3>
-            <div class="row">
-                <div class="small-column">
-                    {{account.name}}
-                </div>
-            </div>
-
-            <h3>Email</h3>
-            <div class="row">
-                <div class="small-column">
-                    pgriff@griff.com
-                </div>
-            </div>
-
-            <h3>Phone Number</h3>
-            <div class="row">
-                <div class="small-column">
-                    01234567890
-                </div>
-            </div>
-
-            <h3>Address</h3>
-            <div class="row">
-                <div class="small-column">
-                    31 Spooner Street
-                </div>
+    <div class="sub-section">
+        <div class="w3-button w3-container">
+            <form action="/logout" method="post">
+                <button name="lo    gout" value="logout">Logout</button>
+            </form>
+        </div>
+        <h3>Full Name</h3>
+        <div class="row">
+            <div class="small-column">
+                {{account.name}}
             </div>
         </div>
 
-        <div class="sub-section">
-            <h3>Sort-Code</h3>
-            <div class="row">
-                <div class="small-column">
-                    12-34-56
-                </div>
+        <h3>Email</h3>
+        <div class="row">
+            <div class="small-column">
+                pgriff@griff.com
             </div>
+        </div>
 
-            <h3>Account Number</h3>
-            <div class="row">
-                <div class="small-column">
-                    123456789
-                </div>
+        <h3>Phone Number</h3>
+        <div class="row">
+            <div class="small-column">
+                01234567890
+            </div>
+        </div>
+
+        <h3>Address</h3>
+        <div class="row">
+            <div class="small-column">
+                31 Spooner Street
+            </div>
+        </div>
+    </div>
+
+    <div class="sub-section">
+        <h3>Sort-Code</h3>
+        <div class="row">
+            <div class="small-column">
+                12-34-56
+            </div>
+        </div>
+
+        <h3>Account Number</h3>
+        <div class="row">
+            <div class="small-column">
+                123456789
             </div>
         </div>
     </div>
