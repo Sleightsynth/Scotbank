@@ -6,6 +6,7 @@ import io.jooby.Session;
 import io.jooby.StatusCode;
 import io.jooby.annotation.*;
 import io.jooby.exception.StatusCodeException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -118,11 +119,6 @@ public class WebsiteController {
         }
     }
 
-    @GET("/login")
-    public ModelAndView login() {
-        return new ModelAndView("login.hbs");
-    }
-
     @POST("/login/save")
     public void login(String username, String password, Context ctx) {
         try {
@@ -156,7 +152,6 @@ public class WebsiteController {
         session.destroy();
 
         ctx.sendRedirect("/");
-    }
 
     @GET("/register")
     public ModelAndView registerpage() {
