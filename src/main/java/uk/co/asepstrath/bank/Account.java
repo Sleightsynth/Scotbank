@@ -9,6 +9,7 @@ import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class Account {
     protected UUID id = null;
+    protected UUID user_id=null;
     protected String name = "";
     protected String accountNumber = "";
     protected String sortCode = "";
@@ -18,8 +19,6 @@ public class Account {
     protected String pass = "";
     protected AccountCategory accountCategory;
     protected Boolean foreign;
-
-    // What happens when we pull a UUID from somewhere?
 
     public Account(String name, BigDecimal balance) {
         this(name, balance, Boolean.FALSE, AccountCategory.Payment);
@@ -49,6 +48,14 @@ public class Account {
         this.name = name;
         this.accountNumber = "%08d".formatted(rand.nextInt(100000000));
         this.sortCode = "%02d-%02d-%02d".formatted(rand.nextInt(100), rand.nextInt(100), rand.nextInt(100));
+        this.balance = balance;
+        this.accountCategory = accountType;
+        this.foreign = foreign;
+
+    public Account(String name, UUID user_id, BigDecimal balance, Boolean foreign, AccountCategory accountType) {
+        this.id = UUID.randomUUID();
+        this.user_id = user_id;
+        this.name = name;
         this.balance = balance;
         this.accountCategory = accountType;
         this.foreign = foreign;
@@ -127,6 +134,10 @@ public class Account {
 
     public UUID getUUID() {
         return id;
+    }
+
+    public UUID getUser_id() {
+        return user_id;
     }
 
     // Note: This will not display on HTML if the char set is not Unicode.

@@ -1,18 +1,25 @@
 package uk.co.asepstrath.bank.controllers;
 
+import io.jooby.Context;
 import io.jooby.ModelAndView;
+import io.jooby.Session;
 import io.jooby.StatusCode;
 import io.jooby.annotation.*;
 import io.jooby.exception.StatusCodeException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import uk.co.asepstrath.bank.Account;
+import uk.co.asepstrath.bank.User;
 import uk.co.asepstrath.bank.util.Transaction;
 import uk.co.asepstrath.bank.util.TransactionStatus;
 
@@ -112,21 +119,39 @@ public class WebsiteController {
         }
     }
 
-    @GET("/login")
-    public ModelAndView login() {
-        return new ModelAndView("login.hbs");
+    @POST("/login/save")
+    public void login(String username, String password, Context ctx) {
+        try {
+            String passwordHash = dbController.getSha256Hash(password);
+
+            User user = new User(username, passwordHash);
+
+            UUID userId = dbController.loginUser(user);
+            Session session = ctx.session();
+            session.put("User_Id",userId.toString());
+            ctx.sendRedirect("/profile");
+
+        } catch(StatusCodeException se){
+            //Username or password is incorrect, should probably redirect to a new view saying their login is incorrect
+
+            logger.error("Login Error Occurred", se);
+
+            ctx.sendRedirect("/login");
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
-    @POST("/loginSave")
-    public ModelAndView login(String username, String password) {
-        Account newAccount = new Account(username, password);
-        // Currently creating account should take in and compare to current accounts
-        // saveAccount(newAccount);
+    @POST("/logout")
+    public void logout(Context ctx){
+        Session session = ctx.session();
 
-        logger.info("New account created: " + newAccount);
-        // Currently redirects to homepage - must add a confirm message
-        return new ModelAndView("homePage.hbs");
-    }
+        session.destroy();
+
+        ctx.sendRedirect("/");
 
     @GET("/register")
     public ModelAndView registerpage() {
@@ -134,13 +159,42 @@ public class WebsiteController {
     }
 
     @GET("/login")
-    public ModelAndView loginpage() {
-        return new ModelAndView("login.hbs");
+    public ModelAndView loginpage(Context ctx) {
+
+        UUID uuid = getUUIDOrNull(ctx);
+
+        if (uuid == null){
+            return new ModelAndView("login.hbs");
+        }
+
+        //User logged in
+        ctx.sendRedirect("/profile");
+
+        //Was complaining about no return statement so had to return a status code
+        throw new StatusCodeException(StatusCode.FOUND);
     }
 
     @GET("/profile")
-    public ModelAndView profilepage() {
-        return new ModelAndView("profile.hbs");
+    public ModelAndView profilepage(Context ctx) {
+
+        UUID uuid = getUUIDOrNull(ctx);
+
+        if (uuid == null){
+            ctx.sendRedirect("/login");
+
+            throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
+        }
+
+        try{
+            Account account = dbController.returnAccount(uuid);
+
+            return new ModelAndView("profile.hbs").put("account",account);
+        }catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
     @GET("/transactionForm")
@@ -158,6 +212,7 @@ public class WebsiteController {
     public String getSingleAccount(@PathParam("name") String name) {
         try {
             Account account = dbController.returnAccount(name);
+
             return account.toString();
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
@@ -170,5 +225,27 @@ public class WebsiteController {
     @GET("/overview")
     public ModelAndView overview() {
         return new ModelAndView("overview.hbs");
+    }
+
+    /**
+     * Returns the user's id if logged in or null if not
+     * @param ctx the session context
+     * @return User's UUID or null
+     */
+    private static UUID getUUIDOrNull(Context ctx){
+        Session session = ctx.session();
+        Instant sessionCreated = session.getCreationTime();
+        long sessionLifeSpan = Duration.between(sessionCreated, Instant.now()).toSeconds();
+
+        //Expire the session if it is older than 10 minutes
+        if (sessionLifeSpan > 600){
+            session.destroy();
+        }
+
+        try {
+            return UUID.fromString(String.valueOf(session.get("User_Id")));
+        } catch (IllegalArgumentException e){ //If the user is not logged in
+            return null;
+        }
     }
 }
