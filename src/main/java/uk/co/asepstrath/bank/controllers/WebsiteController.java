@@ -12,6 +12,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
@@ -154,11 +156,10 @@ public class WebsiteController {
 
     @GET("/login")
     public ModelAndView loginpage(Context ctx) {
-        Session session = ctx.session();
-        try {
-            UUID uuid = UUID.fromString(String.valueOf(session.get("User_Id")));
-        } catch (IllegalArgumentException e){
-            //User not logged in
+
+        UUID uuid = getUUIDOrNull(ctx);
+
+        if (uuid == null){
             return new ModelAndView("login.hbs");
         }
 
@@ -171,21 +172,20 @@ public class WebsiteController {
 
     @GET("/profile")
     public ModelAndView profilepage(Context ctx) {
-        Session session = ctx.session();
 
-        try {
-            UUID uuid = UUID.fromString(String.valueOf(session.get("User_Id")));
+        UUID uuid = getUUIDOrNull(ctx);
 
+        if (uuid == null){
+            ctx.sendRedirect("/login");
+
+            throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
+        }
+
+        try{
             Account account = dbController.returnAccount(uuid);
 
             return new ModelAndView("profile.hbs").put("account",account);
-        } catch (IllegalArgumentException e){
-            //User not logged in
-            ctx.sendRedirect("/login");
-
-            //Was complaining about no return statement so had to return a status code
-            throw new StatusCodeException(StatusCode.FOUND);
-        } catch (SQLException e) {
+        }catch (SQLException e) {
             // If something does go wrong this will log the stack trace
             logger.error("Database Error Occurred", e);
             // And return a HTTP 500 error to the requester
@@ -221,5 +221,27 @@ public class WebsiteController {
     @GET("/overview")
     public ModelAndView overview() {
         return new ModelAndView("overview.hbs");
+    }
+
+    /**
+     * Returns the user's id if logged in or null if not
+     * @param ctx the session context
+     * @return User's UUID or null
+     */
+    private static UUID getUUIDOrNull(Context ctx){
+        Session session = ctx.session();
+        Instant sessionCreated = session.getCreationTime();
+        long sessionLifeSpan = Duration.between(sessionCreated, Instant.now()).toMinutes();
+
+        //Expire the session if it is older than 10 minutes
+        if (sessionLifeSpan > 10){
+            session.clear();
+        }
+
+        try {
+            return UUID.fromString(String.valueOf(session.get("User_Id")));
+        } catch (IllegalArgumentException e){ //If the user is not logged in
+            return null;
+        }
     }
 }
