@@ -67,7 +67,7 @@ public class App extends Jooby {
 
         UUID connorUUID = UUID.randomUUID();
 
-        accounts.add(new Account("Connor test", connorUUID, BigDecimal.valueOf(100.01),Boolean.FALSE, AccountCategory.Payment));
+        accounts.add(new Account("Connor test", connorUUID, "12345678","12-34-56",BigDecimal.valueOf(100.01),Boolean.FALSE, AccountCategory.Payment));
 
         // Fetch DB Source
         DataSource ds = require(DataSource.class);

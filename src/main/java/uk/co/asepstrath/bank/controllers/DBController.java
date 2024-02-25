@@ -131,7 +131,7 @@ public class DBController {
     public void addAccount(Account acc) throws SQLException{
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Accounts " + "VALUES (?, ?, NULL, '%s', '%s' ,'%s', '%f')",
+                String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s', '%s' ,'%s', '%f')",
                         acc.getAccountNumber(),acc.getSortCode(), acc.getName(), acc.getBalance().floatValue()));
         prepStmt.setObject(1, acc.getUUID());
         prepStmt.setObject(2, acc.getUser_id());
@@ -208,7 +208,7 @@ public class DBController {
             throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
         }
 
-        Account account = new Account(set.getString("Name"), userID, set.getBigDecimal("AccountBalance"),Boolean.FALSE, AccountCategory.Payment);
+        Account account = new Account(set.getString("Name"), userID, set.getString("AccountNumber"), set.getString("SortCode"), set.getBigDecimal("AccountBalance"),Boolean.FALSE, AccountCategory.Payment);
 
         return account;
     }

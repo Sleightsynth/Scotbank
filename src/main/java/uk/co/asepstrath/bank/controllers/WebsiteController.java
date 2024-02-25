@@ -146,12 +146,13 @@ public class WebsiteController {
     }
 
     @POST("/logout")
-    public void logout(Context ctx){
+    public void logout(Context ctx) {
         Session session = ctx.session();
 
         session.destroy();
 
         ctx.sendRedirect("/");
+    }
 
     @GET("/register")
     public ModelAndView registerpage() {

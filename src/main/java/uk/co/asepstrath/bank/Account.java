@@ -51,11 +51,14 @@ public class Account {
         this.balance = balance;
         this.accountCategory = accountType;
         this.foreign = foreign;
+    }
 
-    public Account(String name, UUID user_id, BigDecimal balance, Boolean foreign, AccountCategory accountType) {
+    public Account(String name, UUID user_id, String accountNumber, String sortCode, BigDecimal balance, Boolean foreign, AccountCategory accountType) {
         this.id = UUID.randomUUID();
         this.user_id = user_id;
         this.name = name;
+        this.accountNumber = accountNumber;
+        this.sortCode = sortCode;
         this.balance = balance;
         this.accountCategory = accountType;
         this.foreign = foreign;
