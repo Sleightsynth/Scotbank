@@ -4,87 +4,69 @@
     <title>Scotbank - Home</title>
     {{> style.hbs}}
 </head>
+
+<script>
+    function onClick(element) {
+        document.getElementById("img01").src = element.src;
+        document.getElementById("modal01").style.display = "block";
+    }
+</script>
+
 <body>
 
 {{> navbar.hbs}}
 
-<!-- Header -->
-<header class="w3-container w3-light-blue w3-center" style="padding:128px 16px">
-    <h1 class="w3-margin w3-jumbo">SCOTBANK</h1>
-</header>
-
-<!-- First Grid -->
-<div class="w3-row-padding w3-padding-64 w3-container">
-    <div class="w3-content">
-        <div class="w3-twothird">
-            <h1>Welcome to ScotBank, where trust meets tradition</h1>
-            <h5 class="w3-padding-32">
-                Our services include:
-                <ul>
-                    <ul>Creating secure bank accounts</ul>
-                    <ul>View account details</ul>
-                    <ul>View all transactions</ul>
-                    <ul>Get details about individual transactions</ul>
-                    <ul>View spending summary</ul>
-                    <ul>Deposit cheques</ul>
-                    <ul>And many more features</ul>
-                </ul>
-            </h5>
-
-            <h5 class="w3-padding-32">
-                We guarantee you will be satisfied with our services. You can always contact our 24/7 support team if you ever experience any issues.
-            </h5>
-        </div>
+<div class="banner">
+    <div class="banner-content">
+        <h1>ScotBank</h1>
+        <h3>Where trust meets tradition.</h3>
     </div>
 </div>
 
-<!-- Second Grid -->
-<div class="w3-row-padding w3-light-grey w3-padding-64 w3-container">
-    <div class="w3-content">
-        <div class="w3-third w3-center">
-            <i class="fa fa-coffee w3-padding-64 w3-text-light-blue w3-margin-right"></i>
+<div class="full-section">
+    <h2>Why join us?</h2>
+    <p>ScotBank is currently Scotlands number one... blah blah</p>
+
+    <h2>Our services include</h2>
+    <ul>
+        <li>Creating secure bank accounts</li>
+        <li>View account details</li>
+        <li>View all transactions</li>
+        <li>Get details about individual transactions</li>
+        <li>View spending summary</li>
+        <li>Deposit cheques</li>
+        <li>And many more features</li>
+    </ul>
+</div>
+
+<div class="sub-section">
+    <h2>Our Team</h2>
+    <p>Our team are committed to providing the highest quality service as possible. </p>
+
+    <div class="w3-row-padding">
+        <div class="w3-container w3-third">
+            <img src="/assets/employee1.png" style="width:100%;cursor:pointer"
+                 onclick="onClick(this)" class="w3-hover-opacity">
         </div>
-
-        <div class="w3-twothird">
-            <h1>Get RickRolled lol</h1>
-            <h5 class="w3-padding-32">
-                Ooh (Give you up)
-                Ooh-ooh (Give you up)
-                Ooh-ooh
-                Never gonna give, never gonna give (Give you up)
-                Ooh-ooh
-                Never gonna give, never gonna give (Give you up)
-
-                We've known each other for so long
-                Your heart's been aching, but you're too shy to say it (To say it)
-                Inside, we both know what's been going on (Going on)
-                We know the game, and we're gonna play it
-
-                I just wanna tell you how I'm feeling
-                Gotta make you understand
-            </h5>
-
-            <p class="w3-text-grey">Never gonna give you up
-                Never gonna let you down
-                Never gonna run around and desert you
-                Never gonna make you cry
-                Never gonna say goodbye
-                Never gonna tell a lie and hurt you
-                Never gonna give you up
-                Never gonna let you down
-                Never gonna run around and desert you
-                Never gonna make you cry
-                Never gonna say goodbye
-                Never gonna tell a lie and hurt you
-                Never gonna give you up
-                Never gonna let you down
-                Never gonna run around and desert you
-                Never gonna make you cry
-                Never gonna say goodbye
-                Never gonna tell a lie and hurt you
-            </p>
+        <div class="w3-container w3-third">
+            <img src="/assets/employee2.png" style="width:100%;cursor:pointer"
+                 onclick="onClick(this)" class="w3-hover-opacity">
+        </div>
+        <div class="w3-container w3-third">
+            <img src="/assets/employee3.png" style="width:100%;cursor:pointer"
+                 onclick="onClick(this)" class="w3-hover-opacity">
         </div>
     </div>
+
+    <div id="modal01" class="w3-modal" onclick="this.style.display='none'">
+        <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span>
+        <div class="w3-modal-content w3-animate-zoom">
+            <img id="img01" style="width:100%">
+        </div>
+    </div>
+
+    <h2>Our promise</h2>
+    <p>We guarantee you will be satisfied with all of our services. If you ever experience any issues, have feedback or complaints, you can always contact our 24/7 support team, and we will do everything possible to resolve your issue.</p>
 </div>
 
 {{> footer.hbs}}

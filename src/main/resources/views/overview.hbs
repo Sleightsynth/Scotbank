@@ -6,7 +6,7 @@
 </head>
 <body>
 {{> navbar.hbs}}
-<div class="w3-row-padding w3-padding-64 w3-container">
+<div>
     <div class="full-section">
         <h2>ScotBank</h2>
         <h3>Welcome [name],</h3>
@@ -23,11 +23,12 @@
 
     <!--    Pay someone / Deposit cheque / Request Payment buttons-->
     <div class="buttons">
-        <button class="button">Pay someone</button>
-        <button class="button">Deposit cheque</button>
-        <button class="button">Request Payment</button>
+        <button class="button"><a href="transactionForm">Pay someone</a></button>
+        <button class="button"><a href="#">Deposit cheque</a></button>
+        <button class="button"><a href="#">Request Payment</a></button>
     </div>
 </div>
+
 <!--    Transactions and sorting - Clickable will provide more details-->
 <div class="sub-section">
     <h3>Transactions</h3>

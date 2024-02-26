@@ -137,6 +137,16 @@ public class WebsiteController {
     return new ModelAndView("homePage.hbs");
   }
 
+  @POST("/contactMessage")
+  public ModelAndView contact(String email, String subject, String message) {
+//    Account newAccount = new Account(username, password);
+    // Currently creating account should take in and compare to current accounts
+
+    logger.info("Message sent to: " + email);
+    // Must add a confirm message
+    return new ModelAndView("homePage.hbs");
+  }
+
   @GET("/register")
   public ModelAndView registerpage() {
     return new ModelAndView("register.hbs");

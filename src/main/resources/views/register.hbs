@@ -1,50 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Scotbank - Create Account</title>
+    <title>Scotbank - Register</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {{> style.hbs}}
 </head>
 <body>
-
 {{> navbar.hbs}}
-<div class="w3-row-padding w3-padding-64 w3-container">
-    <h1>Fill out the register form below to create your account.</h1>
-    <form action="register.php" method = "POST">
+<div class="container">
+    <form action="/registerSave" method="post">
+        <h2>Create an account</h2>
+        <input id="username" name="username" placeholder="Enter Username" required="" maxlength="20" tabindex="1" type="text">
 
-        <label>Enter first name:</label><br>
-        <input id="firstName" name="firstName" placeholder="Enter First Name Here" required="" maxlength="20" tabindex="1" type="text"><br><br>
+        <input id="name" name="name" placeholder="Enter Full Legal Name" required="" maxlength="30" tabindex="2" type="text">
 
-        <label>Enter last name:</label><br>
-        <input id="lastName" name="lastName" placeholder="Enter Last Name Here" required="" maxlength="20" tabindex="1" type="text"><br><br>
+        <input id="password" name="password" placeholder="Enter Password" required="" tabindex="3" type="password">
 
-        <label for="email">Enter an email:</label><br>
-        <input id="email" name="email" placeholder="Enter Email Here" required="" maxlength="50" type="email"><br><br>
+        <input id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required="" tabindex="4" type="password">
 
-        <label>Create a password:</label><br>
-        <input type="password" id="password" name="pass" required="" type="text"><br><br>
+        <label>Date of Birth:</label>
 
-        <label>Confirm your password:</label><br>
-        <input type="password" id="password" name="confirmPass" required="" type="text"><br><br>
+        <input id="dob" name="dob" required="" tabindex="5" type="date"><br>
 
-        <label>Enter birthday:</label><br>
-        <input type="date" id="dob" name="dob"><br><br>
+        <input name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
 
-        <label>Choose your memorable question:</label><br>
-        <select id="memorable" name="memorable" required >
-            <option value="1">What is your mother maiden name?</option>
-            <option value="2">What is the name of your first pet?</option>
-            <option value="3">What is the name of your imaginary friend?</option>
-            <option value="4">What city did your parents meet?</option>
-            <option value="5">Who was your childhood best friend?</option>
-        </select>
-
-        <input name="submit" id="submit" tabindex="5" value="register" type="submit"><br><br>
-
-        <a href="login.hbs">Already have an account?</a><br><br>
+        <a href="login">Already have an account?</a>
     </form>
 </div>
+
 {{> footer.hbs}}
 </body>
 </html>

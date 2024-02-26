@@ -18,12 +18,25 @@
         padding:0;
     }
     .full-section {
-        margin: 0 10em 0 10em;
+        margin: 3em 10em 3em 10em;
     }
 
-    /*.full-section h2 {*/
-    /*    padding: 3em;*/
-    /*}*/
+    .banner {
+        background-image: url("assets/wallpaper.png");
+        background-color: #000;
+        height: 40vh;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .banner-content {
+        color: #fff;
+        z-index: 2;
+    }
 
     .side-by-side {
         display: flex;
@@ -47,10 +60,12 @@
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         margin: 0 auto;
     }
+
     .balance {
         font-size: 24px;
         margin-bottom: 10px;
     }
+
     .number {
         font-size: 18px;
         padding: 0 2em 1em 0;
@@ -88,7 +103,7 @@
         text-align: right;
     }
 
-    .container {
+    .container, .banner {
         display: flex;
 
         /*display: flex;*/
@@ -127,7 +142,14 @@
 
     /*Form Formatting*/
 
-    input[type=text], input[type=password], select {
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+    }
+
+    input[type=text], input[type=password], input[type=date] {
         width: 100%;
         padding: 12px 0;
         margin: 8px 0;
@@ -137,7 +159,7 @@
         box-sizing: border-box;
     }
 
-    input[type=text]:focus, input[type=password]:focus,
+    input[type=text]:focus, input[type=password]:focus, input[type=date]:focus,
     input[type=text]:not(:placeholder-shown), input[type=password]:not(:placeholder-shown) {
         border-bottom: 1px solid #708090;
     }
@@ -147,11 +169,15 @@
         background-color: #fff;
         text-transform: uppercase;
         padding: 8px 10px;
-        margin: 12px 0;
+        margin: 20px 0;
         color: #4CAF50;
         border: 2px solid #4CAF50;
         border-radius: 10em;
         cursor: pointer;
+    }
+    label {
+        color: #A9A9A9;
+        text-align: left;
     }
 
     input[type=submit]:hover {
@@ -164,6 +190,14 @@
         width: 100%;
         max-width: 40vw;
         text-align: center;
+    }
+
+    /* Home page */
+    .banner h1, h2 {
+        padding: 1em 0 0 0;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-family: "Montserrat", sans-serif;
     }
 
 </style>
