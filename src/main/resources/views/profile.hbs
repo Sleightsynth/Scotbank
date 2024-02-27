@@ -13,11 +13,6 @@
     </div>
 
     <div class="sub-section">
-        <div class="w3-button w3-container">
-            <form action="/logout" method="post">
-                <button name="lo    gout" value="logout">Logout</button>
-            </form>
-        </div>
         <h3>Full Name</h3>
         <div class="row">
             <div class="small-column">
@@ -61,7 +56,12 @@
                 {{account.accountNumber}}
             </div>
         </div>
+
+        <div class="buttons">
+            <a href="/logout" style="border: #FC5130; color: #FC5130">Logout</a>
+        </div>
     </div>
+
     {{> footer.hbs}}
 </body>
 </html>

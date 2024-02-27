@@ -96,8 +96,24 @@ public class WebsiteController {
     }
 
     @GET("/")
-    public ModelAndView homepage() {
-        return new ModelAndView("homePage.hbs");
+    public ModelAndView homepage(Context ctx) {
+        UUID uuid = getUUIDOrNull(ctx);
+
+        if (uuid == null){
+            User user = new User(uuid,"","","Login");
+            return new ModelAndView("homePage.hbs").put("user",user);
+        }
+
+        try{
+            User user = dbController.returnUser(uuid);
+
+            return new ModelAndView("homePage.hbs").put("user",user);
+        }catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
     @GET("/accounts")
@@ -145,7 +161,7 @@ public class WebsiteController {
         }
     }
 
-    @POST("/logout")
+    @GET("/logout")
     public void logout(Context ctx) {
         Session session = ctx.session();
 
