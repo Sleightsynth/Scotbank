@@ -244,6 +244,23 @@ public class DBController {
         prepStmt.execute();
     }
 
+    public User returnUser(UUID userID) throws SQLException{
+        Connection connection = dataSource.getConnection();
+        // Create Statement (batch of SQL Commands)
+        Statement statement = connection.createStatement();
+        // Perform SQL Query
+        ResultSet set =
+                statement.executeQuery("SELECT * FROM `Users` WHERE Id='%s'".formatted(userID.toString()));
+
+        if (!set.next()) {
+            throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+        }
+
+        User user = new User(userID,set.getString("Email"),set.getString("Hash_Pass"),set.getString("Name"));
+
+        return user;
+    }
+
     public String getSha256Hash(String password) {
         try {
 

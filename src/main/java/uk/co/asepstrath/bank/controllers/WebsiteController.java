@@ -187,9 +187,15 @@ public class WebsiteController {
         }
 
         try{
+            User user = dbController.returnUser(uuid);
+
             Account account = dbController.returnAccount(uuid);
 
-            return new ModelAndView("profile.hbs").put("account",account);
+            ModelAndView modelAndView = new ModelAndView("profile.hbs").put("user",user);
+
+            modelAndView.put("account",account);
+
+            return modelAndView;
         }catch (SQLException e) {
             // If something does go wrong this will log the stack trace
             logger.error("Database Error Occurred", e);
@@ -224,8 +230,32 @@ public class WebsiteController {
     }
 
     @GET("/overview")
-    public ModelAndView overview() {
-        return new ModelAndView("overview.hbs");
+    public ModelAndView overview(Context ctx) {
+
+        UUID uuid = getUUIDOrNull(ctx);
+
+        if (uuid == null){
+            ctx.sendRedirect("/login");
+
+            throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
+        }
+
+        try{
+            User user = dbController.returnUser(uuid);
+
+            Account account = dbController.returnAccount(uuid);
+
+            ModelAndView modelAndView = new ModelAndView("overview.hbs").put("user",user);
+
+            modelAndView.put("account",account);
+
+            return modelAndView;
+        }catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
     /**

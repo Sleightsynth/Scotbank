@@ -8,15 +8,15 @@
 {{> navbar.hbs}}
 <div class="w3-row-padding w3-padding-64 w3-container">
     <div class="fullSection">
-        <h2>Welcome [name],</h2>
+        <h2>Welcome {{user.name}},</h2>
     </div>
 
     <!--    Balance Section-->
     <div class="card">
-        <div class="balance">£20,000</div>
+        <div class="balance">{{account.getFormattedBalance}}</div>
         <div class="side-by-side">
-            <div class="number">80-30-13</div>
-            <div class="number">38139933</div>
+            <div class="number">{{account.sortCode}}</div>
+            <div class="number">{{account.accountNumber}}</div>
         </div>
     </div>
 
