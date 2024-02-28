@@ -57,11 +57,9 @@ public class DBController {
             + "`Id` UUID PRIMARY KEY UNIQUE, "
             + "`Name` varchar(30),"
             + "`Email` varchar(50),"
-
             + "`Hash_pass` char(128)," // Using SHA-512 for encryption
             + "`phoneNo` varchar(12),"
             + "`address` varchar(50),"
-
             + "PRIMARY KEY (`Id`)"
             + ")");
     stmt.executeUpdate(
@@ -183,15 +181,20 @@ public class DBController {
     // Create Statement (batch of SQL Commands)
     Statement statement = connection.createStatement();
     // Perform SQL Query
-    ResultSet set = statement.executeQuery("SELECT * FROM `Accounts` WHERE name='%s'".formatted(name));
-    if (!set.next()) {
-      throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
-    }
-
-    Account account = new Account(set.getString("AccountNumber"), set.getString("SortCode"),
-        set.getBigDecimal("AccountBalance"));
-
-    return account;
+    // TODO: This needs to use USER and find an account with it.
+    throw new UnsupportedOperationException();
+    // ResultSet set = statement.executeQuery("SELECT * FROM `Accounts` WHERE
+    // name='%s'".formatted(name));
+    //
+    // if (!set.next()) {
+    // throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+    // }
+    //
+    // Account account = new Account(set.getString("AccountNumber"),
+    // set.getString("SortCode"),
+    // set.getBigDecimal("AccountBalance"));
+    //
+    // return account;
 
   }
 

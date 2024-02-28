@@ -248,7 +248,6 @@ public class WebsiteController {
       Account account = dbController.returnAccount(uuid);
 
       ModelAndView modelAndView = new ModelAndView("overview.hbs").put("user", user);
-
       modelAndView.put("account", account);
 
       return modelAndView;
@@ -281,6 +280,5 @@ public class WebsiteController {
     } catch (IllegalArgumentException e) { // If the user is not logged in
       return null;
     }
-
   }
 }

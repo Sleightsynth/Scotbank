@@ -49,9 +49,14 @@ public class App extends Jooby {
   }
 
   /*
+   * <<<<<<< HEAD
    * This will host any files in src/main/resources/assets on
    * <host>/assets For example in the dice template (dice.hbs) it
    * references "assets/dice.png" which is in resources/assets folder
+   * =======
+   * This function will be called when the application starts up,
+   * it should be used to ensure that the DB is properly setup
+   * >>>>>>> UAC
    */
   public void onStart() {
     Logger log = getLog();
