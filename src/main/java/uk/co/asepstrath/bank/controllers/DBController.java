@@ -49,7 +49,11 @@ public class DBController {
                         + "`Id` UUID PRIMARY KEY UNIQUE, "
                         + "`Name` varchar(30),"
                         + "`Email` varchar(50),"
-                        + "`Hash_pass` char(64)," //Using SHA-256 for encryption
+
+                        + "`Hash_pass` char(128)," //Using SHA-512 for encryption
+                        + "`phoneNo` varchar(12),"
+                        + "`address` varchar(50),"
+
                         + "PRIMARY KEY (`Id`)"
                         + ")");
         stmt.executeUpdate(
@@ -239,8 +243,8 @@ public class DBController {
     public void addUser(User user) throws SQLException{
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s')",
-                        user.getId(),user.getName(),user.getEmail(),user.getPasswordHash()));
+                String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+                        user.getId(),user.getName(),user.getEmail(),user.getPasswordHash(),user.getPhoneNo(),user.getAddress()));
         prepStmt.execute();
     }
 
@@ -256,16 +260,16 @@ public class DBController {
             throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
         }
 
-        User user = new User(userID,set.getString("Email"),set.getString("Hash_Pass"),set.getString("Name"));
+        User user = new User(userID,set.getString("Email"),set.getString("Hash_Pass"),set.getString("Name"),set.getString("phoneNo"), set.getString("address"));
 
         return user;
     }
 
-    public String getSha256Hash(String password) {
+    public String getSha512Hash(String password) {
         try {
 
-            // Static getInstance method is called with hashing MD5
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            // Static getInstance method is called with hashing SHA-512
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
 
             // digest() method is called to calculate message digest
             // of an input digest() return array of byte
