@@ -170,6 +170,11 @@ public class WebsiteController {
         ctx.sendRedirect("/");
     }
 
+    @GET("/contact")
+    public ModelAndView contactpage() {
+        return new ModelAndView("contact.hbs");
+    }
+
     @GET("/register")
     public ModelAndView registerpage() {
         return new ModelAndView("register.hbs");
