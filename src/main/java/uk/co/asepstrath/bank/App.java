@@ -6,10 +6,12 @@ import io.jooby.helper.UniRestExtension;
 import io.jooby.hikari.HikariModule;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.UUID;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import uk.co.asepstrath.bank.controllers.WebsiteController;
 import uk.co.asepstrath.bank.controllers.DBController;
+import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class App extends Jooby {
     {
@@ -63,13 +65,20 @@ public class App extends Jooby {
         accounts.add(new Account("Chandler", BigDecimal.valueOf(3.00)));
         accounts.add(new Account("Ross", BigDecimal.valueOf(54.32)));
 
+        UUID connorUUID = UUID.randomUUID();
+
+        accounts.add(new Account("Connor test account", connorUUID, "12345678","12-34-56",BigDecimal.valueOf(100.01),Boolean.FALSE, AccountCategory.Payment));
+
         // Fetch DB Source
         DataSource ds = require(DataSource.class);
 
         DBController db = new DBController(ds);
 
+        User testUser = new User(connorUUID,"connor.waiter.2022@uni.strath.ac.uk",db.getSha256Hash("123"),"Connor Waiter");
+
         try {
             db.createTables();
+            db.addUser(testUser);
             db.addAccounts(accounts);
         } catch (Exception e) {
             log.error("Database Creation Error", e);

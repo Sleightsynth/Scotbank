@@ -5,12 +5,64 @@
     {{> style.hbs}}
 </head>
 <body>
-<div class="w3-row-padding w3-padding-64 w3-container">
-    <h1>View your profile below.</h1>
-{{> navbar.hbs}}
-<!-- WIP -->
-</div>
-{{> footer.hbs}}
+
+    {{> navbar.hbs}}
+
+    <div class="w3-row-padding w3-padding-64 w3-container">
+        <h1>View your profile below.</h1>
+    </div>
+
+    <div class="sub-section">
+        <h3>Full Name</h3>
+        <div class="row">
+            <div class="small-column">
+                {{user.name}}
+            </div>
+        </div>
+
+        <h3>Email</h3>
+        <div class="row">
+            <div class="small-column">
+                {{user.email}}
+            </div>
+        </div>
+
+        <h3>Phone Number</h3>
+        <div class="row">
+            <div class="small-column">
+                01234567890
+            </div>
+        </div>
+
+        <h3>Address</h3>
+        <div class="row">
+            <div class="small-column">
+                31 Spooner Street
+            </div>
+        </div>
+    </div>
+
+    <div class="sub-section">
+        <h3>Sort-Code</h3>
+        <div class="row">
+            <div class="small-column">
+                {{account.sortCode}}
+            </div>
+        </div>
+
+        <h3>Account Number</h3>
+        <div class="row">
+            <div class="small-column">
+                {{account.accountNumber}}
+            </div>
+        </div>
+
+        <div class="buttons">
+            <a href="/logout" style="border: #FC5130; color: #FC5130">Logout</a>
+        </div>
+    </div>
+
+    {{> footer.hbs}}
 </body>
 </html>
 
