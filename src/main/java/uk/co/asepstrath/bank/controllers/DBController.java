@@ -77,7 +77,6 @@ public class DBController {
             + "`User_id` UUID,"
             + "`AccountNumber` varchar(8),"
             + "`SortCode` varchar(8),"
-            + "`Name` varchar(255),"
             + "`AccountBalance` decimal(15,2),"
             + "PRIMARY KEY (`Id`),"
             + "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)"
@@ -141,8 +140,8 @@ public class DBController {
   public void addAccount(Account acc) throws SQLException {
     Connection connection = dataSource.getConnection();
     PreparedStatement prepStmt = connection.prepareStatement(
-        String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s', '%s' ,'%s', '%f')",
-            acc.getAccountNumber(), acc.getSortCode(), acc.getName(), acc.getBalance().floatValue()));
+        String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s','%s', '%f')",
+            acc.getAccountNumber(), acc.getSortCode(), acc.getBalance().floatValue()));
     prepStmt.setObject(1, acc.getUUID());
     prepStmt.setObject(2, acc.getUser_id());
     prepStmt.execute();
@@ -163,7 +162,7 @@ public class DBController {
     List<Account> accounts = new ArrayList<>();
 
     while (set.next()) {
-      accounts.add(new Account(set.getString("Name"), set.getString("AccountNumber"), set.getString("SortCode"),
+      accounts.add(new Account(set.getString("AccountNumber"), set.getString("SortCode"),
           set.getBigDecimal("AccountBalance")));
     }
 
@@ -187,7 +186,7 @@ public class DBController {
       throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
     }
 
-    Account account = new Account(set.getString("Name"), set.getString("AccountNumber"), set.getString("SortCode"),
+    Account account = new Account(set.getString("AccountNumber"), set.getString("SortCode"),
         set.getBigDecimal("AccountBalance"));
 
     return account;
@@ -206,7 +205,7 @@ public class DBController {
       throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
     }
 
-    Account account = new Account(set.getString("Name"), set.getString("AccountNumber"), set.getString("SortCode"),
+    Account account = new Account(set.getString("AccountNumber"), set.getString("SortCode"),
         set.getBigDecimal("AccountBalance"));
 
     return account;
@@ -223,7 +222,7 @@ public class DBController {
       throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
     }
 
-    Account account = new Account(set.getString("Name"), userID, set.getString("AccountNumber"),
+    Account account = new Account(userID, set.getString("AccountNumber"),
         set.getString("SortCode"), set.getBigDecimal("AccountBalance"), Boolean.FALSE, AccountCategory.Payment);
 
     return account;
