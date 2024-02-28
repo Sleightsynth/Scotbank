@@ -55,6 +55,7 @@
 <body>
 
 {{> navbar.hbs}}
+<div class="form-container">
 <form action="/login/save" method="post">
     <h1>Login to account</h1>
     <input id="username" name="username" placeholder="Enter Email" required="" maxlength="100" tabindex="1" type="text">
@@ -64,5 +65,6 @@
     <input name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
 
 </form>
+</div>
 </body>
 </html>
