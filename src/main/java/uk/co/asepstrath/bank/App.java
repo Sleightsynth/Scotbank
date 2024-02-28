@@ -56,26 +56,16 @@ public class App extends Jooby {
   public void onStart() {
     Logger log = getLog();
     log.info("Starting Up...");
-    ArrayList<Account> accounts = new ArrayList<>();
-    accounts.add(new Account("Rachel", BigDecimal.valueOf(50.00)));
-    accounts.add(new Account("Monica", BigDecimal.valueOf(100.00)));
-    accounts.add(new Account("Phoebe", BigDecimal.valueOf(76.00)));
-    accounts.add(new Account("Joey", BigDecimal.valueOf(23.90)));
-    accounts.add(new Account("Chandler", BigDecimal.valueOf(3.00)));
-    accounts.add(new Account("Ross", BigDecimal.valueOf(54.32)));
-
-    UUID connorUUID = UUID.randomUUID();
-
-    accounts.add(new Account("Connor test account", connorUUID, "12345678", "12-34-56", BigDecimal.valueOf(100.01),
-        Boolean.FALSE, AccountCategory.Payment));
-
-    // Fetch DB Source
     DataSource ds = require(DataSource.class);
-
     DBController db = new DBController(ds);
 
-    User testUser = new User(connorUUID, "connor.waiter.2022@uni.strath.ac.uk", db.getSha512Hash("123"),
+    User testUser = new User(UUID.randomUUID(), "connor.waiter.2022@uni.strath.ac.uk", db.getSha512Hash("123"),
         "Connor Waiter", "07123 45678", "123 Connor Street");
+
+    ArrayList<Account> accounts = new ArrayList<>();
+
+    accounts.add(new Account(testUser.getId(), "12345678", "12-34-56", BigDecimal.valueOf(100.01),
+        Boolean.FALSE, AccountCategory.Payment));
 
     try {
       db.createTables();
