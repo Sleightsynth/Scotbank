@@ -51,7 +51,7 @@ public class DBController {
                         + "`Email` varchar(50),"
                         + "`Hash_pass` char(64)," //Using SHA-256 for encryption
                         + "`phoneNo` varchar(12),"
-                        + "`address` varchar(50)"
+                        + "`address` varchar(50),"
                         + "PRIMARY KEY (`Id`)"
                         + ")");
         stmt.executeUpdate(
@@ -133,7 +133,7 @@ public class DBController {
     public void addAccount(Account acc) throws SQLException{
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s', '%s' ,'%s', '%f', '%s', '%s')",
+                String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s', '%s' ,'%s', '%f')",
                         acc.getAccountNumber(),acc.getSortCode(), acc.getName(), acc.getBalance().floatValue()));
         prepStmt.setObject(1, acc.getUUID());
         prepStmt.setObject(2, acc.getUser_id());
