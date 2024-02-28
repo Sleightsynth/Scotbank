@@ -7,21 +7,21 @@
     <script>
         function form1() {
             document.getElementById("pay").style.display="block";
-            document.getElementById("pay").style.color="#4CAF50";
-            document.getElementById("pay").style.borderColor="#4CAF50";
+            document.getElementById("payButton").style.color="#4CAF50";
+            document.getElementById("payButton").style.borderColor="#4CAF50";
 
             document.getElementById("get").style.display="none";
-            document.getElementById("get").style.color="#708090";
-            document.getElementById("get").style.borderColor="#708090";
+            document.getElementById("getButton").style.color="#708090";
+            document.getElementById("getButton").style.borderColor="#708090";
         }
         function form2() {
-            document.getElementById("get").style.display="block";
-            document.getElementById("get").style.color="#4CAF50";
-            document.getElementById("get").style.borderColor="#CAF50";
-
             document.getElementById("pay").style.display="none";
-            document.getElementById("pay").style.color="#708090";
-            document.getElementById("pay").style.borderColor="#708090";
+            document.getElementById("payButton").style.color="#708090";
+            document.getElementById("payButton").style.borderColor="#708090";
+
+            document.getElementById("get").style.display="block";
+            document.getElementById("getButton").style.color="#4CAF50";
+            document.getElementById("getButton").style.borderColor="#4CAF50";
         }
     </script>
 
@@ -29,11 +29,12 @@
 <body>
 {{> navbar.hbs}}
 <div style="text-align: center">
-<button class="button-left" onClick="form1()" style="color: #4CAF50; border-color: #4CAF50">Pay Someone</button>
-<button class="button-right" onClick="form2()">Request Payment</button>
+<button class="button-left" id="payButton" onClick="form1()" style="border-color: #4CAF50; color: #4CAF50;">Pay Someone</button>
+<button class="button-right" id="getButton" onClick="form2()">Request Payment</button>
 </div>
     <div class="form-container">
         <form id="pay">
+            <h1>Make a Payment</h1>
             <input id="recipient" name="recipient" placeholder="Recipient name" required="" maxlength="20" tabindex="1" type="text">
                 <input id="sort" name="sort" placeholder="Recipient sort code" required="" maxlength="8" tabindex="2" type="text">
                 <input id="account" name="account" placeholder="Recipient account number" required="" maxlength="8" tabindex="3" type="text">
@@ -50,10 +51,10 @@
             </select><br>
 
             <input name="submit" id="submit" tabindex="3" value="Confirm Transaction" type="submit"><br>
-            <input type="reset" value="Reset Form"><br>
         </form>
 
     <form id="get" style="display:none">
+        <h1>Requent a Payment</h1>
         <input id="recipient" name="recipient" placeholder="Recipient name" required="" maxlength="20" tabindex="1" type="text">
         <input id="sort" name="sort" placeholder="Recipient sort code" required="" maxlength="8" tabindex="2" type="text">
         <input id="account" name="account" placeholder="Recipient account number" required="" maxlength="8" tabindex="3" type="text">
@@ -69,7 +70,6 @@
         </select><br>
 
         <input name="submit" id="submit" tabindex="3" value="Send Request" type="submit"><br>
-        <input type="reset" value="Reset Form"><br>
     </form>
 </div>
 
