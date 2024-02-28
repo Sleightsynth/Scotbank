@@ -49,7 +49,7 @@ public class DBController {
                         + "`Id` UUID PRIMARY KEY UNIQUE, "
                         + "`Name` varchar(30),"
                         + "`Email` varchar(50),"
-                        + "`Hash_pass` char(64)," //Using SHA-256 for encryption
+                        + "`Hash_pass` char(128)," //Using SHA-512 for encryption
                         + "PRIMARY KEY (`Id`)"
                         + ")");
         stmt.executeUpdate(
@@ -261,11 +261,11 @@ public class DBController {
         return user;
     }
 
-    public String getSha256Hash(String password) {
+    public String getSha512Hash(String password) {
         try {
 
-            // Static getInstance method is called with hashing MD5
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            // Static getInstance method is called with hashing SHA-512
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
 
             // digest() method is called to calculate message digest
             // of an input digest() return array of byte

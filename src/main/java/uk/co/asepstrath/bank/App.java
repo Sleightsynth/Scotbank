@@ -74,7 +74,7 @@ public class App extends Jooby {
 
         DBController db = new DBController(ds);
 
-        User testUser = new User(connorUUID,"connor.waiter.2022@uni.strath.ac.uk",db.getSha256Hash("123"),"Connor Waiter");
+        User testUser = new User(connorUUID,"connor.waiter.2022@uni.strath.ac.uk",db.getSha512Hash("123"),"Connor Waiter");
 
         try {
             db.createTables();
