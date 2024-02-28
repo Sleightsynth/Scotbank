@@ -1,15 +1,13 @@
 package uk.co.asepstrath.bank;
 
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+
 import io.jooby.Context;
-import io.jooby.ModelAndView;
 import io.jooby.annotation.GET;
 import io.jooby.annotation.POST;
 import io.jooby.annotation.Path;
-
-import org.slf4j.Logger;
-import org.json.JSONObject;
-import javax.sql.DataSource;
-import java.math.BigDecimal;
 
 @Path("/api")
 public class APIController {
