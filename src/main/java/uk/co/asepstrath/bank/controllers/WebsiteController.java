@@ -6,11 +6,8 @@ import io.jooby.Session;
 import io.jooby.StatusCode;
 import io.jooby.annotation.*;
 import io.jooby.exception.StatusCodeException;
-import java.io.IOException;
+
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -138,7 +135,7 @@ public class WebsiteController {
     @POST("/login/save")
     public void login(String username, String password, Context ctx) {
         try {
-            String passwordHash = dbController.getSha256Hash(password);
+            String passwordHash = dbController.getSha512Hash(password);
 
             User user = new User(username, passwordHash);
 
@@ -168,6 +165,11 @@ public class WebsiteController {
         session.destroy();
 
         ctx.sendRedirect("/");
+    }
+
+    @GET("/contact")
+    public ModelAndView contactpage() {
+        return new ModelAndView("contact.hbs");
     }
 
     @GET("/register")

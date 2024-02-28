@@ -18,7 +18,7 @@
     }
 
     .sub-section {
-        background-color: #fafafa;
+        background-color: #fcfcfc;
         padding: 3em 10em 3em 10em;
     }
 
@@ -58,7 +58,7 @@
     /* Navigation bar */
     .topnav {
         overflow: hidden;
-        background-color: #fafafa;
+        background-color: #fcfcfc;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -89,7 +89,7 @@
     }
 
     .banner {
-        background-color: #fafafa;
+        background-color: #fcfcfc;
         background-image: url("assets/wallpaper.png");
         height: 40vh;
         background-repeat: no-repeat;
@@ -159,6 +159,10 @@
         box-sizing: border-box;
     }
 
+    .row:last-of-type {
+        border: none;
+    }
+
     .small-column {
         flex: 1;
     }
@@ -208,20 +212,43 @@
         border-bottom: 1px solid #708090;
     }
 
-    input[type=submit] {
-        width: 70%;
+    input[type=submit], input[type=reset], .button-left, .button-right {
         background-color: #fff;
         text-transform: uppercase;
-        padding: 8px 10px;
-        margin: 20px 0;
+        padding: 0.5em 1em 0.5em 1em;
+        margin: 1em 0;
+
+    }
+
+    input[type=submit], input[type=reset] {
+        border-radius: 10em;
         color: #4CAF50;
         border: 2px solid #4CAF50;
-        border-radius: 10em;
+    }
+
+    input[type=submit] {
+        width: 70%;
     }
 
     input[type=submit]:hover {
         border: 2px solid #45a049;
         color: #45a049;
+    }
+
+    input[type=reset] {
+        width: 40%;
+        color: #e75136;
+        border: 2px solid #e75136;
+    }
+
+    .button-left {
+        border-bottom-left-radius: 10em;
+        border-top-left-radius: 10em;
+    }
+
+    .button-right {
+        border-bottom-right-radius: 10em;
+        border-top-right-radius: 10em;
     }
 
     /*    Dynamic screen size*/

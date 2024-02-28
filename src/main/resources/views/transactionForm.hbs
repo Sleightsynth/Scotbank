@@ -3,19 +3,64 @@
 <head>
     <title>Scotbank - Transaction Form</title>
     {{> style.hbs}}
+
+    <script>
+        function form1() {
+            document.getElementById("pay").style.display="block";
+            document.getElementById("pay").style.color="#4CAF50";
+            document.getElementById("pay").style.borderColor="#4CAF50";
+
+            document.getElementById("get").style.display="none";
+            document.getElementById("get").style.color="#708090";
+            document.getElementById("get").style.borderColor="#708090";
+        }
+        function form2() {
+            document.getElementById("get").style.display="block";
+            document.getElementById("get").style.color="#4CAF50";
+            document.getElementById("get").style.borderColor="#CAF50";
+
+            document.getElementById("pay").style.display="none";
+            document.getElementById("pay").style.color="#708090";
+            document.getElementById("pay").style.borderColor="#708090";
+        }
+    </script>
+
 </head>
 <body>
 {{> navbar.hbs}}
+<div style="text-align: center">
+<button class="button-left" onClick="form1()" style="color: #4CAF50; border-color: #4CAF50">Pay Someone</button>
+<button class="button-right" onClick="form2()">Request Payment</button>
+</div>
     <div class="form-container">
-        <form>
-        <h1>Create an account</h1>
+        <form id="pay">
+            <input id="recipient" name="recipient" placeholder="Recipient name" required="" maxlength="20" tabindex="1" type="text">
+                <input id="sort" name="sort" placeholder="Recipient sort code" required="" maxlength="8" tabindex="2" type="text">
+                <input id="account" name="account" placeholder="Recipient account number" required="" maxlength="8" tabindex="3" type="text">
+                <input id="amount" name="amount" placeholder="Enter amount" required="" maxlength="20" tabindex="4" type="text">
+                <input id="ref" name="ref" placeholder="Add a reference" maxlength="20" tabindex="5" type="text">
 
-        <input id="recipient" name="recipient" placeholder="Enter recipient" required="" maxlength="20" tabindex="1" type="text">
-            <input id="amount" name="amount" placeholder="Enter amount" required="" maxlength="20" tabindex="2" type="text">
-            <input id="ref" name="ref" placeholder="Add a reference" maxlength="20" tabindex="3" type="text">
+            <label for="Category">Choose a category:</label>
+
+            <select  id="category" name="category">
+                <option value="Bills">Bills</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Food">Food</option>
+                <option value="Entertainment">Entertainment</option>
+            </select><br>
+
+            <input name="submit" id="submit" tabindex="3" value="Confirm Transaction" type="submit"><br>
+            <input type="reset" value="Reset Form"><br>
+        </form>
+
+    <form id="get" style="display:none">
+        <input id="recipient" name="recipient" placeholder="Recipient name" required="" maxlength="20" tabindex="1" type="text">
+        <input id="sort" name="sort" placeholder="Recipient sort code" required="" maxlength="8" tabindex="2" type="text">
+        <input id="account" name="account" placeholder="Recipient account number" required="" maxlength="8" tabindex="3" type="text">
+        <input id="amount" name="amount" placeholder="Enter amount" required="" maxlength="20" tabindex="4" type="text">
+        <input id="ref" name="ref" placeholder="Add a reference" maxlength="20" tabindex="5" type="text">
 
         <label for="Category">Choose a category:</label>
-
         <select  id="category" name="category">
             <option value="Bills">Bills</option>
             <option value="Shopping">Shopping</option>
@@ -23,10 +68,11 @@
             <option value="Entertainment">Entertainment</option>
         </select><br>
 
-        <input name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
+        <input name="submit" id="submit" tabindex="3" value="Send Request" type="submit"><br>
         <input type="reset" value="Reset Form"><br>
     </form>
 </div>
+
 {{> footer.hbs}}
 </body>
 </html>
