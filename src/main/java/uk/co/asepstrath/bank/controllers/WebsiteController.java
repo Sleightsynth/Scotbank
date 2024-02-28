@@ -100,7 +100,7 @@ public class WebsiteController {
         UUID uuid = getUUIDOrNull(ctx);
 
         if (uuid == null){
-            User user = new User(uuid,"","","Login");
+            User user = new User(uuid,"","","Login","","");
             return new ModelAndView("homePage.hbs").put("user",user);
         }
 

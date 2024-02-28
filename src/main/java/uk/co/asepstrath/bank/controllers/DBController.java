@@ -50,6 +50,8 @@ public class DBController {
                         + "`Name` varchar(30),"
                         + "`Email` varchar(50),"
                         + "`Hash_pass` char(64)," //Using SHA-256 for encryption
+                        + "`phoneNo` varchar(12),"
+                        + "`address` varchar(50)"
                         + "PRIMARY KEY (`Id`)"
                         + ")");
         stmt.executeUpdate(
@@ -131,7 +133,7 @@ public class DBController {
     public void addAccount(Account acc) throws SQLException{
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s', '%s' ,'%s', '%f')",
+                String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s', '%s' ,'%s', '%f', '%s', '%s')",
                         acc.getAccountNumber(),acc.getSortCode(), acc.getName(), acc.getBalance().floatValue()));
         prepStmt.setObject(1, acc.getUUID());
         prepStmt.setObject(2, acc.getUser_id());
@@ -239,8 +241,8 @@ public class DBController {
     public void addUser(User user) throws SQLException{
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s')",
-                        user.getId(),user.getName(),user.getEmail(),user.getPasswordHash()));
+                String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+                        user.getId(),user.getName(),user.getEmail(),user.getPasswordHash(),user.getPhoneNo(),user.getAddress()));
         prepStmt.execute();
     }
 
@@ -256,7 +258,7 @@ public class DBController {
             throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
         }
 
-        User user = new User(userID,set.getString("Email"),set.getString("Hash_Pass"),set.getString("Name"));
+        User user = new User(userID,set.getString("Email"),set.getString("Hash_Pass"),set.getString("Name"),set.getString("phoneNo"), set.getString("address"));
 
         return user;
     }
