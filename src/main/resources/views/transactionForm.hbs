@@ -6,33 +6,27 @@
 </head>
 <body>
 {{> navbar.hbs}}
-<div class="w3-row-padding w3-padding-64 w3-container">
-    <h1>Fill out the transaction form below.</h1>
-    <form>
-        <label for="Amount">Amount:</label><br>
-        <input type="text" id="amount" name="amount"><br><br>
+    <div class="form-container">
+        <form>
+        <h1>Create an account</h1>
 
-        <label for="Recipient">Recipient:</label><br>
-        <input type="text" id="recipient" name="recipient"><br><br>
+        <input id="recipient" name="recipient" placeholder="Enter recipient" required="" maxlength="20" tabindex="1" type="text">
+            <input id="amount" name="amount" placeholder="Enter amount" required="" maxlength="20" tabindex="2" type="text">
+            <input id="ref" name="ref" placeholder="Add a reference" maxlength="20" tabindex="3" type="text">
 
-        <label for="Ref">Reference:</label><br>
-        <input type="text" id="ref" name="ref"><br><br>
-
-        <label for="Category">Choose a category:</label><br><br>
+        <label for="Category">Choose a category:</label>
 
         <select  id="category" name="category">
             <option value="Bills">Bills</option>
             <option value="Shopping">Shopping</option>
             <option value="Food">Food</option>
             <option value="Entertainment">Entertainment</option>
-        </select>
+        </select><br>
 
-        <br><br>
-        <input type="submit" value="Submit Form">
+        <input name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
         <input type="reset" value="Reset Form"><br>
     </form>
 </div>
 {{> footer.hbs}}
 </body>
 </html>
-

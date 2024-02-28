@@ -1,31 +1,35 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Scotbank - Overview</title>
+    <title>Scotbank - Home</title>
     {{> style.hbs}}
 </head>
 <body>
 {{> navbar.hbs}}
 <div>
-    <div class="fullSection">
-        <h2>Welcome {{user.name}},</h2>
+    <div class="full-section">
+        <h2>ScotBank</h2>
+        <h3>Welcome {{user.name}},</h3> <!--    Change to account associated variables-->
     </div>
 
-    <h4 class="card">
-        <h4>{{account.getFormattedBalance}}</h4>
+    <!--    Change to account associated variables-->
+    <div class="card">
+        <h4>Savings</h4>
+        <h3>{{account.getFormattedBalance}}</h3>
         <div class="side-by-side">
-            <div class="number">{{account.sortCode}}</div>
-            <div class="number">{{account.accountNumber}}</div>
+            <h5>{{account.sortCode}}</h5>
+            <h5>{{account.accountNumber}}</h5>
         </div>
     </div>
 
-    <!--    Pay someone / Deposit cheque / Request Payment buttons-->
     <div class="buttons">
-        <a href="/transactionForm" class="button">Pay Someone</a>
-        <button class="button">Deposit cheque</button>
-        <button class="button">Request Payment</button>
+        <button class="button"><a href="transactionForm">Pay someone</a></button>
+        <button class="button"><a href="#">Deposit cheque</a></button>
+        <button class="button"><a href="#">Request Payment</a></button>
     </div>
 </div>
+
 <!--    Transactions and sorting - Clickable will provide more details-->
 <div class="sub-section">
     <h3>Transactions</h3>
@@ -39,7 +43,7 @@
             <br>
             Cineworld Ticket
         </div>
-        <div class="small-column right">
+        <div class="small-column">
             £20
         </div>
     </div>
@@ -54,7 +58,7 @@
             <br>
             Asda Shopping
         </div>
-        <div class="small-column right">
+        <div class="small-column">
             £40
         </div>
     </div>
@@ -67,7 +71,7 @@
             <br>
             Asda Shopping
         </div>
-        <div class="small-column right">
+        <div class="small-column">
             £40
         </div>
     </div>
