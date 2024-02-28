@@ -229,26 +229,6 @@ public class WebsiteController {
     return new ModelAndView("transactionForm.hbs");
   }
 
-  /*
-   * This is the simplest action a controller can perform
-   * The @GET annotation denotes that this function should be invoked when a GET
-   * HTTP request is sent to <host>/example
-   * The returned string will then be sent to the requester
-   */
-  @GET("/accounts/{name}")
-  public String getSingleAccount(@PathParam("name") String name) {
-    try {
-      Account account = dbController.returnAccount(name);
-
-      return account.toString();
-    } catch (SQLException e) {
-      // If something does go wrong this will log the stack trace
-      logger.error("Database Error Occurred", e);
-      // And return a HTTP 500 error to the requester
-      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-    }
-  }
-
   @GET("/overview")
   public ModelAndView overview(Context ctx) {
 
