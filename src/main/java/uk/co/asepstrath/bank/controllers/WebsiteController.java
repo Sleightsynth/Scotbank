@@ -252,25 +252,7 @@ public class WebsiteController {
     }
 
     private ModelAndView getUserAndAddToTemplate(String hbsFileName, UUID uuid) {
-        User user;
-        try {
-
-            if (uuid == null) {
-                user = new User(uuid, "", "", "", "", "");
-            } else {
-                user = dbController.returnUser(uuid);
-            }
-        } catch (SQLException e) {
-            // If something does go wrong this will log the stack trace
-            logger.error("Database Error Occurred", e);
-            // And return a HTTP 500 error to the requester
-            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-        }
-
-        if (user.getId() == null) {
-            return new ModelAndView(hbsFileName).put("userLoggedIn", Boolean.FALSE);
-        }
-        return new ModelAndView(hbsFileName).put("userLoggedIn", Boolean.TRUE).put("user", user);
+        return this.getUserAndAddToTemplate(new ModelAndView(hbsFileName),uuid);
     }
 
     private ModelAndView getUserAndAddToTemplate(ModelAndView model, UUID uuid) {
