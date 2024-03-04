@@ -178,10 +178,10 @@ public class WebsiteController {
         }
 
         // User logged in
-        return profilepage(ctx); // This is effectively a redirect
+        ctx.sendRedirect("/profile");
 
         // Was complaining about no return statement so had to return a status code
-        // throw new StatusCodeException(StatusCode.FOUND);
+        throw new StatusCodeException(StatusCode.FOUND);
     }
 
     @GET("/profile")
