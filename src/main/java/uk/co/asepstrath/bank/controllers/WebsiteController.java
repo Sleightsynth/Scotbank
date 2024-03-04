@@ -105,7 +105,7 @@ public class WebsiteController {
     @GET("/accounts")
     public ModelAndView printAllAccounts() {
         try {
-            List < Account > accounts = dbController.returnAllAccounts();
+            List<Account> accounts = dbController.returnAllAccounts();
 
             if (accounts.isEmpty()) {
                 throw new StatusCodeException(StatusCode.NOT_FOUND, "No accounts found");
@@ -162,7 +162,7 @@ public class WebsiteController {
         UUID uuid = getUUIDOrNull(ctx);
 
         if (uuid == null) {
-            return getUserAndAddToTemplate("register.hbs",uuid);
+            return getUserAndAddToTemplate("register.hbs", uuid);
         }
         ctx.sendRedirect("/profile");
         throw new StatusCodeException(StatusCode.FOUND);
@@ -174,7 +174,7 @@ public class WebsiteController {
         UUID uuid = getUUIDOrNull(ctx);
 
         if (uuid == null) {
-            return getUserAndAddToTemplate("login.hbs",uuid);
+            return getUserAndAddToTemplate("login.hbs", uuid);
         }
 
         // User logged in
@@ -195,12 +195,12 @@ public class WebsiteController {
             throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
         }
 
-        return getUserAndAddToTemplate("profile.hbs",uuid);
+        return getUserAndAddToTemplate("profile.hbs", uuid);
     }
 
     @GET("/transactionForm")
     public ModelAndView transactionpage(Context ctx) {
-        return getUserAndAddToTemplate("transactionForm.hbs",getUUIDOrNull(ctx));
+        return getUserAndAddToTemplate("transactionForm.hbs", getUUIDOrNull(ctx));
     }
 
     @GET("/overview")
@@ -219,7 +219,7 @@ public class WebsiteController {
 
             ModelAndView modelAndView = new ModelAndView("overview.hbs").put("account", account);
 
-            return getUserAndAddToTemplate(modelAndView,uuid);
+            return getUserAndAddToTemplate(modelAndView, uuid);
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
             logger.error("Database Error Occurred", e);
@@ -252,18 +252,16 @@ public class WebsiteController {
     }
 
     private ModelAndView getUserAndAddToTemplate(String hbsFileName, UUID uuid) {
-        return this.getUserAndAddToTemplate(new ModelAndView(hbsFileName),uuid);
+        return this.getUserAndAddToTemplate(new ModelAndView(hbsFileName), uuid);
     }
 
     private ModelAndView getUserAndAddToTemplate(ModelAndView model, UUID uuid) {
         User user;
+        if (uuid == null) {
+            return model.put("userLoggedIn", Boolean.FALSE);
+        }
         try {
-
-            if (uuid == null) {
-                user = new User(null, "", "", "", "", "");
-            } else {
-                user = dbController.returnUser(uuid);
-            }
+            user = dbController.returnUser(uuid);
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
             logger.error("Database Error Occurred", e);
@@ -271,9 +269,6 @@ public class WebsiteController {
             throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
         }
 
-        if (user.getId() == null) {
-            return model.put("userLoggedIn", Boolean.FALSE);
-        }
         return model.put("userLoggedIn", Boolean.TRUE).put("user", user);
     }
 }
