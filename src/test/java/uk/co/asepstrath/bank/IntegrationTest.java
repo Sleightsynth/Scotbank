@@ -16,7 +16,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldNotDisplayAccountsData(int serverPort) throws IOException {
-        Request req = new Request.Builder().url("http://localhost:" + serverPort + "/accounts/").build();
+        Request req = new Request.Builder().url("http://localhost:" + serverPort + "/accounts").build();
 
         try (Response rsp = client.newCall(req).execute()) {
             assertEquals(StatusCode.UNAUTHORIZED_CODE, rsp.code());

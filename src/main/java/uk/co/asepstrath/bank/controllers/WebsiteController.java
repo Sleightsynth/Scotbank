@@ -102,7 +102,7 @@ public class WebsiteController {
         return getUserAndAddToTemplate("homePage.hbs", getUUIDOrNull(ctx));
     }
 
-    @GET("/accounts/")
+    @GET("/accounts")
     public ModelAndView printAllAccounts(Context ctx) {
         UUID userId = getUUIDOrNull(ctx);
 
