@@ -69,7 +69,7 @@ public class App extends Jooby {
 
         ArrayList<Account> accounts = new ArrayList<>();
 
-        accounts.add(new Account(testUser.getId(), "12345678", "12-34-56", BigDecimal.valueOf(100.01),
+        accounts.add(new Account(testUser, UUID.randomUUID(), "12345678", "12-34-56", BigDecimal.valueOf(100.01),
                 Boolean.FALSE, AccountCategory.Payment));
 
         try {

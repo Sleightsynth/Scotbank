@@ -224,7 +224,8 @@ public class WebsiteController {
         }
 
         try {
-            Account account = dbController.returnAccount(uuid);
+            User user = dbController.returnUser(uuid);
+            Account account = dbController.returnAccount(user);
 
             ModelAndView modelAndView = new ModelAndView("overview.hbs").put("account", account);
 

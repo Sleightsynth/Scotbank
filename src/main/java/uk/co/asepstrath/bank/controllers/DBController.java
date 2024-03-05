@@ -145,7 +145,7 @@ public class DBController {
                 String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s','%s', '%f')",
                         acc.getAccountNumber(), acc.getSortCode(), acc.getBalance().floatValue()));
         prepStmt.setObject(1, acc.getUUID());
-        prepStmt.setObject(2, acc.getUser_id());
+        prepStmt.setObject(2, acc.getUser().getId());
         prepStmt.execute();
     }
 
@@ -159,6 +159,7 @@ public class DBController {
         // Create Statement (batch of SQL Commands)
         Statement statement = connection.createStatement();
         // Perform SQL Query
+        // TODO: This needs to include user information as well
         ResultSet set = statement.executeQuery("SELECT * FROM `Accounts`");
 
         List<Account> accounts = new ArrayList<>();
@@ -218,19 +219,19 @@ public class DBController {
         return account;
     }
 
-    public Account returnAccount(UUID userID) throws SQLException {
+    public Account returnAccount(User user) throws SQLException {
         Connection connection = dataSource.getConnection();
         // Create Statement (batch of SQL Commands)
         Statement statement = connection.createStatement();
         // Perform SQL Query
         ResultSet set = statement
-                .executeQuery("SELECT * FROM `Accounts` WHERE User_id='%s'".formatted(userID.toString()));
+                .executeQuery("SELECT * FROM `Accounts` WHERE User_id='%s'".formatted(user.getId().toString()));
 
         if (!set.next()) {
             throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
         }
 
-        Account account = new Account(userID, set.getString("AccountNumber"),
+        Account account = new Account(user, (UUID) set.getObject("id"), set.getString("AccountNumber"),
                 set.getString("SortCode"), set.getBigDecimal("AccountBalance"), Boolean.FALSE, AccountCategory.Payment);
 
         return account;

@@ -9,7 +9,7 @@ import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class Account {
     protected UUID id = null;
-    protected UUID user_id = null;
+    protected User user = null;
     protected String accountNumber = "";
     protected String sortCode = "";
     protected Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
@@ -49,10 +49,11 @@ public class Account {
         this.foreign = foreign;
     }
 
-    public Account(UUID user_id, String accountNumber, String sortCode, BigDecimal balance, Boolean foreign,
+    public Account(User user, UUID accountId, String accountNumber, String sortCode, BigDecimal balance,
+            Boolean foreign,
             AccountCategory accountType) {
-        this.id = UUID.randomUUID();
-        this.user_id = user_id;
+        this.id = accountId;
+        this.user = user;
         this.accountNumber = accountNumber;
         this.sortCode = sortCode;
         this.balance = balance;
@@ -108,8 +109,8 @@ public class Account {
         return id;
     }
 
-    public UUID getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
     // Note: This will not display on HTML if the char set is not Unicode.
