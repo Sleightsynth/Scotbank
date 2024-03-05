@@ -15,11 +15,11 @@ public class IntegrationTest {
     static OkHttpClient client = new OkHttpClient();
 
     @Test
-    public void shouldDisplayAccountsData(int serverPort) throws IOException {
-        Request req = new Request.Builder().url("http://localhost:" + serverPort + "/accounts").build();
+    public void shouldNotDisplayAccountsData(int serverPort) throws IOException {
+        Request req = new Request.Builder().url("http://localhost:" + serverPort + "/accounts/").build();
 
         try (Response rsp = client.newCall(req).execute()) {
-            assertEquals(StatusCode.OK.value(), rsp.code());
+            assertEquals(StatusCode.UNAUTHORIZED_CODE, rsp.code());
         }
     }
 
