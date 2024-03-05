@@ -70,15 +70,10 @@ public class App extends Jooby {
         try {
             db.createTables();
 
-        } catch (Exception e) {
-            log.error("Database Creation Error", e);
-            this.stop();
-        }
-
         HttpResponse<Account> accountResponse = Unirest.get("https://api.asep-strath.co.uk/api/accounts").asObject(Account.class);
         //Account accountObject = accountResponse.getBody();
 
-        try {
+        if (accountResponse.getBody() != null) {
             JSONArray jsonArray = new JSONArray(accountResponse.getBody());
             ArrayList<Account> accounts = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -102,9 +97,13 @@ public class App extends Jooby {
             for (Account account : accounts) {
                 System.out.println(account);
             }
+        } else {
+            log.error("Error! Couldn't get data from API :/");
+            this.stop();
+        }
 
         } catch(SQLException e){
-            System.err.println("Error! Couldn't get data from API :/");
+            log.error("Database Creation Error!", e);
             this.stop();
         }
 
@@ -132,7 +131,7 @@ public class App extends Jooby {
          * This function will be called when the application shuts down
          */
     }
-        public void onStop () {
-            System.out.println("Shutting Down...");
-        }
+    public void onStop () {
+        System.out.println("Shutting Down...");
+    }
 }
