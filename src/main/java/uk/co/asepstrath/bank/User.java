@@ -12,29 +12,37 @@ public class User {
     protected String phoneNo = "";
     protected String address = "";
 
-    public User(String email, String passwordHash){
+    protected boolean admin = false;
+
+    public User(String email, String passwordHash) {
         this.email = email;
         this.passwordHash = passwordHash;
     }
 
-    public User(UUID id, String email, String passwordHash, String name, String phoneNo, String address){
+    public User(UUID id, String email, String passwordHash, String name, String phoneNo, String address,
+            boolean admin) {
         this.id = id;
         this.email = email;
         this.passwordHash = passwordHash;
         this.name = name;
         this.phoneNo = phoneNo;
         this.address = address;
+        this.admin = admin;
     }
 
-    public String getEmail(){
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public String getEmail() {
         return email;
     }
 
-    public String getPasswordHash(){
+    public String getPasswordHash() {
         return passwordHash;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -42,7 +50,11 @@ public class User {
         return id;
     }
 
-    public String getPhoneNo() { return phoneNo; }
+    public String getPhoneNo() {
+        return phoneNo;
+    }
 
-    public String getAddress() { return address; }
+    public String getAddress() {
+        return address;
+    }
 }
