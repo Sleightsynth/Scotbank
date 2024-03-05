@@ -60,6 +60,7 @@ public class DBController {
             + "`Hash_pass` char(128)," // Using SHA-512 for encryption
             + "`phoneNo` varchar(12),"
             + "`address` varchar(50),"
+            + "`admin` bit,"
             + "PRIMARY KEY (`Id`)"
             + ")");
     stmt.executeUpdate(
@@ -261,9 +262,9 @@ public class DBController {
   public void addUser(User user) throws SQLException {
     Connection connection = dataSource.getConnection();
     PreparedStatement prepStmt = connection.prepareStatement(
-        String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+        String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
             user.getId(), user.getName(), user.getEmail(), user.getPasswordHash(), user.getPhoneNo(),
-            user.getAddress()));
+            user.getAddress(), user.isAdmin()));
     prepStmt.execute();
   }
 
@@ -279,7 +280,7 @@ public class DBController {
     }
 
     User user = new User(userID, set.getString("Email"), set.getString("Hash_Pass"), set.getString("Name"),
-        set.getString("phoneNo"), set.getString("address"));
+        set.getString("phoneNo"), set.getString("address"), set.getBoolean("admin"));
 
     return user;
   }

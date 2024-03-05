@@ -3,46 +3,57 @@ package uk.co.asepstrath.bank;
 import java.util.UUID;
 
 public class User {
-    protected UUID id = null;
-    protected String email = "";
-    protected String passwordHash = "";
+  protected UUID id = null;
+  protected String email = "";
+  protected String passwordHash = "";
 
-    protected String name = "";
+  protected String name = "";
 
-    protected String phoneNo = "";
-    protected String address = "";
+  protected String phoneNo = "";
+  protected String address = "";
 
-    public User(String email, String passwordHash){
-        this.email = email;
-        this.passwordHash = passwordHash;
-    }
+  protected boolean admin = false;
 
-    public User(UUID id, String email, String passwordHash, String name, String phoneNo, String address){
-        this.id = id;
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.name = name;
-        this.phoneNo = phoneNo;
-        this.address = address;
-    }
+  public User(String email, String passwordHash) {
+    this.email = email;
+    this.passwordHash = passwordHash;
+  }
 
-    public String getEmail(){
-        return email;
-    }
+  public User(UUID id, String email, String passwordHash, String name, String phoneNo, String address, boolean admin) {
+    this.id = id;
+    this.email = email;
+    this.passwordHash = passwordHash;
+    this.name = name;
+    this.phoneNo = phoneNo;
+    this.address = address;
+    this.admin = admin;
+  }
 
-    public String getPasswordHash(){
-        return passwordHash;
-    }
+  public boolean isAdmin() {
+    return admin;
+  }
 
-    public String getName(){
-        return name;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public UUID getId() {
-        return id;
-    }
+  public String getPasswordHash() {
+    return passwordHash;
+  }
 
-    public String getPhoneNo() { return phoneNo; }
+  public String getName() {
+    return name;
+  }
 
-    public String getAddress() { return address; }
+  public UUID getId() {
+    return id;
+  }
+
+  public String getPhoneNo() {
+    return phoneNo;
+  }
+
+  public String getAddress() {
+    return address;
+  }
 }

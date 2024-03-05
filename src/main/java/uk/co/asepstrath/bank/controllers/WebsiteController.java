@@ -102,9 +102,18 @@ public class WebsiteController {
     return getUserAndAddToTemplate("homePage.hbs", getUUIDOrNull(ctx));
   }
 
-  @GET("/accounts")
-  public ModelAndView printAllAccounts() {
+  @GET("/accounts/")
+  public ModelAndView printAllAccounts(Context ctx) {
+    UUID userId = getUUIDOrNull(ctx);
+
+    if (userId == null)
+      throw new StatusCodeException(StatusCode.UNAUTHORIZED);
     try {
+      User user = dbController.returnUser(userId);
+
+      if (!user.isAdmin())
+        throw new StatusCodeException(StatusCode.UNAUTHORIZED);
+
       List<Account> accounts = dbController.returnAllAccounts();
 
       if (accounts.isEmpty()) {
