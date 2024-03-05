@@ -106,6 +106,41 @@ public class App extends Jooby {
             log.error("Database Creation Error!", e);
             this.stop();
         }
+    }
+    
+/*    public void onStart() {
+        Logger log = getLog();
+        log.info("Starting Up...");
+        DataSource ds = require(DataSource.class);
+        DBController db = new DBController(ds);
+
+        try {
+            db.createTables();
+
+            HttpResponse<Account[]> accountResponse = Unirest.get("https://api.asep-strath.co.uk/api/accounts").asObject(Account[].class);
+
+            int statusCode = accountResponse.getStatus();
+            log.info("API Response Status Code: " + statusCode);
+
+            String responseBody = accountResponse.getBody() != null ? accountResponse.getBody().toString() : "Empty";
+            log.info("API Response Body: " + responseBody);
+
+            if (statusCode == 200) {
+                // Process the response if successful
+            } else {
+                log.error("Failed to fetch accounts from API. Status code: " + statusCode);
+                this.stop();
+            }
+        } catch (UnirestException e) {
+            log.error("Error during HTTP request", e);
+            this.stop();
+        } catch (Exception e) {
+            log.error("Error during startup", e);
+            this.stop();
+        }
+    }
+*/
+
 
 // Old Code Below
 /*
@@ -127,10 +162,11 @@ public class App extends Jooby {
         }
 */
 
+
         /*
          * This function will be called when the application shuts down
          */
-    }
+
     public void onStop () {
         System.out.println("Shutting Down...");
     }
