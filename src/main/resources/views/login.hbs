@@ -3,23 +3,27 @@
 <head>
     <title>Scotbank - Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {{> style.hbs}}
-
+    {{> style.hbs end}}
+</head>
 <body>
 {{> navbar.hbs}}
+<div id="message-container" style="display:none;">
+  <p>Something didn't go right!</p>
+</div>
 <div class="form-container">
-    <form action="/login/save" method="post">
+    <form> 
         <h1>Login to account</h1>
         <input id="username" name="username" placeholder="Enter Username" required="" maxlength="40" tabindex="1" type="text">
 
         <input id="password" name="password" placeholder="Enter Password" required="" tabindex="2" type="password">
 
-        <input name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
+        <input onclick="return submitForm();" name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
 
         <a href="register">Don't have an account?</a>
     </form>
 </div>
 {{> footer.hbs}}
 </body>
+    <script src="/assets/login.js"></script>
 </html>
 
