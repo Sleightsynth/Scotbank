@@ -1,20 +1,23 @@
 package uk.co.asepstrath.bank;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.UUID;
-
-import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-
 import io.jooby.Jooby;
 import io.jooby.handlebars.HandlebarsModule;
 import io.jooby.helper.UniRestExtension;
 import io.jooby.hikari.HikariModule;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.Unirest;
+import kong.unirest.core.UnirestException;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
 import uk.co.asepstrath.bank.controllers.DBController;
 import uk.co.asepstrath.bank.controllers.WebsiteController;
 import uk.co.asepstrath.bank.util.AccountCategory;
+import javax.sql.DataSource;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.UUID;
 
 public class App extends Jooby {
     {
@@ -64,6 +67,49 @@ public class App extends Jooby {
         DataSource ds = require(DataSource.class);
         DBController db = new DBController(ds);
 
+        try {
+            db.createTables();
+
+        } catch (Exception e) {
+            log.error("Database Creation Error", e);
+            this.stop();
+        }
+
+        HttpResponse<Account> accountResponse = Unirest.get("https://api.asep-strath.co.uk/api/accounts").asObject(Account.class);
+        //Account accountObject = accountResponse.getBody();
+
+        try {
+            JSONArray jsonArray = new JSONArray(accountResponse.getBody());
+            ArrayList<Account> accounts = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                UUID uuid = UUID.fromString(jsonObject.getString("uuid"));
+                String name = jsonObject.getString("name");
+                BigDecimal startingBalance = new BigDecimal(jsonObject.getString("startingBalance"));
+                boolean roundUpEnabled = jsonObject.getBoolean("roundUpEnabled");
+
+                User testUser = new User(uuid, "connor.waiter.2022@uni.strath.ac.uk", db.getSha512Hash("123"),
+                        name, "07123 45678", "123 Connor Street", true);
+                db.addUser(testUser);
+
+                accounts.add(new Account(testUser, uuid, "12345678", "12-34-56", startingBalance,
+                        Boolean.FALSE, AccountCategory.Payment));
+            }
+
+            db.addAccounts(accounts);
+
+            for (Account account : accounts) {
+                System.out.println(account);
+            }
+
+        } catch(SQLException e){
+            System.err.println("Error! Couldn't get data from API :/");
+            this.stop();
+        }
+
+// Old Code Below
+/*
         User testUser = new User(UUID.randomUUID(), "connor.waiter.2022@uni.strath.ac.uk", db.getSha512Hash("123"),
                 "Connor Waiter", "07123 45678", "123 Connor Street", true);
 
@@ -80,12 +126,13 @@ public class App extends Jooby {
             log.error("Database Creation Error", e);
             this.stop();
         }
-    }
+*/
 
-    /*
-     * This function will be called when the application shuts down
-     */
-    public void onStop() {
-        System.out.println("Shutting Down...");
+        /*
+         * This function will be called when the application shuts down
+         */
     }
+        public void onStop () {
+            System.out.println("Shutting Down...");
+        }
 }
