@@ -212,6 +212,21 @@ public class WebsiteController {
         return getUserAndAddToTemplate("transactionForm.hbs", getUUIDOrNull(ctx));
     }
 
+    @GET("/contact")
+    public ModelAndView contactpage(Context ctx) {
+        return getUserAndAddToTemplate("contact.hbs", getUUIDOrNull(ctx));
+    }
+
+    @GET("/savingsPot")
+    public ModelAndView savingspage(Context ctx) {
+        return getUserAndAddToTemplate("savingsPot.hbs", getUUIDOrNull(ctx));
+    }
+
+    @GET("/spendingSummary")
+    public ModelAndView spendingPage(Context ctx) {
+        return getUserAndAddToTemplate("spendingSummary.hbs", getUUIDOrNull(ctx));
+    }
+
     @GET("/overview")
     public ModelAndView overview(Context ctx) {
 
