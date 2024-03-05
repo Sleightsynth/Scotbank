@@ -107,7 +107,16 @@ public class App extends Jooby {
             this.stop();
         }
     }
-    
+
+
+/* Test below - current issue:
+
+            [2024-03-05 23:40:44,912]-[pool-2-thread-1] INFO  uk.co.asepstrath.bank.App - Starting Up...
+            [2024-03-05 23:40:45,039]-[pool-2-thread-1] INFO  uk.co.asepstrath.bank.App - API Response Status Code: 200
+            [2024-03-05 23:40:45,040]-[pool-2-thread-1] INFO  uk.co.asepstrath.bank.App - API Response Body: Empty
+
+*/
+
 /*    public void onStart() {
         Logger log = getLog();
         log.info("Starting Up...");
