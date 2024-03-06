@@ -3,8 +3,6 @@ import io.jooby.exception.StatusCodeException;
 import io.jooby.test.JoobyTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.co.asepstrath.bank.Account;
-import uk.co.asepstrath.bank.App;
 import uk.co.asepstrath.bank.controllers.DBController;
 import java.util.UUID;
 
