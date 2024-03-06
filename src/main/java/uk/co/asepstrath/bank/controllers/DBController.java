@@ -164,7 +164,7 @@ public class DBController {
 
     while (set.next()) {
       accounts.add(new Account(UUID.fromString(set.getString("User_Id")), set.getString("AccountNumber"),
-              set.getString("SortCode"), set.getBigDecimal("AccountBalance"), Boolean.FALSE, AccountCategory.Payment));
+              set.getString("SortCode"), set.getBigDecimal("AccountBalance"), Boolean.FALSE, null));
     }
 
     return accounts;
@@ -228,7 +228,7 @@ public class DBController {
     }
 
     Account account = new Account(userID, set.getString("AccountNumber"),
-        set.getString("SortCode"), set.getBigDecimal("AccountBalance"), Boolean.FALSE, AccountCategory.Payment);
+        set.getString("SortCode"), set.getBigDecimal("AccountBalance"), Boolean.FALSE, null);
 
     return account;
   }
