@@ -97,39 +97,62 @@ public class App extends Jooby {
 
                     // Create Account object and add to list
 
-
+/*
                     //random account number
-                    byte[] array2 = new byte[7]; // length is bounded by 7
+                    byte[] array2 = new byte[8]; // length is bounded by 7
                     new Random().nextBytes(array2);
                     String generatedAccountNo = new String(array2, StandardCharsets.UTF_8);
 
                     //random email
-                    byte[] array = new byte[7]; // length is bounded by 7
+                    byte[] array = new byte[10]; // length is bounded by 7
                     new Random().nextBytes(array);
                     String generatedEmail = new String(array, StandardCharsets.UTF_8);
 
-                    //random password
-                    Random rand = new Random();
-                    int n = rand.nextInt(50);
-                    n += 1;
-
                     //random sort code
-                    byte[] array1 = new byte[7]; // length is bounded by 7
+                    byte[] array1 = new byte[8]; // length is bounded by 7
                     new Random().nextBytes(array1);
                     String generatedSortCode = new String(array1, StandardCharsets.UTF_8);
+                    */
 
+                    //random password
+                    Random rand = new Random();
+                    int n = rand.nextInt(1000);
 
-                    User testUser = new User(uuid, generatedEmail, db.getSha512Hash(String.valueOf(n)),
-                            name, generatedEmail, generatedEmail, true);
+                    //new email
+                    String newEmail = name.replaceAll("\\s+","");
+                    newEmail = newEmail.concat(".2022@strath.uni.ac.uk");
 
-                    accounts.add(new Account(testUser, uuid, generatedAccountNo, generatedSortCode, startingBalance,
+                    //new sort code
+
+                    String newSortCode = "%02d-%02d-%02d".formatted(rand.nextInt(100), rand.nextInt(100), rand.nextInt(100));
+
+                    //new account number
+
+                    String newAccountNumber = "%08d".formatted(rand.nextInt(100000000));
+
+                    String newPassword = db.getSha512Hash(String.valueOf(n));
+
+                    User testUser = new User(uuid, newEmail, newPassword,
+                            name,"07123 45678","123 Connor Street",true);
+
+                    accounts.add(new Account(testUser, uuid, newSortCode, newAccountNumber, startingBalance,
                             Boolean.FALSE, AccountCategory.Payment));
+
+                    System.out.println(" ");
+                    System.out.println("UUID:"+uuid);
+                    System.out.println("Email:"+newEmail);
+                    System.out.println("Name:"+name);
+                    System.out.println("Password:"+newPassword);
+                    System.out.println("Sort Code:"+newSortCode);
+                    System.out.println("Account Number:"+newAccountNumber);
+                    System.out.println("Starting Balance:"+startingBalance);
+
                     db.addUser(testUser);
-                    //db.addAccounts(accounts);
+                    db.addAccounts(accounts);
                 }
 
                 // Process accounts and add to database
-                db.addAccounts(accounts);
+                //db.addAccounts(accounts);
 
                 // Log accounts
                 for (Account account : accounts) {
