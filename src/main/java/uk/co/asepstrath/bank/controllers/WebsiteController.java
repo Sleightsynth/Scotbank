@@ -99,30 +99,22 @@ public class WebsiteController {
 
     @GET("/")
     public ModelAndView homepage(Context ctx) {
-        UUID uuid = getUUIDOrNull(ctx);
-        User user;
-        try {
-
-            if (uuid == null) {
-                user = new User(uuid, "", "", "Login", "", "");
-                return new ModelAndView("homePage.hbs").put("user", user);
-            } else {
-                user = dbController.returnUser(uuid);
-                return new ModelAndView("homePage.hbs").put("user", user);
-
-            }
-        } catch (SQLException e) {
-            // If something does go wrong this will log the stack trace
-            logger.error("Database Error Occurred", e);
-            // And return a HTTP 500 error to the requester
-            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-        }
+        return getUserAndAddToTemplate("homePage.hbs", getUUIDOrNull(ctx));
     }
 
     @GET("/accounts")
-    public ModelAndView printAllAccounts() {
+    public ModelAndView printAllAccounts(Context ctx) {
+        UUID userId = getUUIDOrNull(ctx);
+
+        if (userId == null)
+            throw new StatusCodeException(StatusCode.UNAUTHORIZED);
         try {
-            List < Account > accounts = dbController.returnAllAccounts();
+            User user = dbController.returnUser(userId);
+
+            if (!user.isAdmin())
+                throw new StatusCodeException(StatusCode.UNAUTHORIZED);
+
+            List<Account> accounts = dbController.returnAllAccounts();
 
             if (accounts.isEmpty()) {
                 throw new StatusCodeException(StatusCode.NOT_FOUND, "No accounts found");
@@ -148,14 +140,14 @@ public class WebsiteController {
             Session session = ctx.session();
             session.put("User_Id", userId.toString());
             ctx.sendRedirect("/profile");
-
         } catch (StatusCodeException se) {
             // Username or password is incorrect, should probably redirect to a new view
             // saying their login is incorrect
 
-            logger.error("Login Error Occurred", se);
-
-            ctx.sendRedirect("/login");
+            // logger.error("Login Error Occurred", se);
+            //
+            // ctx.sendRedirect("/login");
+            ctx.send(StatusCode.UNAUTHORIZED);
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
             logger.error("Database Error Occurred", e);
@@ -173,10 +165,16 @@ public class WebsiteController {
         ctx.sendRedirect("/");
     }
 
-    // >>>>>>
     @GET("/register")
-    public ModelAndView registerpage() {
-        return new ModelAndView("register.hbs");
+    public ModelAndView registerpage(Context ctx) {
+
+        UUID uuid = getUUIDOrNull(ctx);
+
+        if (uuid == null) {
+            return getUserAndAddToTemplate("register.hbs", uuid);
+        }
+        ctx.sendRedirect("/profile");
+        throw new StatusCodeException(StatusCode.FOUND);
     }
 
     @GET("/login")
@@ -185,7 +183,7 @@ public class WebsiteController {
         UUID uuid = getUUIDOrNull(ctx);
 
         if (uuid == null) {
-            return new ModelAndView("login.hbs");
+            return getUserAndAddToTemplate("login.hbs", uuid);
         }
 
         // User logged in
@@ -206,29 +204,27 @@ public class WebsiteController {
             throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
         }
 
-        try {
-            User user = dbController.returnUser(uuid);
-
-            Account account = dbController.returnAccount(uuid);
-
-            ModelAndView modelAndView = new ModelAndView("profile.hbs").put("user", user);
-
-            modelAndView.put("account", account);
-
-            return modelAndView;
-        } catch (
-
-                SQLException e) {
-            // If something does go wrong this will log the stack trace
-            logger.error("Database Error Occurred", e);
-            // And return a HTTP 500 error to the requester
-            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-        }
+        return getUserAndAddToTemplate("profile.hbs", uuid);
     }
 
     @GET("/transactionForm")
-    public ModelAndView transactionpage() {
-        return new ModelAndView("transactionForm.hbs");
+    public ModelAndView transactionpage(Context ctx) {
+        return getUserAndAddToTemplate("transactionForm.hbs", getUUIDOrNull(ctx));
+    }
+
+    @GET("/contact")
+    public ModelAndView contactpage(Context ctx) {
+        return getUserAndAddToTemplate("contact.hbs", getUUIDOrNull(ctx));
+    }
+
+    @GET("/savingsPot")
+    public ModelAndView savingspage(Context ctx) {
+        return getUserAndAddToTemplate("savingsPot.hbs", getUUIDOrNull(ctx));
+    }
+
+    @GET("/spendingSummary")
+    public ModelAndView spendingPage(Context ctx) {
+        return getUserAndAddToTemplate("spendingSummary.hbs", getUUIDOrNull(ctx));
     }
 
     @GET("/overview")
@@ -244,13 +240,11 @@ public class WebsiteController {
 
         try {
             User user = dbController.returnUser(uuid);
+            Account account = dbController.returnAccount(user);
 
-            Account account = dbController.returnAccount(uuid);
+            ModelAndView modelAndView = new ModelAndView("overview.hbs").put("account", account);
 
-            ModelAndView modelAndView = new ModelAndView("overview.hbs").put("user", user);
-            modelAndView.put("account", account);
-
-            return modelAndView;
+            return getUserAndAddToTemplate(modelAndView, uuid);
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
             logger.error("Database Error Occurred", e);
@@ -280,5 +274,26 @@ public class WebsiteController {
         } catch (IllegalArgumentException e) { // If the user is not logged in
             return null;
         }
+    }
+
+    private ModelAndView getUserAndAddToTemplate(String hbsFileName, UUID uuid) {
+        return this.getUserAndAddToTemplate(new ModelAndView(hbsFileName), uuid);
+    }
+
+    private ModelAndView getUserAndAddToTemplate(ModelAndView model, UUID uuid) {
+        User user;
+        if (uuid == null) {
+            return model.put("userLoggedIn", Boolean.FALSE);
+        }
+        try {
+            user = dbController.returnUser(uuid);
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
+
+        return model.put("userLoggedIn", Boolean.TRUE).put("user", user);
     }
 }

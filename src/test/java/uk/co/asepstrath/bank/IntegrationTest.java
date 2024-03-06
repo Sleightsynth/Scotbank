@@ -12,32 +12,32 @@ import org.junit.jupiter.api.Test;
 
 @JoobyTest(App.class)
 public class IntegrationTest {
-  static OkHttpClient client = new OkHttpClient();
+    static OkHttpClient client = new OkHttpClient();
 
-  @Test
-  public void shouldDisplayAccountsData(int serverPort) throws IOException {
-    Request req = new Request.Builder().url("http://localhost:" + serverPort + "/accounts").build();
+    @Test
+    public void shouldNotDisplayAccountsData(int serverPort) throws IOException {
+        Request req = new Request.Builder().url("http://localhost:" + serverPort + "/accounts").build();
 
-    try (Response rsp = client.newCall(req).execute()) {
-      assertEquals(StatusCode.OK.value(), rsp.code());
+        try (Response rsp = client.newCall(req).execute()) {
+            assertEquals(StatusCode.UNAUTHORIZED_CODE, rsp.code());
+        }
     }
-  }
 
-  @Test
-  public void shouldDisplayHomePage(int serverPort) throws IOException {
-    Request req = new Request.Builder().url("http://localhost:" + serverPort + "/").build();
+    @Test
+    public void shouldDisplayHomePage(int serverPort) throws IOException {
+        Request req = new Request.Builder().url("http://localhost:" + serverPort + "/").build();
 
-    try (Response rsp = client.newCall(req).execute()) {
-      assertEquals(StatusCode.OK.value(), rsp.code());
+        try (Response rsp = client.newCall(req).execute()) {
+            assertEquals(StatusCode.OK.value(), rsp.code());
+        }
     }
-  }
 
-  @Test
-  public void shouldCallApi(int serverPort) throws IOException {
-    Request req = new Request.Builder().url("http://localhost:" + serverPort + "/api/transactions").build();
+    @Test
+    public void shouldCallApi(int serverPort) throws IOException {
+        Request req = new Request.Builder().url("http://localhost:" + serverPort + "/api/transactions").build();
 
-    try (Response rsp = client.newCall(req).execute()) {
-      assertEquals(StatusCode.OK.value(), rsp.code());
+        try (Response rsp = client.newCall(req).execute()) {
+            assertEquals(StatusCode.OK.value(), rsp.code());
+        }
     }
-  }
 }

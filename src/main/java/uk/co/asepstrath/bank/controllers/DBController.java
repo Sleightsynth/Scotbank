@@ -34,7 +34,6 @@ public class DBController {
 
     /**
      * Creates an instance of the DBController
-     *
      * @param ds
      */
     public DBController(DataSource ds) {
@@ -43,7 +42,6 @@ public class DBController {
 
     /**
      * Creates the four database tables: Accounts, Users, Session, Transaction
-     *
      * @throws SQLException
      */
     public void createTables() throws SQLException {
@@ -57,8 +55,7 @@ public class DBController {
                         "`Id` UUID PRIMARY KEY UNIQUE, " +
                         "`Name` varchar(30)," +
                         "`Email` varchar(50)," +
-                        "`Hash_pass` char(128)," // Using SHA-512 for encryption
-                        +
+                        "`Hash_pass` char(128)," + // Using SHA-512 for encryption
                         "`phoneNo` varchar(12)," +
                         "`address` varchar(50)," +
                         "PRIMARY KEY (`Id`)" +
@@ -96,7 +93,6 @@ public class DBController {
 
     /**
      * Adds a transaction to the Transactions table in the database
-     *
      * @param ts
      * @throws SQLException
      */
@@ -122,12 +118,12 @@ public class DBController {
 
     /**
      * Populates the Accounts table in the database with the list provided
-     *
+     * 
      * @param accounts
      * @throws SQLException
      */
-    public void addAccounts(List < Account > accounts) throws SQLException {
-        for (Account acc: accounts) {
+    public void addAccounts(List<Account> accounts) throws SQLException {
+        for (Account acc : accounts) {
             this.addAccount(acc);
         }
     }
@@ -144,10 +140,10 @@ public class DBController {
 
     /**
      * Returns a List containing every Account in the Accounts table in the database
-     *
+     * 
      * @throws SQLException
      */
-    public List < Account > returnAllAccounts() throws SQLException {
+    public List<Account> returnAllAccounts() throws SQLException {
         Connection connection = dataSource.getConnection();
         // Create Statement (batch of SQL Commands)
         Statement statement = connection.createStatement();
@@ -191,7 +187,6 @@ public class DBController {
         // set.getBigDecimal("AccountBalance"));
         //
         // return account;
-
     }
 
     public Account returnAccount(String accountNumber, String sortCode) throws SQLException {
