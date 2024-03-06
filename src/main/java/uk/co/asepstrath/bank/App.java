@@ -64,7 +64,7 @@ public class App extends Jooby {
      * it should be used to ensure that the DB is properly setup
      * >>>>>>> UAC
      */
-
+/* HEREEEEEEE
     public void onStart() {
         Logger log = getLog();
         log.info("Starting Up...");
@@ -98,7 +98,7 @@ public class App extends Jooby {
 
                     //new email
                     String newEmail = name.replaceAll("\\s+","");
-                    newEmail = newEmail.concat(".2022@strath.uni.ac.uk");
+                    newEmail = newEmail.concat(".2022@uni.strath.ac.uk");
 
                     //new sort code
 
@@ -153,7 +153,7 @@ public class App extends Jooby {
             this.stop();
         }
     }
-
+*///HERE!!!!!!!!!!!!!!!!
 // previous attempt
 
     /*
