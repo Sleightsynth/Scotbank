@@ -85,17 +85,14 @@ public class App extends Jooby {
                 JSONArray jsonArray = new JSONArray(responseBody);
                 ArrayList<Account> accounts = new ArrayList<>();
 
-
-                //first one work, second is hell
+                //first one works, second works for 2 of them
                 //for (int i = 0; i < 1; i++) {
-                for (int i = 0; i < jsonArray.length(); i++) {
+                for (int i = 0; i < jsonArray.length(); i++) { //there should be 100 accounts to go through
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
                     String name = jsonObject.getString("name");
                     BigDecimal startingBalance = jsonObject.getBigDecimal("startingBalance");
                     boolean roundUpEnabled = jsonObject.getBoolean("roundUpEnabled");
-
-                    // Create Account object and add to list
 
                     Random rand = new Random();
 
@@ -114,13 +111,14 @@ public class App extends Jooby {
                     //new password
                     int n = rand.nextInt(1000);
                     String newPassword = db.getSha512Hash(String.valueOf(n));
-
+                    System.out.println("The UUID:"+uuid);
                     User testUser = new User(uuid, newEmail, newPassword,
-                            name,"07123 45678","123 Connor Street",true);
+                            name, "07123 45678", "123 Connor Street", true);
 
                     accounts.add(new Account(testUser, uuid, newSortCode, newAccountNumber, startingBalance,
                             Boolean.FALSE, AccountCategory.Payment));
 
+                    //Get results
                     System.out.println(" ");
                     System.out.println("UUID:"+uuid);
                     System.out.println("Email:"+newEmail);
