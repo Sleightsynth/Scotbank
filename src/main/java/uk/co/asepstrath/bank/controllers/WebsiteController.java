@@ -32,253 +32,253 @@ import uk.co.asepstrath.bank.util.TransactionStatus;
  */
 @Path("/")
 public class WebsiteController {
-  // private final DataSource dataSource;
-  private final Logger logger;
-  private final DBController dbController;
+    // private final DataSource dataSource;
+    private final Logger logger;
+    private final DBController dbController;
 
-  /*
-   * This constructor can take in any dependencies the controller may need to
-   * respond to a request
-   */
-  public WebsiteController(DataSource ds, Logger log) {
-    logger = log;
-    dbController = new DBController(ds);
-  }
-
-  /**
-   * This "attempts" to complete a transaction.
-   *
-   * @param sender    Payment from
-   * @param recipient Payment to
-   * @return
-   */
-  private UUID tryTransaction(Account sender, Account recipient, BigDecimal amount, String reference) {
-    if (sender == null || recipient == null)
-      return null; // TODO: This should probably be an unchecked error.
-
-    // Defining things so verbosely might look like a terrible idea,
-    // but I implore you to reflect on what it accomplishes.
-    // If you dislike this, I suggest you refactor it. :)
-
-    Transaction ts = new Transaction();
-    ts.category = recipient.getAccountCategory();
-    ts.time = new Timestamp(System.currentTimeMillis());
-    ts.status = recipient.isForeign() ? TransactionStatus.PROCESS_DUE : TransactionStatus.OK;
-    ts.sender = sender;
-    ts.recipient = recipient;
-    ts.amount = amount;
-    ts.id = UUID.randomUUID();
-    ts.reference = reference;
-
-    // Now try committing a transaction.
-    // Note: Roleplay is happening here. Say we do have foreign accounts, the sender
-    // cannot been foreign if the transaction is happening through our service.
-    try {
-      sender.withdraw(amount);
-
-      if (recipient.isForeign()) {
-        // recipient.deposit(int amount) does not exist here.
-        // Maybe a new class is needed to handle this
-      } else {
-        sender.deposit(amount);
-      }
-    } catch (ArithmeticException e) {
-      ts.status = TransactionStatus.FAILED;
+    /*
+     * This constructor can take in any dependencies the controller may need to
+     * respond to a request
+     */
+    public WebsiteController(DataSource ds, Logger log) {
+        logger = log;
+        dbController = new DBController(ds);
     }
 
-    try {
-      dbController.addTransaction(ts);
-    } catch (SQLException e) {
-      // If something does go wrong this will log the stack trace
-      logger.error("Database Error Occurred", e);
-      // And return a HTTP 500 error to the requester
-      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-    }
-    return ts.id;
-  }
+    /**
+     * This "attempts" to complete a transaction.
+     *
+     * @param sender    Payment from
+     * @param recipient Payment to
+     * @return
+     */
+    private UUID tryTransaction(Account sender, Account recipient, BigDecimal amount, String reference) {
+        if (sender == null || recipient == null)
+            return null; // TODO: This should probably be an unchecked error.
 
-  @GET("/")
-  public ModelAndView homepage(Context ctx) {
-    UUID uuid = getUUIDOrNull(ctx);
-    User user;
-    try {
+        // Defining things so verbosely might look like a terrible idea,
+        // but I implore you to reflect on what it accomplishes.
+        // If you dislike this, I suggest you refactor it. :)
 
-      if (uuid == null) {
-        user = new User(uuid, "", "", "Login", "", "");
-        return new ModelAndView("homePage.hbs").put("user", user);
-      } else {
-        user = dbController.returnUser(uuid);
-        return new ModelAndView("homePage.hbs").put("user", user);
+        Transaction ts = new Transaction();
+        ts.category = recipient.getAccountCategory();
+        ts.time = new Timestamp(System.currentTimeMillis());
+        ts.status = recipient.isForeign() ? TransactionStatus.PROCESS_DUE : TransactionStatus.OK;
+        ts.sender = sender;
+        ts.recipient = recipient;
+        ts.amount = amount;
+        ts.id = UUID.randomUUID();
+        ts.reference = reference;
 
-      }
-    } catch (SQLException e) {
-      // If something does go wrong this will log the stack trace
-      logger.error("Database Error Occurred", e);
-      // And return a HTTP 500 error to the requester
-      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-    }
-  }
+        // Now try committing a transaction.
+        // Note: Roleplay is happening here. Say we do have foreign accounts, the sender
+        // cannot been foreign if the transaction is happening through our service.
+        try {
+            sender.withdraw(amount);
 
-  @GET("/accounts")
-  public ModelAndView printAllAccounts() {
-    try {
-      List<Account> accounts = dbController.returnAllAccounts();
+            if (recipient.isForeign()) {
+                // recipient.deposit(int amount) does not exist here.
+                // Maybe a new class is needed to handle this
+            } else {
+                sender.deposit(amount);
+            }
+        } catch (ArithmeticException e) {
+            ts.status = TransactionStatus.FAILED;
+        }
 
-      if (accounts.isEmpty()) {
-        throw new StatusCodeException(StatusCode.NOT_FOUND, "No accounts found");
-      }
-
-      return new ModelAndView("accountTable.hbs").put("accounts", accounts);
-
-    } catch (SQLException e) {
-      // If something does go wrong this will log the stack trace
-      logger.error("Database Error Occurred", e);
-      // And return a HTTP 500 error to the requester
-      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-    }
-  }
-
-  @POST("/login/save")
-  public void login(String username, String password, Context ctx) {
-    try {
-      String passwordHash = dbController.getSha512Hash(password);
-      User user = new User(username, passwordHash);
-
-      UUID userId = dbController.loginUser(user);
-      Session session = ctx.session();
-      session.put("User_Id", userId.toString());
-      ctx.sendRedirect("/profile");
-
-    } catch (StatusCodeException se) {
-      // Username or password is incorrect, should probably redirect to a new view
-      // saying their login is incorrect
-
-      logger.error("Login Error Occurred", se);
-
-      ctx.sendRedirect("/login");
-    } catch (SQLException e) {
-      // If something does go wrong this will log the stack trace
-      logger.error("Database Error Occurred", e);
-      // And return a HTTP 500 error to the requester
-      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-    }
-  }
-
-  @GET("/logout")
-  public void logout(Context ctx) {
-    Session session = ctx.session();
-
-    session.destroy();
-
-    ctx.sendRedirect("/");
-  }
-
-  // >>>>>>
-  @GET("/register")
-  public ModelAndView registerpage() {
-    return new ModelAndView("register.hbs");
-  }
-
-  @GET("/login")
-  public ModelAndView loginpage(Context ctx) {
-
-    UUID uuid = getUUIDOrNull(ctx);
-
-    if (uuid == null) {
-      return new ModelAndView("login.hbs");
+        try {
+            dbController.addTransaction(ts);
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
+        return ts.id;
     }
 
-    // User logged in
-    ctx.sendRedirect("/profile");
+    @GET("/")
+    public ModelAndView homepage(Context ctx) {
+        UUID uuid = getUUIDOrNull(ctx);
+        User user;
+        try {
 
-    // Was complaining about no return statement so had to return a status code
-    throw new StatusCodeException(StatusCode.FOUND);
-  }
+            if (uuid == null) {
+                user = new User(uuid, "", "", "Login", "", "");
+                return new ModelAndView("homePage.hbs").put("user", user);
+            } else {
+                user = dbController.returnUser(uuid);
+                return new ModelAndView("homePage.hbs").put("user", user);
 
-  @GET("/profile")
-  public ModelAndView profilepage(Context ctx) {
-
-    UUID uuid = getUUIDOrNull(ctx);
-
-    if (uuid == null) {
-      ctx.sendRedirect("/login");
-
-      throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
+            }
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
-    try {
-      User user = dbController.returnUser(uuid);
+    @GET("/accounts")
+    public ModelAndView printAllAccounts() {
+        try {
+            List < Account > accounts = dbController.returnAllAccounts();
 
-      Account account = dbController.returnAccount(uuid);
+            if (accounts.isEmpty()) {
+                throw new StatusCodeException(StatusCode.NOT_FOUND, "No accounts found");
+            }
 
-      ModelAndView modelAndView = new ModelAndView("profile.hbs").put("user", user);
+            return new ModelAndView("accountTable.hbs").put("accounts", accounts);
 
-      modelAndView.put("account", account);
-
-      return modelAndView;
-    } catch (
-
-    SQLException e) {
-      // If something does go wrong this will log the stack trace
-      logger.error("Database Error Occurred", e);
-      // And return a HTTP 500 error to the requester
-      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-    }
-  }
-
-  @GET("/transactionForm")
-  public ModelAndView transactionpage() {
-    return new ModelAndView("transactionForm.hbs");
-  }
-
-  @GET("/overview")
-  public ModelAndView overview(Context ctx) {
-
-    UUID uuid = getUUIDOrNull(ctx);
-
-    if (uuid == null) {
-      ctx.sendRedirect("/login");
-
-      throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
-    try {
-      User user = dbController.returnUser(uuid);
+    @POST("/login/save")
+    public void login(String username, String password, Context ctx) {
+        try {
+            String passwordHash = dbController.getSha512Hash(password);
+            User user = new User(username, passwordHash);
 
-      Account account = dbController.returnAccount(uuid);
+            UUID userId = dbController.loginUser(user);
+            Session session = ctx.session();
+            session.put("User_Id", userId.toString());
+            ctx.sendRedirect("/profile");
 
-      ModelAndView modelAndView = new ModelAndView("overview.hbs").put("user", user);
-      modelAndView.put("account", account);
+        } catch (StatusCodeException se) {
+            // Username or password is incorrect, should probably redirect to a new view
+            // saying their login is incorrect
 
-      return modelAndView;
-    } catch (SQLException e) {
-      // If something does go wrong this will log the stack trace
-      logger.error("Database Error Occurred", e);
-      // And return a HTTP 500 error to the requester
-      throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-    }
-  }
+            logger.error("Login Error Occurred", se);
 
-  /**
-   * Returns the user's id if logged in or null if not
-   * 
-   * @param ctx the session context
-   * @return User's UUID or null
-   */
-  private static UUID getUUIDOrNull(Context ctx) {
-    Session session = ctx.session();
-    Instant sessionCreated = session.getCreationTime();
-    long sessionLifeSpan = Duration.between(sessionCreated, Instant.now()).toSeconds();
-
-    // Expire the session if it is older than 10 minutes
-    if (sessionLifeSpan > 600) {
-      session.destroy();
+            ctx.sendRedirect("/login");
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
-    try {
-      return UUID.fromString(String.valueOf(session.get("User_Id")));
-    } catch (IllegalArgumentException e) { // If the user is not logged in
-      return null;
+    @GET("/logout")
+    public void logout(Context ctx) {
+        Session session = ctx.session();
+
+        session.destroy();
+
+        ctx.sendRedirect("/");
     }
-  }
+
+    // >>>>>>
+    @GET("/register")
+    public ModelAndView registerpage() {
+        return new ModelAndView("register.hbs");
+    }
+
+    @GET("/login")
+    public ModelAndView loginpage(Context ctx) {
+
+        UUID uuid = getUUIDOrNull(ctx);
+
+        if (uuid == null) {
+            return new ModelAndView("login.hbs");
+        }
+
+        // User logged in
+        ctx.sendRedirect("/profile");
+
+        // Was complaining about no return statement so had to return a status code
+        throw new StatusCodeException(StatusCode.FOUND);
+    }
+
+    @GET("/profile")
+    public ModelAndView profilepage(Context ctx) {
+
+        UUID uuid = getUUIDOrNull(ctx);
+
+        if (uuid == null) {
+            ctx.sendRedirect("/login");
+
+            throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
+        }
+
+        try {
+            User user = dbController.returnUser(uuid);
+
+            Account account = dbController.returnAccount(uuid);
+
+            ModelAndView modelAndView = new ModelAndView("profile.hbs").put("user", user);
+
+            modelAndView.put("account", account);
+
+            return modelAndView;
+        } catch (
+
+                SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
+    }
+
+    @GET("/transactionForm")
+    public ModelAndView transactionpage() {
+        return new ModelAndView("transactionForm.hbs");
+    }
+
+    @GET("/overview")
+    public ModelAndView overview(Context ctx) {
+
+        UUID uuid = getUUIDOrNull(ctx);
+
+        if (uuid == null) {
+            ctx.sendRedirect("/login");
+
+            throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
+        }
+
+        try {
+            User user = dbController.returnUser(uuid);
+
+            Account account = dbController.returnAccount(uuid);
+
+            ModelAndView modelAndView = new ModelAndView("overview.hbs").put("user", user);
+            modelAndView.put("account", account);
+
+            return modelAndView;
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
+    }
+
+    /**
+     * Returns the user's id if logged in or null if not
+     *
+     * @param ctx the session context
+     * @return User's UUID or null
+     */
+    private static UUID getUUIDOrNull(Context ctx) {
+        Session session = ctx.session();
+        Instant sessionCreated = session.getCreationTime();
+        long sessionLifeSpan = Duration.between(sessionCreated, Instant.now()).toSeconds();
+
+        // Expire the session if it is older than 10 minutes
+        if (sessionLifeSpan > 600) {
+            session.destroy();
+        }
+
+        try {
+            return UUID.fromString(String.valueOf(session.get("User_Id")));
+        } catch (IllegalArgumentException e) { // If the user is not logged in
+            return null;
+        }
+    }
 }
