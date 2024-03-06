@@ -65,7 +65,7 @@ public class App extends Jooby {
         DBController db = new DBController(ds);
 
         User testUser = new User(UUID.randomUUID(), "connor.waiter.2022@uni.strath.ac.uk", db.getSha512Hash("123"),
-                "Connor Waiter", "07123 45678", "123 Connor Street");
+                "Connor Waiter", "07123 45678", "123 Connor Street",true);
 
         ArrayList < Account > accounts = new ArrayList < > ();
 

@@ -58,6 +58,7 @@ public class DBController {
                         "`Hash_pass` char(128)," + // Using SHA-512 for encryption
                         "`phoneNo` varchar(12)," +
                         "`address` varchar(50)," +
+                        "`IsAdmin` bit,"+
                         "PRIMARY KEY (`Id`)" +
                         ")");
         stmt.executeUpdate(
@@ -134,7 +135,7 @@ public class DBController {
                 String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s','%s', '%f', '%s', %b)",
                         acc.getAccountNumber(), acc.getSortCode(), acc.getBalance().floatValue(), acc.getAccountCategory(), acc.isForeign()));
         prepStmt.setObject(1, acc.getUUID());
-        prepStmt.setObject(2, acc.getUser_id());
+        prepStmt.setObject(2, acc.getUser().getId());
         prepStmt.execute();
     }
 
@@ -153,6 +154,7 @@ public class DBController {
         List < Account > accounts = new ArrayList < > ();
 
         while (set.next()) {
+            String test = set.getString("User_Id");
             accounts.add(new Account(UUID.fromString(set.getString("User_Id")),
                     set.getString("AccountNumber"), set.getString("SortCode"),
                     set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
@@ -230,6 +232,10 @@ public class DBController {
         return account;
     }
 
+    public Account returnAccount(User user) throws SQLException {
+        return this.returnAccount(user.getId());
+    }
+
     /**
      * Returns the user details
      *
@@ -258,9 +264,9 @@ public class DBController {
     public void addUser(User user) throws SQLException {
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
+                String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %b)",
                         user.getId(), user.getName(), user.getEmail(), user.getPasswordHash(), user.getPhoneNo(),
-                        user.getAddress()));
+                        user.getAddress(), user.isAdmin()));
         prepStmt.execute();
     }
 
@@ -276,7 +282,7 @@ public class DBController {
         }
 
         User user = new User(userID, set.getString("Email"), set.getString("Hash_Pass"), set.getString("Name"),
-                set.getString("phoneNo"), set.getString("address"));
+                set.getString("phoneNo"), set.getString("address"), set.getBoolean("IsAdmin"));
 
         return user;
     }

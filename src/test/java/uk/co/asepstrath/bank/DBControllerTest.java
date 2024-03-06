@@ -41,7 +41,7 @@ public class DBControllerTest {
     }
 
     @Test
-    public void returnAccountaUUIDTest(){
+    public void returnAccountUUIDTest(){
         try {
             List<Account> accountList = dbController.returnAllAccounts();
             assertNotNull(accountList);
@@ -68,7 +68,7 @@ public class DBControllerTest {
     @Test
     public void returnUserTest(){
         UUID uuid = UUID.randomUUID();
-        User user1 = new User(uuid, "e@mail.com", dbController.getSha512Hash("password"), "name", "07111111111", "thePlace");
+        User user1 = new User(uuid, "e@mail.com", dbController.getSha512Hash("password"), "name", "07111111111", "thePlace",true);
         assertNotNull(user1);
         try {dbController.addUser(user1);}
         catch (SQLException e) {fail();}
@@ -92,7 +92,7 @@ public class DBControllerTest {
     @Test
     public void loginUserTest(){
         UUID uuid = UUID.randomUUID();
-        User user1 = new User(uuid, "e@mail.com", "password", "name", "07111111111", "thePlace");
+        User user1 = new User(uuid, "e@mail.com", "password", "name", "07111111111", "thePlace", true);
         assertNotNull(user1);
         try{dbController.addUser(user1);}
         catch (SQLException e) {fail();}
@@ -107,7 +107,7 @@ public class DBControllerTest {
     @Test
     public void loginUserNoUser(){
         UUID uuid = UUID.randomUUID();
-        User user1 = new User(uuid, "egjgjhghg@mail.com", dbController.getSha512Hash("password"), "name", "07111111111", "thePlace");
+        User user1 = new User(uuid, "egjgjhghg@mail.com", dbController.getSha512Hash("password"), "name", "07111111111", "thePlace",false);
         assertThrows(StatusCodeException.class, () -> dbController.loginUser(user1));
 
     }
