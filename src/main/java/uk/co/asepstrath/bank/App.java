@@ -61,6 +61,65 @@ public class App extends Jooby {
      * it should be used to ensure that the DB is properly setup
      * >>>>>>> UAC
      */
+
+    public void onStart() {
+        Logger log = getLog();
+        log.info("Starting Up...");
+        DataSource ds = require(DataSource.class);
+        DBController db = new DBController(ds);
+
+        try {
+            db.createTables();
+
+            HttpResponse<String> accountResponse = Unirest.get("https://api.asep-strath.co.uk/api/accounts").asString();
+            int statusCode = accountResponse.getStatus();
+            log.info("API Response Status Code: " + statusCode);
+
+            if (statusCode == 200) {
+                String responseBody = accountResponse.getBody();
+                log.info("API Response Body: " + responseBody);
+
+                JSONArray jsonArray = new JSONArray(responseBody);
+                ArrayList<Account> accounts = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
+                    String name = jsonObject.getString("name");
+                    BigDecimal startingBalance = jsonObject.getBigDecimal("startingBalance");
+                    boolean roundUpEnabled = jsonObject.getBoolean("roundUpEnabled");
+
+                    // Create Account object and add to list
+                    User testUser = new User(uuid, "connor.waiter.2022@uni.strath.ac.uk", db.getSha512Hash("123"),
+                            name, "07123 45678", "123 Connor Street", true);
+                    db.addUser(testUser);
+
+                    accounts.add(new Account(testUser, uuid, "12345678", "12-34-56", startingBalance,
+                            Boolean.FALSE, AccountCategory.Payment));
+                }
+
+                // Process accounts and add to database
+                db.addAccounts(accounts);
+
+                // Log accounts
+                for (Account account : accounts) {
+                    System.out.println(account);
+                }
+            } else {
+                log.error("Failed to fetch accounts from API. Status code: " + statusCode);
+                this.stop();
+            }
+        } catch (UnirestException e) {
+            log.error("Error during HTTP request", e);
+            this.stop();
+        } catch (Exception e) {
+            log.error("Error during startup", e);
+            this.stop();
+        }
+    }
+
+// previous attempt
+
+    /*
     public void onStart() {
         Logger log = getLog();
         log.info("Starting Up...");
@@ -107,7 +166,7 @@ public class App extends Jooby {
             this.stop();
         }
     }
-
+*/
 
 /* Test below - current issue:
 
