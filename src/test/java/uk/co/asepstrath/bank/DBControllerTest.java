@@ -46,7 +46,7 @@ public class DBControllerTest {
             List<Account> accountList = dbController.returnAllAccounts();
             assertNotNull(accountList);
             Account account1 = accountList.get(0);
-            Account account2 = dbController.returnAccount(account1.getUUID());
+            Account account2 = dbController.returnAccount(account1.getUser_id());
             assertNotNull(account2);
             assertEquals(account1.getAccountNumber(), account2.getAccountNumber());
             assertEquals(account1.getAccountCategory(), account2.getAccountCategory());
