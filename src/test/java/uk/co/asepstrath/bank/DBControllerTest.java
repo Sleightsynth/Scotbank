@@ -58,13 +58,59 @@ public class DBControllerTest {
             fail();
         }
     }
+
+    @Test
+    public void returnAccountStringError(){
+        assertThrows(UnsupportedOperationException.class, () -> dbController.returnAccount("name"));
+    }
     @Test
     public void returnAccountExceptionTest(){
         assertThrows(StatusCodeException.class, () -> dbController.returnAccount("33333333", "888888"));
     }
     @Test
     public void returnUserTest(){
-        //UUID uuid = new UUID();
-        //User user = new User();
+        UUID uuid = UUID.randomUUID();
+        User user1 = new User(uuid, "e@mail.com", "password", "name", "07111111111", "thePlace");
+        assertNotNull(user1);
+        try {dbController.addUser(user1);}
+        catch (SQLException e) {fail();}
+        User user2 = null;
+        try {user2 = dbController.returnUser(uuid);}
+        catch (SQLException e) {fail();}
+        assertNotNull(user2);
+        assertEquals(user1.getEmail(), user2.getEmail());
+        assertEquals(user1.getId(), user2.getId());
+        assertEquals(user1.getPhoneNo(), user2.getPhoneNo());
+        //assertEquals(user1.getPasswordHash(), user2.getPasswordHash());
+        assertEquals(user1.getAddress(), user2.getAddress());
+        assertEquals(user1.getName(), user2.getName());
+    }
+    @Test
+    public void AccountNotFound(){
+        UUID uuid = UUID.randomUUID();
+        assertThrows(StatusCodeException.class, () -> dbController.returnUser(uuid));
+    }
+
+    @Test
+    public void loginUserTest(){
+        UUID uuid = UUID.randomUUID();
+        User user1 = new User(uuid, "e@mail.com", "password", "name", "07111111111", "thePlace");
+        assertNotNull(user1);
+        try{dbController.addUser(user1);}
+        catch (SQLException e) {fail();}
+        try {
+            UUID returnUUID = dbController.loginUser(user1);
+            assertNotNull(returnUUID);
+            //assertEquals(returnUUID, uuid);
+        } catch (SQLException e) {
+            fail();
+        }
+    }
+    @Test
+    public void loginUserNoUser(){
+        UUID uuid = UUID.randomUUID();
+        User user1 = new User(uuid, "e@mail.com", "password", "name", "07111111111", "thePlace");
+        assertThrows(StatusCodeException.class, () -> dbController.loginUser(user1));
+
     }
 }
