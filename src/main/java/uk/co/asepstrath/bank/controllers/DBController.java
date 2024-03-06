@@ -34,7 +34,6 @@ public class DBController {
 
     /**
      * Creates an instance of the DBController
-     * 
      * @param ds
      */
     public DBController(DataSource ds) {
@@ -43,7 +42,6 @@ public class DBController {
 
     /**
      * Creates the four database tables: Accounts, Users, Session, Transaction
-     * 
      * @throws SQLException
      */
     public void createTables() throws SQLException {
@@ -52,49 +50,49 @@ public class DBController {
         Statement stmt = connection.createStatement();
 
         stmt.executeUpdate(
-                "CREATE TABLE `Users`"
-                        + "("
-                        + "`Id` UUID PRIMARY KEY UNIQUE, "
-                        + "`Name` varchar(30),"
-                        + "`Email` varchar(50),"
-                        + "`Hash_pass` char(128)," // Using SHA-512 for encryption
-                        + "`phoneNo` varchar(12),"
-                        + "`address` varchar(50),"
-                        + "`admin` bit,"
-                        + "PRIMARY KEY (`Id`)"
-                        + ")");
+                "CREATE TABLE `Users`" +
+                        "(" +
+                        "`Id` UUID PRIMARY KEY UNIQUE, " +
+                        "`Name` varchar(30)," +
+                        "`Email` varchar(50)," +
+                        "`Hash_pass` char(128)," + // Using SHA-512 for encryption
+                        "`phoneNo` varchar(12)," +
+                        "`address` varchar(50)," +
+                        "PRIMARY KEY (`Id`)" +
+                        ")");
         stmt.executeUpdate(
-                "CREATE TABLE `Accounts` "
-                        + "("
-                        + "`Id` UUID PRIMARY KEY UNIQUE,"
-                        + "`User_id` UUID,"
-                        + "`AccountNumber` varchar(8),"
-                        + "`SortCode` varchar(8),"
-                        + "`AccountBalance` decimal(15,2),"
-                        + "PRIMARY KEY (`Id`),"
-                        + "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)"
-                        + ")");
+                "CREATE TABLE `Accounts` " +
+                        "(" +
+                        "`Id` UUID PRIMARY KEY UNIQUE," +
+                        "`User_id` UUID," +
+                        "`AccountNumber` varchar(8)," +
+                        "`SortCode` varchar(8)," +
+                        "`AccountBalance` decimal(15,2)," +
+                        "`AccountCategory` varchar(15)," +
+                        "`IsForeign` bit," +
+                        "PRIMARY KEY (`Id`)," +
+                        "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)" +
+                        ")");
         stmt.executeUpdate(
-                "CREATE TABLE `Transcation` "
-                        + "("
-                        + "`Timestamp` timestamp,"
-                        + "`Amount` decimal(15,2),"
-                        + "`Ref` varchar(30),"
-                        + "`Category` varchar(255),"
-                        + "`Status` varchar(30),"
-                        + "`Type` varchar(30),"
-                        + "`Id` UUID PRIMARY KEY UNIQUE,"
-                        + "`Recipient` varchar(255),"
-                        + "`Sender` varchar(255),"
-                        + "PRIMARY KEY ( `Id` ),"
-                        + "FOREIGN KEY ( `Recipient` ) REFERENCES Accounts(`Id`),"
-                        + "FOREIGN KEY ( `Sender` ) REFERENCES Accounts(`Id`)"
-                        + ")");
+                "CREATE TABLE `Transcation` " +
+                        "(" +
+                        "`Timestamp` timestamp," +
+                        "`Amount` decimal(15,2)," +
+                        "`Ref` varchar(30)," +
+                        "`Category` varchar(255)," +
+                        "`Status` varchar(30)," +
+                        "`Type` varchar(30)," +
+                        "`Id` UUID PRIMARY KEY UNIQUE," +
+                        "`Recipient` varchar(255)," +
+                        "`Sender` varchar(255)," +
+                        "PRIMARY KEY ( `Id` )," +
+                        "FOREIGN KEY ( `Recipient` ) REFERENCES Accounts(`Id`)," +
+                        "FOREIGN KEY ( `Sender` ) REFERENCES Accounts(`Id`)" +
+                        ")");
     }
 
     /**
      * Adds a transaction to the Transactions table in the database
-     * 
      * @param ts
      * @throws SQLException
      */
@@ -102,8 +100,8 @@ public class DBController {
         PreparedStatement prepStmt;
         Connection connection = dataSource.getConnection();
         prepStmt = connection.prepareStatement(
-                "INSERT into Transaction (TIME,AMOUNT,REFERENCE,CATEGORY,STATUS,ID,RECIPIENT,SENDER)"
-                        + "values (?, ?, ?, ?, ?, ?, ?, ?)");
+                "INSERT into Transaction (TIME,AMOUNT,REFERENCE,CATEGORY,STATUS,ID,RECIPIENT,SENDER)" +
+                        "values (?, ?, ?, ?, ?, ?, ?, ?)");
 
         prepStmt.setTimestamp(1, ts.time);
         prepStmt.setDouble(2, ts.amount.doubleValue());
@@ -133,10 +131,10 @@ public class DBController {
     public void addAccount(Account acc) throws SQLException {
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s','%s', '%f')",
-                        acc.getAccountNumber(), acc.getSortCode(), acc.getBalance().floatValue()));
+                String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s','%s', '%f', '%s', %b)",
+                        acc.getAccountNumber(), acc.getSortCode(), acc.getBalance().floatValue(), acc.getAccountCategory(), acc.isForeign()));
         prepStmt.setObject(1, acc.getUUID());
-        prepStmt.setObject(2, acc.getUser().getId());
+        prepStmt.setObject(2, acc.getUser_id());
         prepStmt.execute();
     }
 
@@ -150,14 +148,15 @@ public class DBController {
         // Create Statement (batch of SQL Commands)
         Statement statement = connection.createStatement();
         // Perform SQL Query
-        // TODO: This needs to include user information as well
         ResultSet set = statement.executeQuery("SELECT * FROM `Accounts`");
 
-        List<Account> accounts = new ArrayList<>();
+        List < Account > accounts = new ArrayList < > ();
 
         while (set.next()) {
-            accounts.add(new Account(set.getString("AccountNumber"), set.getString("SortCode"),
-                    set.getBigDecimal("AccountBalance")));
+            accounts.add(new Account(UUID.fromString(set.getString("User_Id")),
+                    set.getString("AccountNumber"), set.getString("SortCode"),
+                    set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
+                    AccountCategory.valueOf(set.getString("AccountCategory"))));
         }
 
         return accounts;
@@ -165,7 +164,7 @@ public class DBController {
 
     /**
      * Returns the account with the specified name
-     * 
+     *
      * @param name
      * @throws SQLException
      */
@@ -188,7 +187,6 @@ public class DBController {
         // set.getBigDecimal("AccountBalance"));
         //
         // return account;
-
     }
 
     public Account returnAccount(String accountNumber, String sortCode) throws SQLException {
@@ -197,40 +195,44 @@ public class DBController {
         Statement statement = connection.createStatement();
         // Perform SQL Query
         ResultSet set = statement.executeQuery(
-                "SELECT * FROM `Accounts` WHERE AccountNumber='%s' and SortCode='%s'".formatted(accountNumber,
-                        sortCode));
+                "SELECT * FROM `Accounts` WHERE AccountNumber='%s' and SortCode='%s'".formatted(accountNumber, sortCode));
 
         if (!set.next()) {
             throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
         }
 
-        Account account = new Account(set.getString("AccountNumber"), set.getString("SortCode"),
-                set.getBigDecimal("AccountBalance"));
+        Account account = new Account(UUID.fromString(set.getString("User_Id")),
+                set.getString("AccountNumber"), set.getString("SortCode"),
+                set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
+                AccountCategory.valueOf(set.getString("AccountCategory"))
+        );
 
         return account;
     }
 
-    public Account returnAccount(User user) throws SQLException {
+    public Account returnAccount(UUID userID) throws SQLException {
         Connection connection = dataSource.getConnection();
         // Create Statement (batch of SQL Commands)
         Statement statement = connection.createStatement();
         // Perform SQL Query
-        ResultSet set = statement
-                .executeQuery("SELECT * FROM `Accounts` WHERE User_id='%s'".formatted(user.getId().toString()));
+        ResultSet set = statement.executeQuery("SELECT * FROM `Accounts` WHERE User_id='%s'".formatted(userID.toString()));
 
         if (!set.next()) {
             throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
         }
 
-        Account account = new Account(user, (UUID) set.getObject("id"), set.getString("AccountNumber"),
-                set.getString("SortCode"), set.getBigDecimal("AccountBalance"), Boolean.FALSE, AccountCategory.Payment);
+        Account account = new Account(UUID.fromString(set.getString("User_Id")),
+                set.getString("AccountNumber"), set.getString("SortCode"),
+                set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
+                AccountCategory.valueOf(set.getString("AccountCategory"))
+        );
 
         return account;
     }
 
     /**
      * Returns the user details
-     * 
+     *
      * @param user
      * @throws SQLException
      */
@@ -256,9 +258,9 @@ public class DBController {
     public void addUser(User user) throws SQLException {
         Connection connection = dataSource.getConnection();
         PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s', '%s', '%s')",
                         user.getId(), user.getName(), user.getEmail(), user.getPasswordHash(), user.getPhoneNo(),
-                        user.getAddress(), user.isAdmin()));
+                        user.getAddress()));
         prepStmt.execute();
     }
 
@@ -274,7 +276,7 @@ public class DBController {
         }
 
         User user = new User(userID, set.getString("Email"), set.getString("Hash_Pass"), set.getString("Name"),
-                set.getString("phoneNo"), set.getString("address"), set.getBoolean("admin"));
+                set.getString("phoneNo"), set.getString("address"));
 
         return user;
     }
