@@ -80,7 +80,8 @@ public class App extends Jooby {
             db.createTables();
             db.addUser(testUser);
             db.addAccounts(accounts);
-            db.tryTransaction(account, account, BigDecimal.valueOf(50), "Hello!");
+            Transaction transaction = db.tryTransaction(account, account, BigDecimal.valueOf(50), "Hello!");
+            log.info("Transaction ref: " + transaction.toString());
         } catch (Exception e) {
             log.error("Database Creation Error", e);
             this.stop();

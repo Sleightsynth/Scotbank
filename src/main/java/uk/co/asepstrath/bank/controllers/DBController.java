@@ -102,7 +102,7 @@ public class DBController {
      * @param recipient Payment to
      * @return
      */
-    public UUID tryTransaction(Account sender, Account recipient, BigDecimal amount, String reference)
+    public Transaction tryTransaction(Account sender, Account recipient, BigDecimal amount, String reference)
             throws SQLException {
         if (sender == null || recipient == null)
             return null; // TODO: This should probably be an unchecked error.
@@ -139,7 +139,7 @@ public class DBController {
 
         addTransaction(ts);
 
-        return ts.id;
+        return ts;
     }
 
     public List<Transaction> returnTransactions(Account account) throws SQLException {
