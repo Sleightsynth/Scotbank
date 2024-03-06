@@ -64,7 +64,7 @@ public class App extends Jooby {
      * it should be used to ensure that the DB is properly setup
      * >>>>>>> UAC
      */
-/* HEREEEEEEE
+
     public void onStart() {
         Logger log = getLog();
         log.info("Starting Up...");
@@ -153,7 +153,7 @@ public class App extends Jooby {
             this.stop();
         }
     }
-*///HERE!!!!!!!!!!!!!!!!
+
 // previous attempt
 
     /*
