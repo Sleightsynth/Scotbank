@@ -64,15 +64,6 @@ public class DBController {
                         + "PRIMARY KEY (`Id`)"
                         + ")");
         stmt.executeUpdate(
-                "CREATE TABLE `Session`"
-                        + "("
-                        + "`Id` UUID PRIMARY KEY UNIQUE, "
-                        + "`User_id` UUID," // This can be Null.
-                        + "`Expiry` timestamp,"
-                        + "PRIMARY KEY (`Id`),"
-                        + "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)"
-                        + ")");
-        stmt.executeUpdate(
                 "CREATE TABLE `Accounts` "
                         + "("
                         + "`Id` UUID PRIMARY KEY UNIQUE,"
