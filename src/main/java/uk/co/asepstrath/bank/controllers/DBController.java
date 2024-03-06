@@ -63,15 +63,6 @@ public class DBController {
             + "PRIMARY KEY (`Id`)"
             + ")");
     stmt.executeUpdate(
-        "CREATE TABLE `Session`"
-            + "("
-            + "`Id` UUID PRIMARY KEY UNIQUE, "
-            + "`User_id` UUID," // This can be Null.
-            + "`Expiry` timestamp,"
-            + "PRIMARY KEY (`Id`),"
-            + "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)"
-            + ")");
-    stmt.executeUpdate(
         "CREATE TABLE `Accounts` "
             + "("
             + "`Id` UUID PRIMARY KEY UNIQUE,"
@@ -79,6 +70,8 @@ public class DBController {
             + "`AccountNumber` varchar(8),"
             + "`SortCode` varchar(8),"
             + "`AccountBalance` decimal(15,2),"
+            + "`AccountCategory` varchar(15),"
+            + "`IsForeign` bit,"
             + "PRIMARY KEY (`Id`),"
             + "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)"
             + ")");
@@ -141,8 +134,8 @@ public class DBController {
   public void addAccount(Account acc) throws SQLException {
     Connection connection = dataSource.getConnection();
     PreparedStatement prepStmt = connection.prepareStatement(
-        String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s','%s', '%f')",
-            acc.getAccountNumber(), acc.getSortCode(), acc.getBalance().floatValue()));
+        String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s','%s', '%f', '%s', %b)",
+            acc.getAccountNumber(), acc.getSortCode(), acc.getBalance().floatValue(), acc.getAccountCategory(), acc.isForeign()));
     prepStmt.setObject(1, acc.getUUID());
     prepStmt.setObject(2, acc.getUser_id());
     prepStmt.execute();
@@ -163,8 +156,11 @@ public class DBController {
     List<Account> accounts = new ArrayList<>();
 
     while (set.next()) {
-      accounts.add(new Account(UUID.fromString(set.getString("User_Id")), set.getString("AccountNumber"),
-              set.getString("SortCode"), set.getBigDecimal("AccountBalance"), Boolean.FALSE, null));
+      accounts.add(new Account(UUID.fromString(set.getString("User_Id")),
+              set.getString("AccountNumber"), set.getString("SortCode"),
+              set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
+              AccountCategory.valueOf(set.getString("AccountCategory")))
+      );
     }
 
     return accounts;
@@ -210,8 +206,11 @@ public class DBController {
       throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
     }
 
-    Account account = new Account(set.getString("AccountNumber"), set.getString("SortCode"),
-        set.getBigDecimal("AccountBalance"));
+    Account account = new Account(UUID.fromString(set.getString("User_Id")),
+            set.getString("AccountNumber"), set.getString("SortCode"),
+            set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
+            AccountCategory.valueOf(set.getString("AccountCategory"))
+    );
 
     return account;
   }
@@ -227,8 +226,11 @@ public class DBController {
       throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
     }
 
-    Account account = new Account(userID, set.getString("AccountNumber"),
-        set.getString("SortCode"), set.getBigDecimal("AccountBalance"), Boolean.FALSE, null);
+    Account account = new Account(UUID.fromString(set.getString("User_Id")),
+            set.getString("AccountNumber"), set.getString("SortCode"),
+            set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
+            AccountCategory.valueOf(set.getString("AccountCategory"))
+    );
 
     return account;
   }
