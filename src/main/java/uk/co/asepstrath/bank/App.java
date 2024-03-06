@@ -84,7 +84,11 @@ public class App extends Jooby {
 
                 JSONArray jsonArray = new JSONArray(responseBody);
                 ArrayList<Account> accounts = new ArrayList<>();
-                for (int i = 0; i < 1; i++) {
+
+
+                //first one work, second is hell
+                //for (int i = 0; i < 1; i++) {
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
                     String name = jsonObject.getString("name");
@@ -109,26 +113,27 @@ public class App extends Jooby {
                     int n = rand.nextInt(50);
                     n += 1;
 
-                    //random sortcode
+                    //random sort code
                     byte[] array1 = new byte[7]; // length is bounded by 7
                     new Random().nextBytes(array1);
-                    String generatedSortCode = new String(array1, Charset.forName("UTF-8"));
+                    String generatedSortCode = new String(array1, StandardCharsets.UTF_8);
 
 
                     User testUser = new User(uuid, generatedEmail, db.getSha512Hash(String.valueOf(n)),
                             name, generatedEmail, generatedEmail, true);
-                    db.addUser(testUser);
 
                     accounts.add(new Account(testUser, uuid, generatedAccountNo, generatedSortCode, startingBalance,
                             Boolean.FALSE, AccountCategory.Payment));
-                    db.addAccounts(accounts);
+                    db.addUser(testUser);
+                    //db.addAccounts(accounts);
                 }
 
                 // Process accounts and add to database
-                //db.addAccounts(accounts);
+                db.addAccounts(accounts);
 
                 // Log accounts
                 for (Account account : accounts) {
+                    System.out.println("Hello there!!!!!!!!!!!!!!!!!!!!");
                     System.out.println(account);
                 }
             } else {
