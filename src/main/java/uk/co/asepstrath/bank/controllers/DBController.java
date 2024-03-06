@@ -1,5 +1,6 @@
 package uk.co.asepstrath.bank.controllers;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -8,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +22,7 @@ import uk.co.asepstrath.bank.Account;
 import uk.co.asepstrath.bank.User;
 import uk.co.asepstrath.bank.util.AccountCategory;
 import uk.co.asepstrath.bank.util.Transaction;
+import uk.co.asepstrath.bank.util.TransactionStatus;
 
 /**
  * This class communicates directly with the database, providing methods to
@@ -75,7 +78,7 @@ public class DBController {
                         + "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)"
                         + ")");
         stmt.executeUpdate(
-                "CREATE TABLE `Transcation` "
+                "CREATE TABLE `Transaction` "
                         + "("
                         + "`Timestamp` timestamp,"
                         + "`Amount` decimal(15,2),"
@@ -93,6 +96,83 @@ public class DBController {
     }
 
     /**
+     * This "attempts" to complete a transaction.
+     *
+     * @param sender    Payment from
+     * @param recipient Payment to
+     * @return
+     */
+    public UUID tryTransaction(Account sender, Account recipient, BigDecimal amount, String reference)
+            throws SQLException {
+        if (sender == null || recipient == null)
+            return null; // TODO: This should probably be an unchecked error.
+
+        // Defining things so verbosely might look like a terrible idea,
+        // but I implore you to reflect on what it accomplishes.
+        // If you dislike this, I suggest you refactor it. :)
+
+        Transaction ts = new Transaction();
+        ts.category = recipient.getAccountCategory();
+        ts.time = new Timestamp(System.currentTimeMillis());
+        ts.status = recipient.isForeign() ? TransactionStatus.PROCESS_DUE : TransactionStatus.OK;
+        ts.sender = sender;
+        ts.recipient = recipient;
+        ts.amount = amount;
+        ts.id = UUID.randomUUID();
+        ts.reference = reference;
+
+        // Now try committing a transaction.
+        // Note: Roleplay is happening here. Say we do have foreign accounts, the sender
+        // cannot been foreign if the transaction is happening through our service.
+        try {
+            sender.withdraw(amount);
+
+            if (recipient.isForeign()) {
+                // recipient.deposit(int amount) does not exist here.
+                // Maybe a new class is needed to handle this
+            } else {
+                sender.deposit(amount);
+            }
+        } catch (ArithmeticException e) {
+            ts.status = TransactionStatus.FAILED;
+        }
+
+        addTransaction(ts);
+
+        return ts.id;
+    }
+
+    public List<Transaction> returnTransactions(Account account) throws SQLException {
+
+        Connection connection = dataSource.getConnection();
+        // Create Statement (batch of SQL Commands)
+        Statement statement = connection.createStatement();
+        // Perform SQL Query
+        ResultSet set = statement.executeQuery(
+                "SELECT * FROM Transaction"
+                        .formatted(account.getUUID().toString(), account.getUUID().toString()));
+
+        List<Transaction> transactions = new ArrayList<>();
+        while (set.next()) {
+            Transaction ts = new Transaction();
+
+            ts.time = set.getTimestamp("Timestamp");
+            ts.category = AccountCategory.valueOf(set.getString("Category"));
+            ts.id = (UUID) set.getObject("Id");
+            ts.amount = BigDecimal.valueOf(set.getDouble("Amount"));
+            ts.status = TransactionStatus.valueOf(set.getString("Status"));
+            ts.reference = set.getString("Ref");
+
+            ts.sender = returnAccount(UUID.fromString(set.getString("Sender")));
+            ts.recipient = returnAccount(UUID.fromString(set.getString("Recipient")));
+
+            transactions.add(ts);
+        }
+
+        return transactions;
+    }
+
+    /**
      * Adds a transaction to the Transactions table in the database
      * 
      * @param ts
@@ -102,7 +182,7 @@ public class DBController {
         PreparedStatement prepStmt;
         Connection connection = dataSource.getConnection();
         prepStmt = connection.prepareStatement(
-                "INSERT into Transaction (TIME,AMOUNT,REFERENCE,CATEGORY,STATUS,ID,RECIPIENT,SENDER)"
+                "INSERT into Transaction (TIMESTAMP,AMOUNT,REF,CATEGORY,STATUS,ID,RECIPIENT,SENDER)"
                         + "values (?, ?, ?, ?, ?, ?, ?, ?)");
 
         prepStmt.setTimestamp(1, ts.time);
@@ -260,6 +340,26 @@ public class DBController {
                         user.getId(), user.getName(), user.getEmail(), user.getPasswordHash(), user.getPhoneNo(),
                         user.getAddress(), user.isAdmin()));
         prepStmt.execute();
+    }
+
+    public Account returnAccount(UUID accountId) throws SQLException {
+        Connection connection = dataSource.getConnection();
+        // Create Statement (batch of SQL Commands)
+        Statement statement = connection.createStatement();
+        // Perform SQL Query
+        ResultSet set = statement
+                .executeQuery("SELECT * FROM `Accounts` WHERE Id='%s'".formatted(accountId.toString()));
+
+        if (!set.next()) {
+            throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+        }
+
+        Account account = new Account(returnUser((UUID) set.getObject("User_id")), (UUID) set.getObject("Id"),
+                set.getString("AccountNumber"), set.getString("SortCode"),
+                BigDecimal.valueOf(set.getDouble("AccountBalance")),
+                false, AccountCategory.Payment);
+
+        return account;
     }
 
     public User returnUser(UUID userID) throws SQLException {

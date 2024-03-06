@@ -45,58 +45,6 @@ public class WebsiteController {
         dbController = new DBController(ds);
     }
 
-    /**
-     * This "attempts" to complete a transaction.
-     *
-     * @param sender    Payment from
-     * @param recipient Payment to
-     * @return
-     */
-    private UUID tryTransaction(Account sender, Account recipient, BigDecimal amount, String reference) {
-        if (sender == null || recipient == null)
-            return null; // TODO: This should probably be an unchecked error.
-
-        // Defining things so verbosely might look like a terrible idea,
-        // but I implore you to reflect on what it accomplishes.
-        // If you dislike this, I suggest you refactor it. :)
-
-        Transaction ts = new Transaction();
-        ts.category = recipient.getAccountCategory();
-        ts.time = new Timestamp(System.currentTimeMillis());
-        ts.status = recipient.isForeign() ? TransactionStatus.PROCESS_DUE : TransactionStatus.OK;
-        ts.sender = sender;
-        ts.recipient = recipient;
-        ts.amount = amount;
-        ts.id = UUID.randomUUID();
-        ts.reference = reference;
-
-        // Now try committing a transaction.
-        // Note: Roleplay is happening here. Say we do have foreign accounts, the sender
-        // cannot been foreign if the transaction is happening through our service.
-        try {
-            sender.withdraw(amount);
-
-            if (recipient.isForeign()) {
-                // recipient.deposit(int amount) does not exist here.
-                // Maybe a new class is needed to handle this
-            } else {
-                sender.deposit(amount);
-            }
-        } catch (ArithmeticException e) {
-            ts.status = TransactionStatus.FAILED;
-        }
-
-        try {
-            dbController.addTransaction(ts);
-        } catch (SQLException e) {
-            // If something does go wrong this will log the stack trace
-            logger.error("Database Error Occurred", e);
-            // And return a HTTP 500 error to the requester
-            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
-        }
-        return ts.id;
-    }
-
     @GET("/")
     public ModelAndView homepage(Context ctx) {
         return getUserAndAddToTemplate("homePage.hbs", getUUIDOrNull(ctx));
@@ -241,8 +189,10 @@ public class WebsiteController {
         try {
             User user = dbController.returnUser(uuid);
             Account account = dbController.returnAccount(user);
-
-            ModelAndView modelAndView = new ModelAndView("overview.hbs").put("account", account);
+            List<Transaction> transactions = dbController.returnTransactions(account);
+            logger.info("size of transactions = " + transactions.size());
+            ModelAndView modelAndView = new ModelAndView("overview.hbs").put("account", account).put("transactions",
+                    transactions);
 
             return getUserAndAddToTemplate(modelAndView, uuid);
         } catch (SQLException e) {
