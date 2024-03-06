@@ -46,8 +46,7 @@ public class DBController {
      */
     public void createTables() throws SQLException {
         // Open Connection to DB
-        try(Connection connection = dataSource.getConnection()) {
-            Statement stmt = connection.createStatement();
+        try(Connection connection = dataSource.getConnection(); Statement stmt = connection.createStatement()) {
 
             stmt.executeUpdate(
                     "CREATE TABLE `Users`" +
@@ -132,13 +131,14 @@ public class DBController {
     }
 
     public void addAccount(Account acc) throws SQLException {
-        Connection connection = dataSource.getConnection();
-        PreparedStatement prepStmt = connection.prepareStatement(
-                String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s','%s', '%f', '%s', %b)",
-                        acc.getAccountNumber(), acc.getSortCode(), acc.getBalance().floatValue(), acc.getAccountCategory(), acc.isForeign()));
-        prepStmt.setObject(1, acc.getUUID());
-        prepStmt.setObject(2, acc.getUser().getId());
-        prepStmt.execute();
+        try(Connection connection = dataSource.getConnection()) {
+            PreparedStatement prepStmt = connection.prepareStatement(
+                    String.format("INSERT INTO Accounts " + "VALUES (?, ?, '%s','%s', '%f', '%s', %b)",
+                            acc.getAccountNumber(), acc.getSortCode(), acc.getBalance().floatValue(), acc.getAccountCategory(), acc.isForeign()));
+            prepStmt.setObject(1, acc.getUUID());
+            prepStmt.setObject(2, acc.getUser().getId());
+            prepStmt.execute();
+        }
     }
 
     /**
@@ -147,9 +147,8 @@ public class DBController {
      * @throws SQLException
      */
     public List<Account> returnAllAccounts() throws SQLException {
-        try(Connection connection = dataSource.getConnection()) {
-            // Create Statement (batch of SQL Commands)
-            Statement statement = connection.createStatement();
+        try(Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
+
             // Perform SQL Query
             ResultSet set = statement.executeQuery("SELECT * FROM `Accounts`");
 
@@ -194,9 +193,7 @@ public class DBController {
     }
 
     public Account returnAccount(String accountNumber, String sortCode) throws SQLException {
-        try(Connection connection = dataSource.getConnection()) {
-            // Create Statement (batch of SQL Commands)
-            Statement statement = connection.createStatement();
+        try(Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
             // Perform SQL Query
             ResultSet set = statement.executeQuery(
                     "SELECT * FROM `Accounts` WHERE AccountNumber='%s' and SortCode='%s'".formatted(accountNumber, sortCode));
@@ -216,9 +213,7 @@ public class DBController {
     }
 
     public Account returnAccount(UUID userID) throws SQLException {
-        try(Connection connection = dataSource.getConnection()) {
-            // Create Statement (batch of SQL Commands)
-            Statement statement = connection.createStatement();
+        try(Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
             // Perform SQL Query
             ResultSet set = statement.executeQuery("SELECT * FROM `Accounts` WHERE User_id='%s'".formatted(userID.toString()));
 
@@ -247,9 +242,7 @@ public class DBController {
      * @throws SQLException
      */
     public UUID loginUser(User user) throws SQLException {
-        try(Connection connection = dataSource.getConnection()) {
-            // Create Statement (batch of SQL Commands)
-            Statement statement = connection.createStatement();
+        try(Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
             // Perform SQL Query
             ResultSet set = statement.executeQuery("SELECT * FROM `Users` WHERE email='%s' and Hash_pass='%s'"
                     .formatted(user.getEmail(), user.getPasswordHash()));
@@ -277,20 +270,19 @@ public class DBController {
     }
 
     public User returnUser(UUID userID) throws SQLException {
-        Connection connection = dataSource.getConnection();
-        // Create Statement (batch of SQL Commands)
-        Statement statement = connection.createStatement();
-        // Perform SQL Query
-        ResultSet set = statement.executeQuery("SELECT * FROM `Users` WHERE Id='%s'".formatted(userID.toString()));
+        try(Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
+            // Perform SQL Query
+            ResultSet set = statement.executeQuery("SELECT * FROM `Users` WHERE Id='%s'".formatted(userID.toString()));
 
-        if (!set.next()) {
-            throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+            if (!set.next()) {
+                throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+            }
+
+            User user = new User(userID, set.getString("Email"), set.getString("Hash_Pass"), set.getString("Name"),
+                    set.getString("phoneNo"), set.getString("address"), set.getBoolean("IsAdmin"));
+
+            return user;
         }
-
-        User user = new User(userID, set.getString("Email"), set.getString("Hash_Pass"), set.getString("Name"),
-                set.getString("phoneNo"), set.getString("address"), set.getBoolean("IsAdmin"));
-
-        return user;
     }
 
     public String getSha512Hash(String password) {
