@@ -15,8 +15,11 @@ import uk.co.asepstrath.bank.controllers.WebsiteController;
 import uk.co.asepstrath.bank.util.AccountCategory;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.UUID;
 
 public class App extends Jooby {
@@ -81,7 +84,7 @@ public class App extends Jooby {
 
                 JSONArray jsonArray = new JSONArray(responseBody);
                 ArrayList<Account> accounts = new ArrayList<>();
-                for (int i = 0; i < jsonArray.length(); i++) {
+                for (int i = 0; i < 1; i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
                     String name = jsonObject.getString("name");
@@ -89,16 +92,40 @@ public class App extends Jooby {
                     boolean roundUpEnabled = jsonObject.getBoolean("roundUpEnabled");
 
                     // Create Account object and add to list
-                    User testUser = new User(uuid, "connor.waiter.2022@uni.strath.ac.uk", db.getSha512Hash("123"),
-                            name, "07123 45678", "123 Connor Street", true);
+
+
+                    //random account number
+                    byte[] array2 = new byte[7]; // length is bounded by 7
+                    new Random().nextBytes(array2);
+                    String generatedAccountNo = new String(array2, StandardCharsets.UTF_8);
+
+                    //random email
+                    byte[] array = new byte[7]; // length is bounded by 7
+                    new Random().nextBytes(array);
+                    String generatedEmail = new String(array, StandardCharsets.UTF_8);
+
+                    //random password
+                    Random rand = new Random();
+                    int n = rand.nextInt(50);
+                    n += 1;
+
+                    //random sortcode
+                    byte[] array1 = new byte[7]; // length is bounded by 7
+                    new Random().nextBytes(array1);
+                    String generatedSortCode = new String(array1, Charset.forName("UTF-8"));
+
+
+                    User testUser = new User(uuid, generatedEmail, db.getSha512Hash(String.valueOf(n)),
+                            name, generatedEmail, generatedEmail, true);
                     db.addUser(testUser);
 
-                    accounts.add(new Account(testUser, uuid, "12345678", "12-34-56", startingBalance,
+                    accounts.add(new Account(testUser, uuid, generatedAccountNo, generatedSortCode, startingBalance,
                             Boolean.FALSE, AccountCategory.Payment));
+                    db.addAccounts(accounts);
                 }
 
                 // Process accounts and add to database
-                db.addAccounts(accounts);
+                //db.addAccounts(accounts);
 
                 // Log accounts
                 for (Account account : accounts) {
