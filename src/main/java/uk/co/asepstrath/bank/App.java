@@ -97,26 +97,7 @@ public class App extends Jooby {
 
                     // Create Account object and add to list
 
-/*
-                    //random account number
-                    byte[] array2 = new byte[8]; // length is bounded by 7
-                    new Random().nextBytes(array2);
-                    String generatedAccountNo = new String(array2, StandardCharsets.UTF_8);
-
-                    //random email
-                    byte[] array = new byte[10]; // length is bounded by 7
-                    new Random().nextBytes(array);
-                    String generatedEmail = new String(array, StandardCharsets.UTF_8);
-
-                    //random sort code
-                    byte[] array1 = new byte[8]; // length is bounded by 7
-                    new Random().nextBytes(array1);
-                    String generatedSortCode = new String(array1, StandardCharsets.UTF_8);
-                    */
-
-                    //random password
                     Random rand = new Random();
-                    int n = rand.nextInt(1000);
 
                     //new email
                     String newEmail = name.replaceAll("\\s+","");
@@ -130,6 +111,8 @@ public class App extends Jooby {
 
                     String newAccountNumber = "%08d".formatted(rand.nextInt(100000000));
 
+                    //new password
+                    int n = rand.nextInt(1000);
                     String newPassword = db.getSha512Hash(String.valueOf(n));
 
                     User testUser = new User(uuid, newEmail, newPassword,
@@ -146,6 +129,7 @@ public class App extends Jooby {
                     System.out.println("Sort Code:"+newSortCode);
                     System.out.println("Account Number:"+newAccountNumber);
                     System.out.println("Starting Balance:"+startingBalance);
+                    System.out.println(" ");
 
                     db.addUser(testUser);
                     db.addAccounts(accounts);
