@@ -3,13 +3,41 @@
 <head>
     <title>Scotbank - Spending Summary</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     {{> style.hbs}}
 </head>
 <body>
 {{> navbar.hbs}}
-    <div class="full-section">
-        <h1>Spending Summary</h1>
-    </div>
+<div class="full-section">
+    <h1>Spending Summary</h1>
+
+    <canvas id="summaryChart" style="width:100%;max-width:600px"></canvas>
+
+    <script>
+        const xValues = ["Food", "Entertainment", "Shopping", "Bills"];
+        const yValues = [55, 49, 44, 24];
+        const barColors = ["#b91d47", "#00aba9", "#2b5797", "#e8c3b9"];
+
+        new Chart("summaryChart", {
+            type: "doughnut",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: "Click the label to filter"
+                }
+            }
+        });
+    </script>
+
+</div>
+</div>
 
 
 {{> footer.hbs}}

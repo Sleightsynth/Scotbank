@@ -9,6 +9,18 @@
 {{> navbar.hbs}}
 <div class="full-section">
     <h1>Savings Pot</h1>
+    <div class="card">
+        <h4>Savings</h4>
+        <h3>{{account.getFormattedBalance}}</h3>
+        <div class="side-by-side">
+            <h5>{{account.sortCode}}</h5>
+            <h5>{{account.accountNumber}}</h5>
+        </div>
+    </div>
+    <div class="sub-section">
+        <p>You can turn your account from on / off savings mode from here.</p>
+        <button>On / Off</button>
+    </div>
 </div>
 
 
