@@ -6,8 +6,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter">
 <style>
     /* General Formatting */
-    body, h1, h2, h3, h4, h5, h6, p {font-family: "Lato", sans-serif}
-    h1, h2, button, a {font-family: "Inter", sans-serif}
+    body, h1, h2, h3, h4, h5, h6, p, button, a {
+        font-family: "Inter", sans-serif;
+    }
 
     body, html {
         margin: 0;
@@ -15,58 +16,43 @@
 
     .scroll-section {
         opacity: 0;
-        transition: opacity 0.25s ease;
+        transition: opacity 1s ease;
     }
 
     .full-section {
+        background-color: #fff;
         margin: 3em 10em 3em 10em;
+        padding: 3em 0 3em 0;
     }
 
     .sub-section {
-        background-color: #fcfcfc;
-        padding: 3em 10em 3em 10em;
+        background-color: #F2F6F7;
+        margin: 3em 1.5em 3em 1.5em;
+        padding: 5em 8.5em 5em 8.5em;
+        border-radius: 5em;
     }
 
-    h1 {
+    h1, a {
         text-align: center;
         color: #005EB8;
     }
 
-    h2, a {
-        color: #4381BC
+    h2 {
+        color: #0C1722
     }
 
     a {
         text-decoration: none;
     }
 
-    .buttons {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .buttons .button {
-        padding: 10px 20px;
-        margin: 1em;
-        font-size: 16px;
-        border: 1px solid #4CAF50;
-        background-color: rgb(0,0,0,0);
-        color: #4CAF50;
-        cursor: pointer;
-        border-radius: 1em;
-    }
-
-    .button a {
-        color: #4CAF50;
-    }
-
     /* Navigation bar */
     .topnav {
         overflow: hidden;
-        background-color: #fcfcfc;
+        background-color: #0C1722;
         display: flex;
         justify-content: center;
         align-items: center;
+        min-height: 10vh;
     }
 
     .topnav a {
@@ -75,17 +61,24 @@
         text-align: center;
         padding: 14px 16px;
         text-decoration: none;
+        color: white;
         font-size: 17px;
-        text-transform: uppercase;
-        font-family: "Inter", sans-serif;
+        font-weight: bold;
     }
 
-    .topnav a:hover {
-        color: #005EB8;
+    .topnav a:hover, .topnav a.active {
+        color: #D8FF6E;
     }
-
-    .topnav a.active {
-        color: #005EB8;
+    footer {
+        background-color: #0C1722;
+        padding: 0.01em 16px;
+        padding-top: 64px;
+        padding-bottom: 64px;
+        text-align: center;
+        color: #fff;
+    }
+    footer a {
+        color: #D8FF6E
     }
 
     /* Home page */
@@ -93,21 +86,22 @@
         font-weight: bold;
     }
 
+    .banner h1 {
+        color: #D8FF6E;
+    }
+
+    .banner h2 {
+        color: #fff;
+    }
+
     .banner {
-        background-color: #fcfcfc;
-        background-image: url("assets/wallpaper.png");
-        height: 40vh;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
+        background-color: #0C1722;
+        height: 50vh;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         margin: 0;
-    }
-
-    .banner-content {
-        z-index: 1;
     }
 
     /* Overview page */
@@ -125,6 +119,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        margin-top: 3em;
         padding: 1em;
     }
 
@@ -151,7 +146,7 @@
         flex: 1;
     }
 
-    /* Transactions */
+    /* Table */
 
     .row {
         display: flex;
@@ -160,7 +155,7 @@
         margin: 0;
         padding: 0.5em 0 0.5em 0;
         border: none;
-        border-bottom: 1px solid #A9A9A9;
+        border-bottom: 1px solid #708090;
         box-sizing: border-box;
     }
 
@@ -185,11 +180,11 @@
 
     /* Form Formatting */
 
-    .form-container {
+    .page-container {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 80vh;
+        min-height: 90vh;
     }
 
     form {
@@ -218,32 +213,49 @@
         border-bottom: 1px solid #708090;
     }
 
-    input[type=submit], .button-left, .button-right {
-        background-color: #fff;
-        text-transform: uppercase;
+    .buttons {
+        text-align: center;
+        margin-top: 3em;
+    }
+
+    input[type=submit], .button-left, .button-right, .buttons .button a {
         padding: 0.5em 1em 0.5em 1em;
         margin: 1em 0;
-
     }
 
-    input[type=submit] {
+    .buttons .button {
+        border: none;
+        background-color: #fff;
+    }
+
+    input[type=submit], .buttons .button a{
         border-radius: 1em;
-        color: #4CAF50;
-        border: 1.5px solid #4CAF50;
+        color: #fff;
+        font-weight: bold;
+        background-color: #005EB8;
+        border: 1.5px solid #005EB8;
     }
 
     input[type=submit] {
-        width: 70%;
+        width: 50%;
     }
 
-    input[type=submit]:hover {
-        border: 1.5px solid #45a049;
-        color: #45a049;
+    .buttons .button a {
+        color: #fff;
+    }
+    .buttons .button a:hover {
+        color: #005EB8;
+    }
+    input[type=submit]:hover, .buttons .button a:hover {
+        background-color: #fff;
+        color: #005EB8;
+
     }
 
     .button-left, .button-right {
-        border: 1.5px solid #708090;
-        color: #708090
+        border: 1.5px solid #005EB8;
+        background-color: #fff;
+        color: #005EB8
     }
 
     .button-left {
@@ -256,15 +268,22 @@
         border-top-right-radius: 1em;
     }
 
-    #message-container {
-        padding: 0.25em;
+    #message-container, .announcement-bar {
         text-align: center;
         background-color: #e75136;
         display: flex;
         vertical-align: center;
         color: white;
-        text-transform: uppercase;
+        padding: 0.1em;
+        font-weight: bold;
     }
+
+    .announcement-bar {
+        background-color: #C7F4E3;
+        color: black;
+        display: block;
+    }
+
 
     /*    Dynamic screen size*/
     @media screen and (max-width: 600px) {

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Scotbank - Manager View</title>
+    {{> style.hbs}}
+</head>
+<body>
+{{> navbar.hbs}}
+<div class="main-section">
+    <h1>Manager View</h1>
+</div>
+<div class="sub-section"><div>
+    <div class="row">
+        <div class="small-column">
+            Account Number
+        </div>
+        <div class="small-column">
+            Sort Code
+        </div>
+        <div class="large-column">
+            User Name
+        </div>
+        <div class="small-column">
+            Account Balance
+        </div>
+
+    </div>
+    {{#each accounts}}
+        {{> tableRow.hbs this}}
+    {{/each}}
+</div>
+</div>
+{{> footer.hbs}}
+</body>
+</html>
+

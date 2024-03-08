@@ -120,7 +120,7 @@ public class WebsiteController {
                 throw new StatusCodeException(StatusCode.NOT_FOUND, "No accounts found");
             }
 
-            return new ModelAndView("accountTable.hbs").put("accounts", accounts);
+            return new ModelAndView("managerView.hbs").put("accounts", accounts);
 
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
