@@ -11,9 +11,6 @@
 <div class="page-container">
     <div class="full-section">
         <h1>Spending Summary</h1>
-        <p style="text-align: center">Click any of the labels to filter the category of the chart</p>
-
-
     <div class="full-section">
     <canvas id="summaryChart" style="min-width:60vw"></canvas>
     </div>
@@ -32,12 +29,12 @@
                     data: yValues
                 }]
             },
-            // options: {
-            //     title: {
-            //         display: true,
-            //         text: "Click the label to filter"
-            //     }
-            // }
+            options: {
+                title: {
+                    display: true,
+                    text: "Click any of the labels to filter the category of the chart"
+                }
+            }
         });
     </script>
     </div>
