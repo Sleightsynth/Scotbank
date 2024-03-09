@@ -34,25 +34,9 @@
 <div class="sub-section">
     <h3>Transactions</h3>
     <!--        START WHILE-->
-    <div class="w3-row-padding w3-padding-64 w3-container">
-    <table border="1">
-        <thead>
-            <tr>
-                <th>time</th>
-                <th>category</th>
-                <th>id</th>
-                <th>amount</th>
-                <th>status</th>
-                <th>reference</th>
-                <th>sender</th>
-                <th>recipient</th>
-            </tr>
-        </thead>
-        {{#each transactions}}
+    {{#each transactions}}
             {{> tableRowTrans.hbs this}}
-        {{/each}}
-    </table>
-</div>
+    {{/each}}
     <!--        END CREATE WHILE LOOP-->
     <!--                PLACEHOLDER START-->
     <div class="row">
@@ -83,6 +67,7 @@
     </div>
     <!--        PLACEHOLDER END-->
 
+</div>
 </div>
 {{> footer.hbs}}
 </body>
