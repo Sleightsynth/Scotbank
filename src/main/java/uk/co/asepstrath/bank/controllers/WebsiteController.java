@@ -120,7 +120,7 @@ public class WebsiteController {
                 throw new StatusCodeException(StatusCode.NOT_FOUND, "No accounts found");
             }
 
-            return new ModelAndView("accountTable.hbs").put("accounts", accounts);
+            return new ModelAndView("managerView.hbs").put("accounts", accounts);
 
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
@@ -204,7 +204,19 @@ public class WebsiteController {
             throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
         }
 
-        return getUserAndAddToTemplate("profile.hbs", uuid);
+        try {
+            User user = dbController.returnUser(uuid);
+            Account account = dbController.returnAccount(user);
+
+            ModelAndView modelAndView = new ModelAndView("profile.hbs").put("account", account);
+
+            return getUserAndAddToTemplate(modelAndView, uuid);
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
     }
 
     @GET("/transactionForm")

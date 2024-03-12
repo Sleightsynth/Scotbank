@@ -4,25 +4,16 @@
     <title>Scotbank - Home</title>
     {{> style.hbs}}
 </head>
-
-<script>
-    function onClick(element) {
-        document.getElementById("img01").src = element.src;
-        document.getElementById("modal01").style.display = "block";
-    }
-</script>
-
 <body>
 
 {{> navbar.hbs}}
-
-<div class="banner">
-    <div class="banner-content">
-        <h1>ScotBank</h1>
-        <h3>Where trust meets tradition.</h3>
-    </div>
+<div class="announcement-bar" >
+    <p>2nd highest ranking bank according to JPMorgan Chase & Co</p>
 </div>
-
+<div class="banner">
+    <h1>ScotBank</h1>
+    <h2>The place where trust meets tradition.</h2>
+</div>
 <div class="full-section">
     <h2>Why join us?</h2>
     <p>ScotBank has recently been ranked the United Kingdoms #1 ranked bank in overall bank performance and customer service. At ScotBank, we pride ourselves on our commitment to customer satisfaction, always going above and beyond what is expected of us! Whether you are trying to keep your money safe or grow your savings investing in us, is an investment in yourself. If its the ease of being able to see your daily transactions and filter them or just access your banking anywhere anytime, we have you covered. By joining ScotBank today, you are making the right choice!</p>
@@ -40,31 +31,19 @@
 </div>
 
 <div class="sub-section">
-    <h2>Our Team</h2>
-    <p>Meet our leaders who are committed to providing the highest quality service as possible. </p>
+    <h2>Our core vales</h2>
+    <p>Img boxes</p>
+</div>
+<div class="full-section">
+    <h2>About us</h2>
+    <p>ScotBank was founded in early 2024 as part of a project for CS217 Agile Software Engineering in Practice.</p>
+    <p>Our leaders ... Our names ... are committed to providing the highest quality service as possible.</p>
+    <p>ScotBank a workplace where people can make an impact.</p>
+    <p>More content coming soon.</p>
+    <p></p>
+</div>
 
-    <div class="w3-row-padding">
-        <div class="w3-container w3-third">
-            <img src="/assets/employee1.png" style="width:100%;cursor:pointer"
-                 onclick="onClick(this)" class="w3-hover-opacity">
-        </div>
-        <div class="w3-container w3-third">
-            <img src="/assets/employee2.png" style="width:100%;cursor:pointer"
-                 onclick="onClick(this)" class="w3-hover-opacity">
-        </div>
-        <div class="w3-container w3-third">
-            <img src="/assets/employee3.png" style="width:100%;cursor:pointer"
-                 onclick="onClick(this)" class="w3-hover-opacity">
-        </div>
-    </div>
-
-    <div id="modal01" class="w3-modal" onclick="this.style.display='none'">
-        <span class="w3-button w3-hover-red w3-xlarge w3-display-topright">&times;</span>
-        <div class="w3-modal-content w3-animate-zoom">
-            <img id="img01" style="width:100%">
-        </div>
-    </div>
-
+<div class="sub-section">
     <h2>Our promise</h2>
     <p>We guarantee you will be satisfied with all of our services. If you ever experience any issues, have feedback or complaints, you can always contact our 24/7 support team, and we will do everything possible to resolve your issue.</p>
 </div>

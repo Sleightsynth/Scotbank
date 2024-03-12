@@ -7,21 +7,21 @@
     <script>
         function form1() {
             document.getElementById("pay").style.display="block";
-            document.getElementById("payButton").style.color="#4CAF50";
-            document.getElementById("payButton").style.borderColor="#4CAF50";
+            document.getElementById("payButton").style.color="#fff";
+            document.getElementById("payButton").style.backgroundColor="#005EB8";
 
             document.getElementById("get").style.display="none";
-            document.getElementById("getButton").style.color="#708090";
-            document.getElementById("getButton").style.borderColor="#708090";
+            document.getElementById("getButton").style.color="#005EB8";
+            document.getElementById("getButton").style.backgroundColor="#fff";
         }
         function form2() {
             document.getElementById("pay").style.display="none";
-            document.getElementById("payButton").style.color="#708090";
-            document.getElementById("payButton").style.borderColor="#708090";
+            document.getElementById("payButton").style.color="#005EB8";
+            document.getElementById("payButton").style.backgroundColor="#fff";
 
             document.getElementById("get").style.display="block";
-            document.getElementById("getButton").style.color="#4CAF50";
-            document.getElementById("getButton").style.borderColor="#4CAF50";
+            document.getElementById("getButton").style.color="#fff";
+            document.getElementById("getButton").style.backgroundColor="#005EB8";
         }
     </script>
 
@@ -29,10 +29,10 @@
 <body>
 {{> navbar.hbs}}
 <div style="text-align: center">
-<button class="button-left" id="payButton" onClick="form1()" style="border-color: #4CAF50; color: #4CAF50;">Pay Someone</button>
+<button class="button-left" id="payButton" onClick="form1()" style="background-color: #005EB8; color: #fff;">Pay Someone</button>
 <button class="button-right" id="getButton" onClick="form2()">Request Payment</button>
 </div>
-    <div class="form-container">
+    <div class="page-container">
         <form id="pay">
             <h1>Make a Payment</h1>
             <input id="recipient" name="recipient" placeholder="Recipient name" required="" maxlength="20" tabindex="1" type="text">

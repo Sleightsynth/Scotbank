@@ -166,9 +166,9 @@ public class App extends Jooby {
 // Old Code Below
 /*
         User testUser = new User(UUID.randomUUID(), "connor.waiter.2022@uni.strath.ac.uk", db.getSha512Hash("123"),
-                "Connor Waiter", "07123 45678", "123 Connor Street", true);
+                "Connor Waiter", "07123 45678", "123 Connor Street",true);
 
-        ArrayList<Account> accounts = new ArrayList<>();
+        ArrayList < Account > accounts = new ArrayList < > ();
 
         accounts.add(new Account(testUser, UUID.randomUUID(), "12345678", "12-34-56", BigDecimal.valueOf(100.01),
                 Boolean.FALSE, AccountCategory.Payment));

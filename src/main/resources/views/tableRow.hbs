@@ -1,8 +1,17 @@
-<tbody>
-  <tr>
-    <td>{{this.accountNumber}}</td>
-    <td>{{this.sortCode}}</td>
-    <td>{{this.user.name}}</td>
-    <td>{{this.formattedBalance}}</td>
-  </tr>
-</tbody>
+<!-- Rows for managerView.hbs accounts table -->
+<body>
+    <div class="row">
+        <div class="small-column">
+            {{this.accountNumber}}
+        </div>
+        <div class="small-column">
+            {{this.sortCode}}
+        </div>
+        <div class="large-column">
+            {{this.user.name}}
+        </div>
+        <div class="small-column">
+            {{this.formattedBalance}}
+        </div>
+    </div>
+</body>

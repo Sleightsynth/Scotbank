@@ -1,5 +1,5 @@
 package uk.co.asepstrath.bank;
-
+//initiate branch
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -107,5 +107,18 @@ public class AccountTests {
     assertNotNull(a);
 
     assertEquals("Payment", a.getAccountCategory().toString());
+  }
+  @Test
+  public void depositNegitive(){
+    Account a = new Account(BigDecimal.valueOf(50.01), Boolean.FALSE, AccountCategory.Payment);
+    assertThrows(ArithmeticException.class, () -> a.deposit(-1));
+  }
+
+  @Test
+  public void toStringTest(){
+    Account a = new Account(BigDecimal.valueOf(50.01), Boolean.FALSE, AccountCategory.Payment);
+    String toStringCheck = a.toString();
+    String Wanted = "Balance: " + a.getFormattedBalance();
+    assertEquals(Wanted, toStringCheck);
   }
 }

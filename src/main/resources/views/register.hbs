@@ -7,8 +7,8 @@
 </head>
 <body>
 {{> navbar.hbs}}
-<div class="form-container">
-    <form action="/registerSave" method="post">
+<div class="page-container">
+    <form>
         <h1>Create an account</h1>
         <input id="username" name="username" placeholder="Enter Username" required="" maxlength="20" tabindex="1" type="text">
 
@@ -18,9 +18,7 @@
 
         <input id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required="" tabindex="4" type="password">
 
-        <label>Date of Birth:</label>
-
-        <input id="dob" name="dob" required="" tabindex="5" type="date"><br>
+        <label>Date of Birth:</label> <input id="dob" name="dob" required="" tabindex="5" type="date"><br>
 
         <input name="submit" id="submit" tabindex="3" value="Go to account" type="submit"><br>
 
