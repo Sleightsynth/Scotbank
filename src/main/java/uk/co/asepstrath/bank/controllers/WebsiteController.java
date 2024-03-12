@@ -119,8 +119,8 @@ public class WebsiteController {
             if (accounts.isEmpty()) {
                 throw new StatusCodeException(StatusCode.NOT_FOUND, "No accounts found");
             }
-
-            return new ModelAndView("managerView.hbs").put("accounts", accounts);
+            ModelAndView model = new ModelAndView("managerView.hbs").put("accounts", accounts);
+            return getUserAndAddToTemplate(model, userId);
 
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace

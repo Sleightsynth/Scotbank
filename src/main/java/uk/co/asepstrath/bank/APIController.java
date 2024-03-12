@@ -142,7 +142,7 @@ public class APIController {
             String newPassword = db.getSha512Hash(String.valueOf(n));
             System.out.println("The UUID:" + uuid);
             User testUser = new User(UUID.randomUUID(), newEmail, newPassword,
-                    name, "07123 45678", "123 Connor Street", true);
+                    name, "07123 45678", "123 Connor Street", false);
 
             Account account = new Account(testUser, uuid, newSortCode, newAccountNumber, startingBalance,
                     Boolean.FALSE, AccountCategory.Payment);
@@ -161,6 +161,15 @@ public class APIController {
             db.addUser(testUser);
             db.addAccount(account);
         }
+
+        User testUser = new User(UUID.randomUUID(), "admin", db.getSha512Hash("admin"),
+                "admin", "07123 45678", "123 Connor Street", true);
+
+        Account account = new Account(testUser, UUID.randomUUID(), "00-00-00", "00000000", BigDecimal.valueOf(0),
+                Boolean.FALSE, AccountCategory.Payment);
+
+        db.addUser(testUser);
+        db.addAccount(account);
     }
 }
 
