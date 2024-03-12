@@ -4,23 +4,11 @@ import io.jooby.Jooby;
 import io.jooby.handlebars.HandlebarsModule;
 import io.jooby.helper.UniRestExtension;
 import io.jooby.hikari.HikariModule;
-import kong.unirest.core.HttpResponse;
-import kong.unirest.core.Unirest;
 import kong.unirest.core.UnirestException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import uk.co.asepstrath.bank.controllers.DBController;
 import uk.co.asepstrath.bank.controllers.WebsiteController;
-import uk.co.asepstrath.bank.util.AccountCategory;
 import javax.sql.DataSource;
-import java.math.BigDecimal;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.UUID;
 
 public class App extends Jooby {
     {
@@ -41,7 +29,7 @@ public class App extends Jooby {
         DataSource ds = require(DataSource.class);
         Logger log = getLog();
         mvc(new WebsiteController(ds, log));
-        mvc(new APIController(ds, log));
+        mvc(new APIController(ds));
 
         /*
          * Finally we register our application lifecycle methods
@@ -69,82 +57,10 @@ public class App extends Jooby {
         Logger log = getLog();
         log.info("Starting Up...");
         DataSource ds = require(DataSource.class);
-        DBController db = new DBController(ds);
+        APIController api = new APIController(ds);
 
         try {
-            db.createTables();
-
-            HttpResponse<String> accountResponse = Unirest.get("https://api.asep-strath.co.uk/api/accounts").asString();
-            int statusCode = accountResponse.getStatus();
-            log.info("API Response Status Code: " + statusCode);
-
-            if (statusCode == 200) {
-                String responseBody = accountResponse.getBody();
-                log.info("API Response Body: " + responseBody);
-
-                JSONArray jsonArray = new JSONArray(responseBody);
-                ArrayList<Account> accounts = new ArrayList<>();
-
-                //first one works, second works for 2 of them
-                //for (int i = 0; i < 1; i++) {
-                for (int i = 0; i < jsonArray.length(); i++) { //there should be 100 accounts to go through
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
-                    String name = jsonObject.getString("name");
-                    BigDecimal startingBalance = jsonObject.getBigDecimal("startingBalance");
-                    boolean roundUpEnabled = jsonObject.getBoolean("roundUpEnabled");
-
-                    Random rand = new Random();
-
-                    //new email
-                    String newEmail = name.replaceAll("\\s+","");
-                    newEmail = newEmail.concat(".2022@uni.strath.ac.uk");
-
-                    //new sort code
-
-                    String newSortCode = "%02d-%02d-%02d".formatted(rand.nextInt(100), rand.nextInt(100), rand.nextInt(100));
-
-                    //new account number
-
-                    String newAccountNumber = "%08d".formatted(rand.nextInt(100000000));
-
-                    //new password
-                    int n = rand.nextInt(1000);
-                    String newPassword = db.getSha512Hash(String.valueOf(n));
-                    System.out.println("The UUID:"+uuid);
-                    User testUser = new User(uuid, newEmail, newPassword,
-                            name, "07123 45678", "123 Connor Street", true);
-
-                    accounts.add(new Account(testUser, uuid, newSortCode, newAccountNumber, startingBalance,
-                            Boolean.FALSE, AccountCategory.Payment));
-
-                    //Get results
-                    System.out.println(" ");
-                    System.out.println("UUID:"+uuid);
-                    System.out.println("Email:"+newEmail);
-                    System.out.println("Name:"+name);
-                    System.out.println("Password:"+newPassword);
-                    System.out.println("Sort Code:"+newSortCode);
-                    System.out.println("Account Number:"+newAccountNumber);
-                    System.out.println("Starting Balance:"+startingBalance);
-                    System.out.println(" ");
-
-                    db.addUser(testUser);
-                    db.addAccounts(accounts);
-                }
-
-                // Process accounts and add to database
-                //db.addAccounts(accounts);
-
-                // Log accounts
-                for (Account account : accounts) {
-                    System.out.println("Hello there!!!!!!!!!!!!!!!!!!!!");
-                    System.out.println(account);
-                }
-            } else {
-                log.error("Failed to fetch accounts from API. Status code: " + statusCode);
-                this.stop();
-            }
+            api.populateTables();
         } catch (UnirestException e) {
             log.error("Error during HTTP request", e);
             this.stop();
