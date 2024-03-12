@@ -16,7 +16,6 @@ import uk.co.asepstrath.bank.util.AccountCategory;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
@@ -109,57 +108,58 @@ public class APIController {
             responseBody = body.string();
         }
 
-        if (statusCode == 200) {
+        if (statusCode != 200) {
+            throw new IOException("Status code is not 200! Code: " + statusCode);
+        }
 
-            JSONArray jsonArray = new JSONArray(responseBody);
+        JSONArray jsonArray = new JSONArray(responseBody);
 
-            //first one works, second works for 2 of them
-            //for (int i = 0; i < 1; i++) {
-            for (int i = 0; i < jsonArray.length(); i++) { //there should be 100 accounts to go through
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
-                String name = jsonObject.getString("name");
-                BigDecimal startingBalance = jsonObject.getBigDecimal("startingBalance");
-                boolean roundUpEnabled = jsonObject.getBoolean("roundUpEnabled");
+        //first one works, second works for 2 of them
+        //for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < jsonArray.length(); i++) { //there should be 100 accounts to go through
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
+            String name = jsonObject.getString("name");
+            BigDecimal startingBalance = jsonObject.getBigDecimal("startingBalance");
+            boolean roundUpEnabled = jsonObject.getBoolean("roundUpEnabled");
 
-                Random rand = new Random();
+            Random rand = new Random();
 
-                //new email
-                String newEmail = name.replaceAll("\\s+", "");
-                newEmail = newEmail.concat(".2022@uni.strath.ac.uk");
+            //new email
+            String newEmail = name.replaceAll("\\s+", "");
+            newEmail = newEmail.concat(".2022@uni.strath.ac.uk");
 
-                //new sort code
+            //new sort code
 
-                String newSortCode = "%02d-%02d-%02d".formatted(rand.nextInt(100), rand.nextInt(100), rand.nextInt(100));
+            String newSortCode = "%02d-%02d-%02d".formatted(rand.nextInt(100), rand.nextInt(100), rand.nextInt(100));
 
-                //new account number
+            //new account number
 
-                String newAccountNumber = "%08d".formatted(rand.nextInt(100000000));
+            String newAccountNumber = "%08d".formatted(rand.nextInt(100000000));
 
-                //new password
-                int n = rand.nextInt(1000);
-                String newPassword = db.getSha512Hash(String.valueOf(n));
-                System.out.println("The UUID:" + uuid);
-                User testUser = new User(UUID.randomUUID(), newEmail, newPassword,
-                        name, "07123 45678", "123 Connor Street", true);
+            //new password
+            int n = rand.nextInt(1000);
+            String newPassword = db.getSha512Hash(String.valueOf(n));
+            System.out.println("The UUID:" + uuid);
+            User testUser = new User(UUID.randomUUID(), newEmail, newPassword,
+                    name, "07123 45678", "123 Connor Street", true);
 
-                Account account = new Account(testUser, uuid, newSortCode, newAccountNumber, startingBalance,
-                        Boolean.FALSE, AccountCategory.Payment);
+            Account account = new Account(testUser, uuid, newSortCode, newAccountNumber, startingBalance,
+                    Boolean.FALSE, AccountCategory.Payment);
 
-                //Get results
-                System.out.println(" ");
-                System.out.println("UUID: " + uuid);
-                System.out.println("Email: " + newEmail);
-                System.out.println("Name: " + name);
-                System.out.println("Password: " + n);
-                System.out.println("Sort Code: " + newSortCode);
-                System.out.println("Account Number: " + newAccountNumber);
-                System.out.println("Starting Balance: " + startingBalance);
-                System.out.println(" ");
+            //Get results
+            System.out.println(" ");
+            System.out.println("UUID: " + uuid);
+            System.out.println("Email: " + newEmail);
+            System.out.println("Name: " + name);
+            System.out.println("Password: " + n);
+            System.out.println("Sort Code: " + newSortCode);
+            System.out.println("Account Number: " + newAccountNumber);
+            System.out.println("Starting Balance: " + startingBalance);
+            System.out.println(" ");
 
-                db.addUser(testUser);
-                db.addAccount(account);
-            }
+            db.addUser(testUser);
+            db.addAccount(account);
         }
     }
 }
