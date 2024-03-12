@@ -263,7 +263,7 @@ public class DBController {
         try(Connection connection = dataSource.getConnection()) {
             PreparedStatement prepStmt = connection.prepareStatement(
                     String.format("INSERT INTO Users " + "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %b)",
-                            user.getId(), user.getName(), user.getEmail(), user.getPasswordHash(), user.getPhoneNo(),
+                            user.getId(), user.getName().replace("'","''"), user.getEmail().replace("'","''"), user.getPasswordHash(), user.getPhoneNo(),
                             user.getAddress(), user.isAdmin()));
             prepStmt.execute();
         }

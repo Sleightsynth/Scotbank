@@ -5,6 +5,8 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
+
+import com.google.gson.annotations.SerializedName;
 import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class Account {
@@ -14,6 +16,7 @@ public class Account {
     protected String accountNumber = "";
     protected String sortCode = "";
     protected Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
+    @SerializedName(value = "startingBalance")
     protected BigDecimal balance = BigDecimal.valueOf(0);
     protected String formattedBalance = ""; // yes it is being used in the hbs
     protected AccountCategory accountCategory;
