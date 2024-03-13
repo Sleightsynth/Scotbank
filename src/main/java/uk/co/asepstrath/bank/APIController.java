@@ -183,8 +183,9 @@ public class APIController {
         db.addUser(testUser);
         db.addAccount(account);
     }
-    public void getTransactions () throws IOException, ParserConfigurationException, SAXException {
-        //int i = 1;
+
+    public void getTransactions() throws IOException, ParserConfigurationException, SAXException {
+        // int i = 1;
         int count = 0;
         NodeList nodeList;
         for (int i = 1; i < 20; i++) {
@@ -206,32 +207,24 @@ public class APIController {
                 String category = null;
 
                 while (node != null) {
-                    switch (node.getNodeName()) {
-                        case "timestamp":
-                            if (node.getFirstChild() != null) {
+                    if (node.getFirstChild() != null) {
+                        switch (node.getNodeName()) {
+                            case "timestamp":
                                 timestamp = node.getFirstChild().getNodeValue();
-                            }
-                            break;
-                        case "amount":
-                            if (node.getFirstChild() != null) {
+                                break;
+                            case "amount":
                                 amount = node.getFirstChild().getNodeValue();
-                            }
-                            break;
-                        case "from":
-                            if (node.getFirstChild() != null) {
+                                break;
+                            case "from":
                                 sender = node.getFirstChild().getNodeValue();
-                            }
-                            break;
-                        case "id":
-                            if (node.getFirstChild() != null) {
+                                break;
+                            case "id":
                                 recipient = node.getFirstChild().getNodeValue();
-                            }
-                            break;
-                        case "type":
-                            if (node.getFirstChild() != null) {
+                                break;
+                            case "type":
                                 category = node.getFirstChild().getNodeValue();
-                            }
-                            break;
+                                break;
+                        }
                     }
                     node = node.getNextSibling();
                 }
@@ -244,10 +237,9 @@ public class APIController {
                 count += 1;
                 System.out.println("Counter: " + count);
                 System.out.println(" ");
-                //transactions.add(transaction);
+                // transactions.add(transaction);
             }
-            //db.util.
-
+            // db.util.
 
         }
         System.out.println("Out of loop! :D");
