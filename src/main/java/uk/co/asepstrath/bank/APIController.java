@@ -57,16 +57,6 @@ public class APIController {
         return "Hi from API";
     }
 
-    @POST
-    @Path("/login")
-    public String attemptLogin(Context ctx) {
-        String username = ctx.form().get("username").value();
-        String password = ctx.form().get("password").value();
-
-        return String.format("Got your form! %s %s", username, password);
-
-    }
-
     public String generateToken() throws IOException {
         RequestBody formBody = new FormBody.Builder()
                 .add("grant_type", "client_credentials")
