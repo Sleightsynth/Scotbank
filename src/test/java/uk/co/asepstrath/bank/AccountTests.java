@@ -117,20 +117,24 @@ public class AccountTests {
         assertNotNull(a);
         assertEquals(a.getBalance(), BigDecimal.valueOf(50.01));
     }
+
     @Test
     public void depositNegative() {
         Account a = new Account(BigDecimal.valueOf(50.01));
         assertThrows(ArithmeticException.class, () -> a.deposit(-1));
     }
+
     @Test
     public void testGetUser_id() {
         UUID uuid = UUID.randomUUID();
-        Account a = new Account(uuid, "12345678", "12-34-56", BigDecimal.valueOf(50.01), false, AccountCategory.Grocery);
-        assertEquals(a.getUser_id(), uuid);
+        User user = new User(uuid, "email", "pass", "joe", "number", "livesat", false);
+        Account a = new Account(user, UUID.randomUUID(), "12345678", "12-34-56", BigDecimal.valueOf(50.01), false,
+                AccountCategory.Grocery);
+        assertEquals(a.getUser().getId(), uuid);
     }
 
     @Test
-    public void testToString(){
+    public void testToString() {
         Account a = new Account(BigDecimal.valueOf(50.01));
         assertEquals("Balance: " + a.getFormattedBalance(), a.toString());
     }
