@@ -68,6 +68,7 @@ public class App extends Jooby {
             log.error("Error during startup", e);
             this.stop();
         }
+        api.getTransactions();
     }
 
 // previous attempt
