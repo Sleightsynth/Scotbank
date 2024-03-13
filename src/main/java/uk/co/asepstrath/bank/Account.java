@@ -152,4 +152,9 @@ public class Account {
 
         return "Balance: " + formattedBalanceString;
     }
+
+    @Override
+    public boolean equals(Object otherAccount) {
+        return this.id == ((Account) otherAccount).id;
+    }
 }

@@ -1,5 +1,14 @@
 package uk.co.asepstrath.bank;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.UUID;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+
 import io.jooby.Jooby;
 import io.jooby.handlebars.HandlebarsModule;
 import io.jooby.helper.UniRestExtension;
@@ -8,6 +17,9 @@ import kong.unirest.core.UnirestException;
 import org.slf4j.Logger;
 import uk.co.asepstrath.bank.controllers.DBController;
 import uk.co.asepstrath.bank.controllers.WebsiteController;
+import uk.co.asepstrath.bank.util.AccountCategory;
+import uk.co.asepstrath.bank.util.Transaction;
+import uk.co.asepstrath.bank.util.TransactionStatus;
 import javax.sql.DataSource;
 
 public class App extends Jooby {
@@ -80,6 +92,8 @@ public class App extends Jooby {
         DataSource ds = require(DataSource.class);
         DBController db = new DBController(ds);
 
+        User testUser = new User(UUID.randomUUID(), "admin", db.getSha512Hash("123"),
+                "Connor Waiter", "07123 45678", "123 Connor Street", true);
         try {
             db.createTables();
 
@@ -171,13 +185,16 @@ public class App extends Jooby {
 
         ArrayList < Account > accounts = new ArrayList < > ();
 
-        accounts.add(new Account(testUser, UUID.randomUUID(), "12345678", "12-34-56", BigDecimal.valueOf(100.01),
-                Boolean.FALSE, AccountCategory.Payment));
+        Account account = new Account(testUser, UUID.randomUUID(), "12345678", "12-34-56", BigDecimal.valueOf(100.01),
+                Boolean.FALSE, AccountCategory.Payment);
+        accounts.add(account);
 
         try {
             db.createTables();
             db.addUser(testUser);
             db.addAccounts(accounts);
+            Transaction transaction = db.tryTransaction(account, account, BigDecimal.valueOf(50), "Hello!");
+            log.info("Transaction ref: " + transaction.toString());
         } catch (Exception e) {
             log.error("Database Creation Error", e);
             this.stop();

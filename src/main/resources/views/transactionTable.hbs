@@ -5,17 +5,22 @@
     {{> style.hbs}}
 </head>
 <body>
-{{> navbar.hbs}}
 <div class="w3-row-padding w3-padding-64 w3-container">
     <table border="1">
         <thead>
             <tr>
-                <th></th>
-                <th></th>
+                <th>time</th>
+                <th>category</th>
+                <th>id</th>
+                <th>amount</th>
+                <th>status</th>
+                <th>reference</th>
+                <th>sender</th>
+                <th>recipient</th>
             </tr>
         </thead>
-        {{#each }}
-            {{> tableRow.hbs this}}
+        {{#each transactions}}
+            {{> tableRowTrans.hbs this}}
         {{/each}}
     </table>
 </div>

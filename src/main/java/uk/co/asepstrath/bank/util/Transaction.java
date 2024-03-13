@@ -15,7 +15,47 @@ public class Transaction {
     public String reference = null;
     public AccountCategory category = null;
     public TransactionStatus status = null;
+
+    // NOTE: For handlebards to pick up on properties of a class, it must have
+    // getters!
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public AccountCategory getCategory() {
+        return category;
+    }
+
+    public TransactionStatus getStatus() {
+        return status;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public Account getRecipient() {
+        return recipient;
+    }
+
+    public Account getSender() {
+        return sender;
+    }
+
     public UUID id = null;
     public Account recipient = null;
     public Account sender = null;
+
+    @Override
+    public String toString() {
+        return reference;
+    }
 }
