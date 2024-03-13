@@ -46,7 +46,7 @@ public class DBControllerTest {
             List<Account> accountList = dbController.returnAllAccounts();
             assertNotNull(accountList);
             Account account1 = accountList.get(0);
-            Account account2 = dbController.returnAccount(account1.getUser_id());
+            Account account2 = dbController.returnAccount(account1.getUser());
             assertNotNull(account2);
             assertEquals(account1.getAccountNumber(), account2.getAccountNumber());
             assertEquals(account1.getAccountCategory(), account2.getAccountCategory());
@@ -57,10 +57,6 @@ public class DBControllerTest {
         }
     }
 
-    @Test
-    public void returnAccountStringError(){
-        assertThrows(UnsupportedOperationException.class, () -> dbController.returnAccount("name"));
-    }
     @Test
     public void returnAccountExceptionTest(){
         assertThrows(StatusCodeException.class, () -> dbController.returnAccount("33333333", "888888"));

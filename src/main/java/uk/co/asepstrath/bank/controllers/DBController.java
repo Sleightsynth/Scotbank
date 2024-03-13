@@ -155,7 +155,8 @@ public class DBController {
             List<Account> accounts = new ArrayList<>();
 
             while (set.next()) {
-                accounts.add(new Account(UUID.fromString(set.getString("User_Id")),
+                User user = returnUser(UUID.fromString(set.getString("User_Id")));
+                accounts.add(new Account(user, UUID.fromString(set.getString("Id")),
                         set.getString("AccountNumber"), set.getString("SortCode"),
                         set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
                         AccountCategory.valueOf(set.getString("AccountCategory"))));
@@ -163,33 +164,6 @@ public class DBController {
 
             return accounts;
         }
-    }
-
-    /**
-     * Returns the account with the specified name
-     *
-     * @param name
-     * @throws SQLException
-     */
-    public Account returnAccount(String name) throws SQLException {
-        //Connection connection = dataSource.getConnection();
-        // Create Statement (batch of SQL Commands)
-        //Statement statement = connection.createStatement();
-        // Perform SQL Query
-        // TODO: This needs to use USER and find an account with it.
-        throw new UnsupportedOperationException();
-        // ResultSet set = statement.executeQuery("SELECT * FROM `Accounts` WHERE
-        // name='%s'".formatted(name));
-        //
-        // if (!set.next()) {
-        // throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
-        // }
-        //
-        // Account account = new Account(set.getString("AccountNumber"),
-        // set.getString("SortCode"),
-        // set.getBigDecimal("AccountBalance"));
-        //
-        // return account;
     }
 
     public Account returnAccount(String accountNumber, String sortCode) throws SQLException {
@@ -221,12 +195,13 @@ public class DBController {
                 throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
             }
 
-            Account account = new Account(UUID.fromString(set.getString("User_Id")),
+            User user = this.returnUser(userID);
+
+            Account account = new Account(user, UUID.fromString(set.getString("Id")),
                     set.getString("AccountNumber"), set.getString("SortCode"),
                     set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
                     AccountCategory.valueOf(set.getString("AccountCategory"))
             );
-
             return account;
         }
     }
