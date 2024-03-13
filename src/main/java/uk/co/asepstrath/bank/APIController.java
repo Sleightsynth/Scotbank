@@ -15,6 +15,7 @@ import uk.co.asepstrath.bank.controllers.DBController;
 import uk.co.asepstrath.bank.util.AccountCategory;
 import uk.co.asepstrath.bank.util.Token;
 import uk.co.asepstrath.bank.util.Transaction;
+import uk.co.asepstrath.bank.util.TransactionStatus;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -201,13 +202,15 @@ public class APIController {
 
             TransactionResponsePage apiResponse = gson.fromJson(responseBody, TransactionResponsePage.class);
 
+            System.out.println("Processing transactions");
+
             for (int o = 0; o < apiResponse.results.size()-1; o++) {
 
                 /*if(count==318){
                     System.out.println();
                 }*/
                 Transaction transaction = apiResponse.results.get(o);
-
+                transaction.status = TransactionStatus.OK;
                 try{
                     UUID senderAccountID = UUID.fromString(transaction.from);
                     transaction.sender = db.returnAccountFromId(senderAccountID);
@@ -230,8 +233,6 @@ public class APIController {
                 count++;
             }
         }
-        System.out.println("Counter: " + count);
-        System.out.println(" ");
-        System.out.println("Out of loop! :D");
+        System.out.println(count+" transactions processed");
     }
 }

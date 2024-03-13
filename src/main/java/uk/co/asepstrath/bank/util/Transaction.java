@@ -17,7 +17,7 @@ public class Transaction {
     public String reference = null;
     @SerializedName("type")
     public TransactionCategory category = null;
-    public TransactionStatus status = TransactionStatus.OK;
+    public TransactionStatus status = null;
 
     public UUID id = null;
     public Account recipient = null;
