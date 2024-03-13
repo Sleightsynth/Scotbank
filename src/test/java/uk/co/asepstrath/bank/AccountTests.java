@@ -129,4 +129,10 @@ public class AccountTests {
         assertEquals(a.getUser_id(), uuid);
     }
 
+    @Test
+    public void testToString(){
+        Account a = new Account(BigDecimal.valueOf(50.01));
+        assertEquals("Balance: " + a.getFormattedBalance(), a.toString());
+    }
+
 }
