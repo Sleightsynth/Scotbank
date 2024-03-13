@@ -5,10 +5,12 @@ import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
+
 import uk.co.asepstrath.bank.util.AccountCategory;
 
 public class Account {
     protected UUID id = null;
+    protected UUID user_id = null;
     protected User user = null;
     protected String accountNumber = "";
     protected String sortCode = "";
@@ -49,11 +51,25 @@ public class Account {
         this.foreign = foreign;
     }
 
+    public Account(UUID user_id, String accountNumber, String sortCode, BigDecimal balance, Boolean foreign,
+                   AccountCategory accountType) {
+        this.id = UUID.randomUUID();
+        this.user_id = user_id;
+        this.accountNumber = accountNumber;
+        this.sortCode = sortCode;
+        this.balance = balance;
+        this.accountCategory = accountType;
+        this.foreign = foreign;
+
+        updateFormattedBalance();
+    }
+
     public Account(User user, UUID accountId, String accountNumber, String sortCode, BigDecimal balance,
             Boolean foreign,
             AccountCategory accountType) {
         this.id = accountId;
         this.user = user;
+
         this.accountNumber = accountNumber;
         this.sortCode = sortCode;
         this.balance = balance;
@@ -107,6 +123,10 @@ public class Account {
 
     public UUID getUUID() {
         return id;
+    }
+
+    public UUID getUser_id() {
+        return user_id;
     }
 
     public User getUser() {

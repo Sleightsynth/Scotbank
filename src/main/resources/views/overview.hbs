@@ -4,18 +4,26 @@
 <head>
     <title>Scotbank - Overview</title>
     {{> style.hbs}}
+    <script>
+        window.addEventListener('scroll', function() {
+            var scrollSection = document.querySelector('.scroll-section');
+            if (window.scrollY > 0) {
+                scrollSection.style.opacity = '1'; // Fade out
+            } else {
+                scrollSection.style.opacity = '0'; // Fade in
+            }
+        });
+    </script>
 </head>
 <body>
 {{> navbar.hbs}}
+<div class="announcement-bar" >
+    <p>Checkout the new savings pot feature!</p>
+</div>
 <div>
-    <div class="full-section">
-        <h2>ScotBank</h2>
-        <h3>Welcome {{user.name}},</h3> <!--    Change to account associated variables-->
-    </div>
 
-    <!--    Change to account associated variables-->
     <div class="card">
-        <h4>Account</h4>
+        <h4>{{user.name}}</h4>
         <h3>{{account.getFormattedBalance}}</h3>
         <div class="side-by-side">
             <h5>{{account.sortCode}}</h5>
@@ -31,6 +39,7 @@
 </div>
 
 <!--    Transactions and sorting - Clickable will provide more details-->
+<!--scroll-section-->
 <div class="sub-section">
     <h3>Transactions</h3>
     <!--        START WHILE-->
