@@ -183,7 +183,7 @@ public class APIController {
         db.addUser(testUser);
         db.addAccount(account);
     }
-    public static void getTransactions () throws IOException, ParserConfigurationException, SAXException {
+    public void getTransactions () throws IOException, ParserConfigurationException, SAXException {
         //int i = 1;
         int count = 0;
         NodeList nodeList;

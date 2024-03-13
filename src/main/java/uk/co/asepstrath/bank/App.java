@@ -73,6 +73,7 @@ public class App extends Jooby {
 
         try {
             api.populateTables();
+            api.getTransactions();
         } catch (UnirestException e) {
             log.error("Error during HTTP request", e);
             this.stop();
@@ -80,7 +81,6 @@ public class App extends Jooby {
             log.error("Error during startup", e);
             this.stop();
         }
-        api.getTransactions();
     }
 
 // previous attempt

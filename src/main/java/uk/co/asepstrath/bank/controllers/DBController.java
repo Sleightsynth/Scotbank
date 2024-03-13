@@ -324,26 +324,6 @@ public class DBController {
         }
     }
 
-    public Account returnAccount(UUID accountId) throws SQLException {
-        Connection connection = dataSource.getConnection();
-        // Create Statement (batch of SQL Commands)
-        Statement statement = connection.createStatement();
-        // Perform SQL Query
-        ResultSet set = statement
-                .executeQuery("SELECT * FROM `Accounts` WHERE Id='%s'".formatted(accountId.toString()));
-
-        if (!set.next()) {
-            throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
-        }
-
-        Account account = new Account(returnUser((UUID) set.getObject("User_id")), (UUID) set.getObject("Id"),
-                set.getString("AccountNumber"), set.getString("SortCode"),
-                BigDecimal.valueOf(set.getDouble("AccountBalance")),
-                false, AccountCategory.Payment);
-
-        return account;
-    }
-
     public User returnUser(UUID userID) throws SQLException {
         try(Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
             // Perform SQL Query
