@@ -20,6 +20,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import uk.co.asepstrath.bank.controllers.DBController;
 import uk.co.asepstrath.bank.util.AccountCategory;
+import uk.co.asepstrath.bank.util.Token;
 import uk.co.asepstrath.bank.util.Transaction;
 
 import java.io.IOException;
