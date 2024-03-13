@@ -38,7 +38,7 @@ public class AccountTests {
         Account a = new Account();
         a.deposit(50);
         a.deposit(20);
-        System.out.println(a.getBalance()); // TODO: This should print to a logger
+        System.out.println(a.getBalance());
         assertEquals(a.getBalance().compareTo(BigDecimal.valueOf(70)), 0);
     }
 
