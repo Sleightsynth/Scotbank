@@ -2,7 +2,8 @@ package uk.co.asepstrath.bank.util;
 
 import com.google.gson.annotations.SerializedName;
 
-public enum AccountCategory {
+
+public enum TransactionCategory {
     @SerializedName("GROCERY")
     Grocery,
     @SerializedName("BILLS")
@@ -12,9 +13,18 @@ public enum AccountCategory {
     @SerializedName("ENTERTAINMENT")
     Entertainment,
     @SerializedName("PAYMENT")
-    Payment;
+    Payment,
+    @SerializedName("TRANSFER")
+    Transfer,
+    @SerializedName("DEPOSIT")
+    Deposit,
+
+    @SerializedName("WITHDRAWAL")
+    Withdrawal;
 
     public String toString() {
         return this.name();
     }
 }
+
+

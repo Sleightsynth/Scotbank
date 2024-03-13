@@ -22,6 +22,7 @@ import uk.co.asepstrath.bank.Account;
 import uk.co.asepstrath.bank.User;
 import uk.co.asepstrath.bank.util.AccountCategory;
 import uk.co.asepstrath.bank.util.Transaction;
+import uk.co.asepstrath.bank.util.TransactionCategory;
 import uk.co.asepstrath.bank.util.TransactionStatus;
 
 /**
@@ -79,7 +80,7 @@ public class DBController {
                             "FOREIGN KEY (`User_id`) REFERENCES Users(`Id`)" +
                             ")");
             stmt.executeUpdate(
-                    "CREATE TABLE `Transcation` " +
+                    "CREATE TABLE `Transaction` " +
                             "(" +
                             "`Timestamp` timestamp," +
                             "`Amount` decimal(15,2)," +
@@ -90,9 +91,7 @@ public class DBController {
                             "`Id` UUID PRIMARY KEY UNIQUE," +
                             "`Recipient` varchar(255)," +
                             "`Sender` varchar(255)," +
-                            "PRIMARY KEY ( `Id` )," +
-                            "FOREIGN KEY ( `Recipient` ) REFERENCES Accounts(`Id`)," +
-                            "FOREIGN KEY ( `Sender` ) REFERENCES Accounts(`Id`)" +
+                            "PRIMARY KEY ( `Id` )" +
                             ")");
         }
     }
@@ -114,7 +113,7 @@ public class DBController {
         // If you dislike this, I suggest you refactor it. :)
 
         Transaction ts = new Transaction();
-        ts.category = recipient.getAccountCategory();
+        ts.category = TransactionCategory.Payment;
         ts.time = new Timestamp(System.currentTimeMillis());
         ts.status = recipient.isForeign() ? TransactionStatus.PROCESS_DUE : TransactionStatus.OK;
         ts.sender = sender;
@@ -151,7 +150,11 @@ public class DBController {
         Statement statement = connection.createStatement();
         // Perform SQL Query
         ResultSet set = statement.executeQuery(
+<<<<<<< HEAD
                 "SELECT * FROM Transcation"
+=======
+                "SELECT * FROM Transaction WHERE Recipient='%s' OR Sender='%s'"
+>>>>>>> a566c37 (Transactions now working)
                         .formatted(account.getUUID().toString(), account.getUUID().toString()));
 
         List<Transaction> transactions = new ArrayList<>();
@@ -159,14 +162,17 @@ public class DBController {
             Transaction ts = new Transaction();
 
             ts.time = set.getTimestamp("Timestamp");
-            ts.category = AccountCategory.valueOf(set.getString("Category"));
+            ts.category = TransactionCategory.valueOf(set.getString("Category"));
             ts.id = (UUID) set.getObject("Id");
             ts.amount = BigDecimal.valueOf(set.getDouble("Amount"));
             ts.status = TransactionStatus.valueOf(set.getString("Status"));
             ts.reference = set.getString("Ref");
-
-            ts.sender = returnAccount(UUID.fromString(set.getString("Sender")));
-            ts.recipient = returnAccount(UUID.fromString(set.getString("Recipient")));
+            try{
+                ts.sender = returnAccount(UUID.fromString(set.getString("Sender")));
+            } catch (Exception ignored){}
+            try{
+                ts.recipient = returnAccount(UUID.fromString(set.getString("Recipient")));
+            } catch (Exception ignored){}
 
             transactions.add(ts);
         }
@@ -184,17 +190,27 @@ public class DBController {
         PreparedStatement prepStmt;
         try (Connection connection = dataSource.getConnection()) {
             prepStmt = connection.prepareStatement(
-                    "INSERT into Transaction (TIME,AMOUNT,REFERENCE,CATEGORY,STATUS,ID,RECIPIENT,SENDER)" +
+                    "INSERT into Transaction (timestamp,Amount,Ref,Category,Status,Id,Recipient,Sender)" +
                             "values (?, ?, ?, ?, ?, ?, ?, ?)");
-
             prepStmt.setTimestamp(1, ts.time);
             prepStmt.setDouble(2, ts.amount.doubleValue());
             prepStmt.setString(3, ts.reference);
             prepStmt.setString(4, ts.category.toString());
             prepStmt.setString(5, ts.status.toString());
             prepStmt.setObject(6, ts.id);
-            prepStmt.setObject(7, ts.recipient.getUUID());
-            prepStmt.setObject(8, ts.sender.getUUID());
+
+            if(ts.sender == null){
+                prepStmt.setObject(7, ts.recipient.getUUID());
+                prepStmt.setObject(8, ts.from);
+            }
+            else if(ts.recipient == null){
+                prepStmt.setObject(7, ts.to);
+                prepStmt.setObject(8, ts.sender.getUUID());
+            }
+            else{
+                prepStmt.setObject(7, ts.recipient.getUUID());
+                prepStmt.setObject(8, ts.sender.getUUID());
+            }
 
             // SEND IT!
             prepStmt.execute();
@@ -270,6 +286,7 @@ public class DBController {
         }
     }
 
+
     public Account returnAccount(UUID userID) throws SQLException {
         try (Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
             // Perform SQL Query
@@ -286,6 +303,26 @@ public class DBController {
                     set.getString("AccountNumber"), set.getString("SortCode"),
                     set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
                     AccountCategory.valueOf(set.getString("AccountCategory")));
+            return account;
+        }
+    }
+
+    public Account returnAccountFromId(UUID accountID) throws SQLException {
+        try(Connection connection = dataSource.getConnection(); Statement statement = connection.createStatement()) {
+            // Perform SQL Query
+            ResultSet set = statement.executeQuery("SELECT * FROM `Accounts` WHERE Id='%s'".formatted(accountID.toString()));
+
+            if (!set.next()) {
+                throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+            }
+
+            User user = this.returnUser(UUID.fromString(set.getString("User_id")));
+
+            Account account = new Account(user, UUID.fromString(set.getString("Id")),
+                    set.getString("AccountNumber"), set.getString("SortCode"),
+                    set.getBigDecimal("AccountBalance"), set.getBoolean("IsForeign"),
+                    AccountCategory.valueOf(set.getString("AccountCategory"))
+            );
             return account;
         }
     }
@@ -307,7 +344,7 @@ public class DBController {
                     .formatted(user.getEmail(), user.getPasswordHash()));
 
             if (!set.next()) {
-                throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+                throw new StatusCodeException(StatusCode.NOT_FOUND, "User Not Found");
             }
 
             String userId = set.getString("Id");
@@ -335,7 +372,7 @@ public class DBController {
             ResultSet set = statement.executeQuery("SELECT * FROM `Users` WHERE Id='%s'".formatted(userID.toString()));
 
             if (!set.next()) {
-                throw new StatusCodeException(StatusCode.NOT_FOUND, "Account Not Found");
+                throw new StatusCodeException(StatusCode.NOT_FOUND, "User Not Found");
             }
 
             User user = new User(userID, set.getString("Email"), set.getString("Hash_Pass"), set.getString("Name"),
@@ -369,6 +406,13 @@ public class DBController {
         // For specifying wrong message digest algorithms
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void updateBalance(Account updatedAccount) throws SQLException {
+        try(Connection connection = dataSource.getConnection(); Statement stmt = connection.createStatement()) {
+
+            stmt.executeUpdate("UPDATE Accounts SET AccountBalance=%f WHERE Id='%s'".formatted(updatedAccount.getBalance().floatValue(),updatedAccount.getUUID()));
         }
     }
 }

@@ -3,6 +3,8 @@ package uk.co.asepstrath.bank.util;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
+
+import com.google.gson.annotations.SerializedName;
 import uk.co.asepstrath.bank.Account;
 
 /*
@@ -13,8 +15,15 @@ public class Transaction {
     public Timestamp time = null;
     public BigDecimal amount = null;
     public String reference = null;
-    public AccountCategory category = null;
-    public TransactionStatus status = null;
+    @SerializedName("type")
+    public TransactionCategory category = null;
+    public TransactionStatus status = TransactionStatus.OK;
+
+    public UUID id = null;
+    public Account recipient = null;
+    public Account sender = null;
+    public String to;
+    public String from;
 
     // NOTE: For handlebards to pick up on properties of a class, it must have
     // getters!
@@ -30,7 +39,7 @@ public class Transaction {
         return reference;
     }
 
-    public AccountCategory getCategory() {
+    public TransactionCategory getCategory() {
         return category;
     }
 
@@ -49,10 +58,6 @@ public class Transaction {
     public Account getSender() {
         return sender;
     }
-
-    public UUID id = null;
-    public Account recipient = null;
-    public Account sender = null;
 
     @Override
     public String toString() {

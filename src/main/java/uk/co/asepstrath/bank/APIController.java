@@ -1,9 +1,6 @@
 package uk.co.asepstrath.bank;
 
 import javax.sql.DataSource;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import okhttp3.*;
 import org.json.JSONArray;
@@ -13,11 +10,7 @@ import io.jooby.Context;
 import io.jooby.annotation.GET;
 import io.jooby.annotation.POST;
 import io.jooby.annotation.Path;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import uk.co.asepstrath.bank.controllers.DBController;
 import uk.co.asepstrath.bank.util.AccountCategory;
 import uk.co.asepstrath.bank.util.Token;
@@ -25,9 +18,8 @@ import uk.co.asepstrath.bank.util.Transaction;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.Random;
 import java.util.UUID;
 
@@ -94,6 +86,7 @@ public class APIController {
         Request req = new Request.Builder()
                 .url("https://api.asep-strath.co.uk/api/accounts")
                 .get()
+                .addHeader("Accept","application/json")
                 .addHeader("Authorization", authToken)
                 .build();
 
@@ -129,7 +122,8 @@ public class APIController {
             Random rand = new Random();
 
             // new email
-            String newEmail = name.replaceAll("\\s+", "");
+            String newEmail = name.replaceAll("\\.+", "")
+                    .replaceAll("\\s+", ".").toLowerCase();
             newEmail = newEmail.concat(".2022@uni.strath.ac.uk");
 
             // new sort code
@@ -143,7 +137,6 @@ public class APIController {
             // new password
             int n = rand.nextInt(1000);
             String newPassword = db.getSha512Hash(String.valueOf(n));
-            System.out.println("The UUID:" + uuid);
             User testUser = new User(UUID.randomUUID(), newEmail, newPassword,
                     name, "07123 45678", "123 Connor Street", false);
 
@@ -175,64 +168,70 @@ public class APIController {
         db.addAccount(account);
     }
 
-    public void getTransactions() throws IOException, ParserConfigurationException, SAXException {
-        // int i = 1;
+    public void getTransactions () throws IOException, SQLException {
         int count = 0;
-        NodeList nodeList;
         for (int i = 1; i < 20; i++) {
-            String apiURL = ("https://api.asep-strath.co.uk/api/transactions?size=1000&page=" + i);
-            URL url = new URL(apiURL);
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(new InputSource(url.openStream()));
-            doc.getDocumentElement().normalize();
-            nodeList = doc.getElementsByTagName("results");
-            ArrayList<Transaction> transactions = new ArrayList<>();
-            for (int o = 0; o < nodeList.getLength(); o++) {
-                Transaction transaction = new Transaction();
-                Node node = nodeList.item(o).getFirstChild();
-                String timestamp = null;
-                String amount = null;
-                String sender = null;
-                String recipient = null;
-                String category = null;
+            String authToken = this.generateToken();
 
-                while (node != null) {
-                    if (node.getFirstChild() != null) {
-                        switch (node.getNodeName()) {
-                            case "timestamp":
-                                timestamp = node.getFirstChild().getNodeValue();
-                                break;
-                            case "amount":
-                                amount = node.getFirstChild().getNodeValue();
-                                break;
-                            case "from":
-                                sender = node.getFirstChild().getNodeValue();
-                                break;
-                            case "id":
-                                recipient = node.getFirstChild().getNodeValue();
-                                break;
-                            case "type":
-                                category = node.getFirstChild().getNodeValue();
-                                break;
-                        }
-                    }
-                    node = node.getNextSibling();
+            Request req = new Request.Builder()
+                    .url("https://api.asep-strath.co.uk/api/transactions?size=1000&page=" + i)
+                    .get()
+                    .addHeader("Accept","application/json")
+                    .addHeader("Authorization", authToken)
+                    .build();
+
+            int statusCode;
+            String responseBody;
+
+            try (Response rsp = client.newCall(req).execute()) {
+                statusCode = rsp.code();
+                ResponseBody body = rsp.body();
+                if (body == null) {
+                    throw new IOException("Response body is null!");
                 }
-                System.out.println(" ");
-                System.out.println("Timestamp: " + timestamp);
-                System.out.println("Amount: " + amount);
-                System.out.println("Sender: " + sender);
-                System.out.println("Recipient: " + recipient);
-                System.out.println("Category: " + category);
-                count += 1;
-                System.out.println("Counter: " + count);
-                System.out.println(" ");
-                // transactions.add(transaction);
-            }
-            // db.util.
 
+                responseBody = body.string();
+            }
+
+            // any 200 code is an OK code.
+            if (statusCode < 200 || statusCode > 300) {
+                throw new IOException("Status code is not 200! Code: " + statusCode);
+            }
+            Gson gson = new Gson();
+
+            TransactionResponsePage apiResponse = gson.fromJson(responseBody, TransactionResponsePage.class);
+
+            for (int o = 0; o < apiResponse.results.size()-1; o++) {
+
+                /*if(count==318){
+                    System.out.println();
+                }*/
+                Transaction transaction = apiResponse.results.get(o);
+
+                try{
+                    UUID senderAccountID = UUID.fromString(transaction.from);
+                    transaction.sender = db.returnAccountFromId(senderAccountID);
+                    transaction.sender.withdraw(transaction.amount);
+                    db.updateBalance(transaction.sender);
+                } catch (Exception ignored){
+                    transaction.reference = transaction.from;
+                }
+                try{
+                    UUID recipientAccountID = UUID.fromString(transaction.to);
+                    transaction.recipient = db.returnAccountFromId(recipientAccountID);
+                    transaction.recipient.deposit(transaction.amount);
+                    db.updateBalance(transaction.recipient);
+                } catch (Exception ignored){
+                    transaction.reference = transaction.to;
+                }
+                transaction.time = new Timestamp(new java.util.Date().getTime());
+                //System.out.println("Transaction num: "+count+" UUID: "+transaction.id);
+                db.addTransaction(transaction);
+                count++;
+            }
         }
+        System.out.println("Counter: " + count);
+        System.out.println(" ");
         System.out.println("Out of loop! :D");
     }
 }
