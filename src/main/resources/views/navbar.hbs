@@ -4,17 +4,21 @@
 </head>
 <body>
 <div class="topnav" id="myTopnav">
-    {{#userLoggedIn}}
-        <a href="overview">Overview</a>
+    {{#user.admin}}
+            <a href="accounts">Accounts</a>
     {{^}}
-        <a href="/">Home</a>
-    {{/userLoggedIn}}
-<!--    <a href="accounts">Accounts</a>-->
-    <a href="/"><img src="/assets/white.png" alt="ScotBank" width="auto" height="40"></a>
     {{#userLoggedIn}}
-        <a href="profile" style="float: right">{{user.name}}</a>
+            <a href="overview">Overview</a>
     {{^}}
-        <a href="login" style="float: right">Login</a>
+            <a href="/">Home</a>
     {{/userLoggedIn}}
-</div>
-</body>
+    {{/user.admin}}
+
+        <a href="/"><img src="/assets/white.png" alt="ScotBank" width="auto" height="40"></a>
+    {{#userLoggedIn}}
+            <a href="profile" style="float: right">{{user.name}}</a>
+    {{^}}
+            <a href="login" style="float: right">Login</a>
+    {{/userLoggedIn}}
+    </div>
+    </body>
