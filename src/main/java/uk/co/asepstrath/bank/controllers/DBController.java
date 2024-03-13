@@ -150,11 +150,7 @@ public class DBController {
         Statement statement = connection.createStatement();
         // Perform SQL Query
         ResultSet set = statement.executeQuery(
-<<<<<<< HEAD
-                "SELECT * FROM Transcation"
-=======
                 "SELECT * FROM Transaction WHERE Recipient='%s' OR Sender='%s'"
->>>>>>> a566c37 (Transactions now working)
                         .formatted(account.getUUID().toString(), account.getUUID().toString()));
 
         List<Transaction> transactions = new ArrayList<>();
