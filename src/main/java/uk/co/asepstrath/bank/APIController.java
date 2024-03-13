@@ -1,6 +1,9 @@
 package uk.co.asepstrath.bank;
 
 import javax.sql.DataSource;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import okhttp3.*;
 import org.json.JSONArray;
@@ -10,12 +13,20 @@ import io.jooby.Context;
 import io.jooby.annotation.GET;
 import io.jooby.annotation.POST;
 import io.jooby.annotation.Path;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import uk.co.asepstrath.bank.controllers.DBController;
 import uk.co.asepstrath.bank.util.AccountCategory;
+import uk.co.asepstrath.bank.util.Transaction;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
@@ -172,4 +183,65 @@ public class APIController {
         db.addUser(testUser);
         db.addAccount(account);
     }
+    public static void getTransactions () throws IOException, ParserConfigurationException, SAXException {
+        int i = 1;
+        NodeList nodeList;
+        do {
+            String apiURL = ("https://api.asep-strath.co.uk/api/transactions?size=1000&page="+i);
+            URL url = new URL(apiURL);
+            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+            Document doc = docBuilder.parse(new InputSource(url.openStream()));
+            doc.getDocumentElement().normalize();
+            nodeList = doc.getElementsByTagName("results");
+            ArrayList<Transaction> transactions = new ArrayList<>();
+            for (int o = 0; o < nodeList.getLength(); o++) {
+                Transaction transaction = new Transaction();
+                Node node = nodeList.item(o).getFirstChild();
+                String timestamp = null;
+                String amount = null;
+                String sender = null;
+                String recipient = null;
+                String category = null;
+
+                while (node != null) {
+                    switch (node.getNodeName()) {
+                        case "timestamp":
+                            if (node.getFirstChild() != null) {
+                                timestamp = node.getFirstChild().getNodeValue();
+                            } break;
+                        case "amount":
+                            if (node.getFirstChild() != null) {
+                                amount = node.getFirstChild().getNodeValue();
+                            } break;
+                        case "from":
+                            if (node.getFirstChild() != null) {
+                                sender = node.getFirstChild().getNodeValue();
+                            } break;
+                        case "id":
+                            if (node.getFirstChild() != null) {
+                                recipient = node.getFirstChild().getNodeValue();
+                            } break;
+                        case "type":
+                            if (node.getFirstChild() != null) {
+                                category = node.getFirstChild().getNodeValue();
+                            } break;
+                    }
+                    node = node.getNextSibling();
+                }
+                System.out.println(" ");
+                System.out.println("Timestamp: " + timestamp);
+                System.out.println("Amount: " + amount);
+                System.out.println("Sender: " + sender);
+                System.out.println("Recipient: " + recipient);
+                System.out.println("Category: " + category);
+                System.out.println(" ");
+                //transactions.add(transaction);
+            }
+            //db.util.
+
+
+        }while (nodeList.getLength() > 0);
+    }
+
 }
