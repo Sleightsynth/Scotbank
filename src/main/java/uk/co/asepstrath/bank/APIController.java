@@ -66,10 +66,10 @@ public class APIController {
                 .addHeader("Authorization", Credentials.basic("scotbank", "this1password2is3not4secure"))
                 .build();
 
-        try (Response rsp = client.newCall(req).execute()){
+        try (Response rsp = client.newCall(req).execute()) {
             ResponseBody body = rsp.body();
 
-            if(body == null){
+            if (body == null) {
                 throw new IOException("Response body is null!");
             }
 
@@ -98,25 +98,26 @@ public class APIController {
         int statusCode;
         String responseBody;
 
-        try(Response rsp = client.newCall(req).execute()){
+        try (Response rsp = client.newCall(req).execute()) {
             statusCode = rsp.code();
             ResponseBody body = rsp.body();
-            if(body == null){
+            if (body == null) {
                 throw new IOException("Response body is null!");
             }
 
             responseBody = body.string();
         }
 
-        if (statusCode != 200) {
+        // any 200 code is an OK code.
+        if (statusCode < 200 || statusCode > 300) {
             throw new IOException("Status code is not 200! Code: " + statusCode);
         }
 
         JSONArray jsonArray = new JSONArray(responseBody);
 
-        //first one works, second works for 2 of them
-        //for (int i = 0; i < 1; i++) {
-        for (int i = 0; i < jsonArray.length(); i++) { //there should be 100 accounts to go through
+        // first one works, second works for 2 of them
+        // for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < jsonArray.length(); i++) { // there should be 100 accounts to go through
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
             String name = jsonObject.getString("name");
@@ -125,19 +126,19 @@ public class APIController {
 
             Random rand = new Random();
 
-            //new email
+            // new email
             String newEmail = name.replaceAll("\\s+", "");
             newEmail = newEmail.concat(".2022@uni.strath.ac.uk");
 
-            //new sort code
+            // new sort code
 
             String newSortCode = "%02d-%02d-%02d".formatted(rand.nextInt(100), rand.nextInt(100), rand.nextInt(100));
 
-            //new account number
+            // new account number
 
             String newAccountNumber = "%08d".formatted(rand.nextInt(100000000));
 
-            //new password
+            // new password
             int n = rand.nextInt(1000);
             String newPassword = db.getSha512Hash(String.valueOf(n));
             System.out.println("The UUID:" + uuid);
@@ -147,7 +148,7 @@ public class APIController {
             Account account = new Account(testUser, uuid, newSortCode, newAccountNumber, startingBalance,
                     Boolean.FALSE, AccountCategory.Payment);
 
-            //Get results
+            // Get results
             System.out.println(" ");
             System.out.println("UUID: " + uuid);
             System.out.println("Email: " + newEmail);
@@ -172,4 +173,3 @@ public class APIController {
         db.addAccount(account);
     }
 }
-
