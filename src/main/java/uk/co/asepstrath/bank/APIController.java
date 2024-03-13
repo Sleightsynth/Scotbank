@@ -184,10 +184,11 @@ public class APIController {
         db.addAccount(account);
     }
     public static void getTransactions () throws IOException, ParserConfigurationException, SAXException {
-        int i = 1;
+        //int i = 1;
+        int count = 0;
         NodeList nodeList;
-        do {
-            String apiURL = ("https://api.asep-strath.co.uk/api/transactions?size=1000&page="+i);
+        for (int i = 1; i < 20; i++) {
+            String apiURL = ("https://api.asep-strath.co.uk/api/transactions?size=1000&page=" + i);
             URL url = new URL(apiURL);
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -209,23 +210,28 @@ public class APIController {
                         case "timestamp":
                             if (node.getFirstChild() != null) {
                                 timestamp = node.getFirstChild().getNodeValue();
-                            } break;
+                            }
+                            break;
                         case "amount":
                             if (node.getFirstChild() != null) {
                                 amount = node.getFirstChild().getNodeValue();
-                            } break;
+                            }
+                            break;
                         case "from":
                             if (node.getFirstChild() != null) {
                                 sender = node.getFirstChild().getNodeValue();
-                            } break;
+                            }
+                            break;
                         case "id":
                             if (node.getFirstChild() != null) {
                                 recipient = node.getFirstChild().getNodeValue();
-                            } break;
+                            }
+                            break;
                         case "type":
                             if (node.getFirstChild() != null) {
                                 category = node.getFirstChild().getNodeValue();
-                            } break;
+                            }
+                            break;
                     }
                     node = node.getNextSibling();
                 }
@@ -235,13 +241,15 @@ public class APIController {
                 System.out.println("Sender: " + sender);
                 System.out.println("Recipient: " + recipient);
                 System.out.println("Category: " + category);
+                count += 1;
+                System.out.println("Counter: " + count);
                 System.out.println(" ");
                 //transactions.add(transaction);
             }
             //db.util.
 
 
-        }while (nodeList.getLength() > 0);
+        }
+        System.out.println("Out of loop! :D");
     }
-
 }
