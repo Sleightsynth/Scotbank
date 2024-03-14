@@ -171,7 +171,7 @@ public class APIController {
 
     public void getTransactions () throws IOException, SQLException {
         int count = 0;
-        for (int i = 1; i < 20; i++) {
+        for (int i = 0; i < 16; i++) {
             String authToken = this.generateToken();
 
             Request req = new Request.Builder()
