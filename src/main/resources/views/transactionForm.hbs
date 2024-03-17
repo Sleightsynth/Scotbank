@@ -7,21 +7,17 @@
     <script>
         function form1() {
             document.getElementById("pay").style.display="block";
-            document.getElementById("payButton").style.color="#fff";
-            document.getElementById("payButton").style.backgroundColor="#005EB8";
+            document.getElementById("payButton").style.backgroundColor="#C7F4E3";
 
             document.getElementById("get").style.display="none";
-            document.getElementById("getButton").style.color="#005EB8";
             document.getElementById("getButton").style.backgroundColor="#fff";
         }
         function form2() {
             document.getElementById("pay").style.display="none";
-            document.getElementById("payButton").style.color="#005EB8";
             document.getElementById("payButton").style.backgroundColor="#fff";
 
             document.getElementById("get").style.display="block";
-            document.getElementById("getButton").style.color="#fff";
-            document.getElementById("getButton").style.backgroundColor="#005EB8";
+            document.getElementById("getButton").style.backgroundColor="#C7F4E3";
         }
     </script>
 
@@ -29,7 +25,7 @@
 <body>
 {{> navbar.hbs}}
 <div style="text-align: center">
-<button class="button-left" id="payButton" onClick="form1()" style="background-color: #005EB8; color: #fff;">Pay Someone</button>
+<button class="button-left" id="payButton" onClick="form1()" style="background-color: #C7F4E3;">Pay Someone</button>
 <button class="button-right" id="getButton" onClick="form2()">Request Payment</button>
 </div>
     <div class="page-container">
@@ -54,7 +50,7 @@
         </form>
 
     <form id="get" style="display:none">
-        <h1>Requent a Payment</h1>
+        <h1>Request a Payment</h1>
         <input id="recipient" name="recipient" placeholder="Recipient name" required="" maxlength="20" tabindex="1" type="text">
         <input id="sort" name="sort" placeholder="Recipient sort code" required="" maxlength="8" tabindex="2" type="text">
         <input id="account" name="account" placeholder="Recipient account number" required="" maxlength="8" tabindex="3" type="text">

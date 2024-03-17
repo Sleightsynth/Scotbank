@@ -1,24 +1,33 @@
 
 <head>
     {{> style.hbs}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<div class="topnav" id="myTopnav">
-    {{#user.admin}}
-            <a href="accounts">Accounts</a>
-    {{^}}
-    {{#userLoggedIn}}
-            <a href="overview">Overview</a>
-    {{^}}
-            <a href="/">Home</a>
-    {{/userLoggedIn}}
-    {{/user.admin}}
+    <div class="nav" id="nav">
 
-        <a href="/"><img src="/assets/white.png" alt="ScotBank" width="auto" height="40"></a>
-    {{#userLoggedIn}}
-            <a href="profile" style="float: right">{{user.name}}</a>
-    {{^}}
-            <a href="login" style="float: right">Login</a>
-    {{/userLoggedIn}}
+        <div class="nav-item left">
+            {{#user.admin}}
+                <a href="accounts">Accounts</a> <!-- if (user == admin) { displayAccounts } -->
+            {{^}}
+            {{#userLoggedIn}}
+                <a href="overview">Overview</a> <!-- else if (user == loggedIn) { displayOverview } -->
+            {{^}}
+                <a href="/">Home</a> <!-- else { displayHome } -->
+            {{/userLoggedIn}}
+            {{/user.admin}}
+        </div>
+
+        <div class="nav-item center">
+            <a href="/"><img src="/assets/white.png" alt="ScotBank" width="auto" height="40"></a>
+        </div>
+
+        <div class="nav-item right">
+            {{#userLoggedIn}}
+                    <a href="profile">{{user.name}}</a> <!-- if (user == loggedIn) { displayProfile && username } -->
+            {{^}}
+                    <a href="login">Login</a> <!-- else { displayLogin } -->
+            {{/userLoggedIn}}
+        </div>
     </div>
-    </body>
+</body>
