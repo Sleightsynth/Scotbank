@@ -171,8 +171,7 @@ public class APIController {
 
     public void getTransactions () throws IOException, SQLException {
         int count = 0;
-        //for (int i = 0; i < 16; i++) { //missing page 0 (we should have 15338 transactions not 14338 transactions), will come back to this later
-        for (int i = 1; i < 16; i++) {
+        for (int i = 0; i < 16; i++) {
             String authToken = this.generateToken();
 
             Request req = new Request.Builder()

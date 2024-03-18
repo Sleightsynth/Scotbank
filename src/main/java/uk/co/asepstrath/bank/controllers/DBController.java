@@ -84,7 +84,7 @@ public class DBController {
                             "(" +
                             "`Timestamp` timestamp," +
                             "`Amount` decimal(15,2)," +
-                            "`Ref` varchar(30)," +
+                            "`Ref` varchar(50)," +
                             "`Category` varchar(255)," +
                             "`Status` varchar(30)," +
                             "`Type` varchar(30)," +
