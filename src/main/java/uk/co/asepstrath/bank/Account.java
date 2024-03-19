@@ -98,14 +98,14 @@ public class Account {
     public void withdraw(BigDecimal amount) {
         if (amount.doubleValue() < 0 || (amount.compareTo(balance) > 0))
             throw new ArithmeticException();
-        balance = balance.subtract(amount);
+        balance = balance.subtract(amount.abs());
         updateFormattedBalance();
     }
 
     public void deposit(BigDecimal amount) {
         if (amount.doubleValue() < 0)
             throw new ArithmeticException();
-        balance = balance.add(amount);
+        balance = balance.add(amount.abs());
         updateFormattedBalance();
     }
 

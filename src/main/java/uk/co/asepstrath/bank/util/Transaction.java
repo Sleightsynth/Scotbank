@@ -2,6 +2,8 @@ package uk.co.asepstrath.bank.util;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.UUID;
 
 import com.google.gson.annotations.SerializedName;
@@ -12,6 +14,7 @@ import uk.co.asepstrath.bank.Account;
  * This interface is only here for definition sake.
  * */
 public class Transaction {
+    @SerializedName("Timestamp")
     public Timestamp time = null;
     public BigDecimal amount = null;
     public String reference = null;
@@ -22,6 +25,8 @@ public class Transaction {
     public UUID id = null;
     public Account recipient = null;
     public Account sender = null;
+    protected Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
+    protected String formattedAmount = ""; // yes it is being used in the hbs
     public String to;
     public String from;
 
@@ -57,6 +62,9 @@ public class Transaction {
 
     public Account getSender() {
         return sender;
+    }
+    public String getFormattedAmount(){
+        return NumberFormat.getCurrencyInstance(locale).format(amount);
     }
 
     @Override
