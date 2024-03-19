@@ -18,7 +18,7 @@ public class TransactionTest {
 
         // Test initial state
         assertNull(transaction.time);
-        assertNull(transaction.amount);
+        assertEquals(BigDecimal.valueOf(0),transaction.amount);
         assertNull(transaction.reference);
         assertNull(transaction.category);
         assertNull(transaction.status);
