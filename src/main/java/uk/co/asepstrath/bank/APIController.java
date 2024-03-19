@@ -202,7 +202,7 @@ public class APIController {
 
             TransactionResponsePage apiResponse = gson.fromJson(responseBody, TransactionResponsePage.class);
 
-            System.out.println("Processing transactions");
+            System.out.printf("Processing transactions. Page %d/16\n",i+1);
 
             for (int o = 0; o < apiResponse.results.size()-1; o++) {
 
