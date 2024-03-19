@@ -96,53 +96,6 @@ public class DBController {
         }
     }
 
-    /**
-     * This "attempts" to complete a transaction.
-     *
-     * @param sender    Payment from
-     * @param recipient Payment to
-     * @return
-     */
-    public Transaction tryTransaction(Account sender, Account recipient, BigDecimal amount, String reference)
-            throws SQLException {
-        if (sender == null || recipient == null)
-            return null; // TODO: This should probably be an unchecked error.
-
-        // Defining things so verbosely might look like a terrible idea,
-        // but I implore you to reflect on what it accomplishes.
-        // If you dislike this, I suggest you refactor it. :)
-
-        Transaction ts = new Transaction();
-        ts.category = TransactionCategory.Payment;
-        ts.time = new Timestamp(System.currentTimeMillis());
-        ts.status = recipient.isForeign() ? TransactionStatus.PROCESS_DUE : TransactionStatus.OK;
-        ts.sender = sender;
-        ts.recipient = recipient;
-        ts.amount = amount;
-        ts.id = UUID.randomUUID();
-        ts.reference = reference;
-
-        // Now try committing a transaction.
-        // Note: Roleplay is happening here. Say we do have foreign accounts, the sender
-        // cannot been foreign if the transaction is happening through our service.
-        try {
-            sender.withdraw(amount);
-
-            if (recipient.isForeign()) {
-                // recipient.deposit(int amount) does not exist here.
-                // Maybe a new class is needed to handle this
-            } else {
-                sender.deposit(amount);
-            }
-        } catch (ArithmeticException e) {
-            ts.status = TransactionStatus.FAILED;
-        }
-
-        addTransaction(ts);
-
-        return ts;
-    }
-
     public List<Transaction> returnTransactions(Account account) throws SQLException {
 
         Connection connection = dataSource.getConnection();

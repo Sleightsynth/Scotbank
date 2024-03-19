@@ -26,9 +26,28 @@ public class Transaction {
     public Account recipient = null;
     public Account sender = null;
     protected Locale locale = new Locale("en", "gb"); // default is UK, Note: "uk" is not valid, must be "gb".
-    protected String formattedAmount = ""; // yes it is being used in the hbs
+    public String formattedAmount = ""; // yes it is being used in the hbs
     public String to;
     public String from;
+
+    public Transaction(){
+        this.amount = BigDecimal.valueOf(0);
+        updateFormattedAmount();
+    }
+
+    public Transaction(Timestamp time, BigDecimal amount, String reference, TransactionCategory category, TransactionStatus status, UUID id, Account recipient, Account sender, String to, String from) {
+        this.time = time;
+        this.amount = amount;
+        this.reference = reference;
+        this.category = category;
+        this.status = status;
+        this.id = id;
+        this.recipient = recipient;
+        this.sender = sender;
+        this.formattedAmount = getFormattedAmount();
+        this.to = to;
+        this.from = from;
+    }
 
     // NOTE: For handlebards to pick up on properties of a class, it must have
     // getters!
@@ -66,9 +85,12 @@ public class Transaction {
     public String getFormattedAmount(){
         return NumberFormat.getCurrencyInstance(locale).format(amount);
     }
-
     @Override
     public String toString() {
         return reference;
+    }
+
+    protected void updateFormattedAmount() {
+        formattedAmount = getFormattedAmount();
     }
 }
