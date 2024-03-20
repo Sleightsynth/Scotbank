@@ -43,21 +43,11 @@
 <div class="sub-section">
     <h3>Transactions</h3>
     <!--        START WHILE-->
-    <div class="row">
-        <div class="small-column">
-            Icon
-        </div>
-        <div class="large-column">
-            Entertainment
-            <br>
-            Cineworld Ticket
-        </div>
-        <div class="small-column">
-            £20
-        </div>
-    </div>
+    {{#each transactions}}
+            {{> tableRowTrans.hbs this}}
+    {{/each}}
     <!--        END CREATE WHILE LOOP-->
-    <!--                PLACEHOLDER START-->
+    <!--                PLACEHOLDER START
     <div class="row">
         <div class="small-column">
             Icon
@@ -83,9 +73,10 @@
         <div class="small-column">
             £40
         </div>
-    </div>
+    </div>-->
     <!--        PLACEHOLDER END-->
 
+</div>
 </div>
 {{> footer.hbs}}
 </body>

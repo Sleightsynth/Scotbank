@@ -10,12 +10,17 @@ import io.jooby.Context;
 import io.jooby.annotation.GET;
 import io.jooby.annotation.POST;
 import io.jooby.annotation.Path;
+import org.w3c.dom.NodeList;
 import uk.co.asepstrath.bank.controllers.DBController;
 import uk.co.asepstrath.bank.util.AccountCategory;
+import uk.co.asepstrath.bank.util.Token;
+import uk.co.asepstrath.bank.util.Transaction;
+import uk.co.asepstrath.bank.util.TransactionStatus;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Random;
 import java.util.UUID;
 
@@ -43,16 +48,6 @@ public class APIController {
          * jo.put("city", "chicago");
          */
         return "Hi from API";
-    }
-
-    @POST
-    @Path("/login")
-    public String attemptLogin(Context ctx) {
-        String username = ctx.form().get("username").value();
-        String password = ctx.form().get("password").value();
-
-        return String.format("Got your form! %s %s", username, password);
-
     }
 
     public String generateToken() throws IOException {
@@ -92,6 +87,7 @@ public class APIController {
         Request req = new Request.Builder()
                 .url("https://api.asep-strath.co.uk/api/accounts")
                 .get()
+                .addHeader("Accept","application/json")
                 .addHeader("Authorization", authToken)
                 .build();
 
@@ -127,7 +123,8 @@ public class APIController {
             Random rand = new Random();
 
             // new email
-            String newEmail = name.replaceAll("\\s+", "");
+            String newEmail = name.replaceAll("\\.+", "")
+                    .replaceAll("\\s+", ".").toLowerCase();
             newEmail = newEmail.concat(".2022@uni.strath.ac.uk");
 
             // new sort code
@@ -141,7 +138,6 @@ public class APIController {
             // new password
             int n = rand.nextInt(1000);
             String newPassword = db.getSha512Hash(String.valueOf(n));
-            System.out.println("The UUID:" + uuid);
             User testUser = new User(UUID.randomUUID(), newEmail, newPassword,
                     name, "07123 45678", "45 Waterloo Street", false);
 
@@ -171,5 +167,72 @@ public class APIController {
 
         db.addUser(testUser);
         db.addAccount(account);
+    }
+
+    public void getTransactions () throws IOException, SQLException {
+        int count = 0;
+        for (int i = 0; i < 16; i++) {
+            String authToken = this.generateToken();
+
+            Request req = new Request.Builder()
+                    .url("https://api.asep-strath.co.uk/api/transactions?size=1000&page=" + i)
+                    .get()
+                    .addHeader("Accept","application/json")
+                    .addHeader("Authorization", authToken)
+                    .build();
+
+            int statusCode;
+            String responseBody;
+
+            try (Response rsp = client.newCall(req).execute()) {
+                statusCode = rsp.code();
+                ResponseBody body = rsp.body();
+                if (body == null) {
+                    throw new IOException("Response body is null!");
+                }
+
+                responseBody = body.string();
+            }
+
+            // any 200 code is an OK code.
+            if (statusCode < 200 || statusCode > 300) {
+                throw new IOException("Status code is not 200! Code: " + statusCode);
+            }
+            Gson gson = new Gson();
+
+            TransactionResponsePage apiResponse = gson.fromJson(responseBody, TransactionResponsePage.class);
+
+            System.out.printf("Processing transactions. Page %d/16\n",i+1);
+
+            for (int o = 0; o < apiResponse.results.size()-1; o++) {
+
+                /*if(count==318){
+                    System.out.println();
+                }*/
+                Transaction transaction = apiResponse.results.get(o);
+                transaction.status = TransactionStatus.OK;
+                try{
+                    UUID senderAccountID = UUID.fromString(transaction.from);
+                    transaction.sender = db.returnAccountFromId(senderAccountID);
+                    transaction.sender.withdraw(transaction.amount);
+                    db.updateBalance(transaction.sender);
+                } catch (Exception ignored){
+                    transaction.reference = transaction.from;
+                }
+                try{
+                    UUID recipientAccountID = UUID.fromString(transaction.to);
+                    transaction.recipient = db.returnAccountFromId(recipientAccountID);
+                    transaction.recipient.deposit(transaction.amount);
+                    db.updateBalance(transaction.recipient);
+                } catch (Exception ignored){
+                    transaction.reference = transaction.to;
+                }
+                transaction.time = new Timestamp(new java.util.Date().getTime());
+                //System.out.println("Transaction num: "+count+" UUID: "+transaction.id);
+                db.addTransaction(transaction);
+                count++;
+            }
+        }
+        System.out.println(count+" transactions processed");
     }
 }
