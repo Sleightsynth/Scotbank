@@ -101,12 +101,12 @@ public class APIController {
 
         JSONArray jsonArray = new JSONArray(responseBody);
 
+        // first one works, second works for 2 of them
         for (int i = 0; i < jsonArray.length(); i++) { // there should be 100 accounts to go through
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
             String name = jsonObject.getString("name");
             BigDecimal startingBalance = jsonObject.getBigDecimal("startingBalance");
-            boolean roundUpEnabled = jsonObject.getBoolean("roundUpEnabled");
 
             Random rand = new Random();
 
@@ -193,7 +193,6 @@ public class APIController {
             System.out.printf("Processing transactions. Page %d/16\n",i+1);
 
             for (int o = 0; o < apiResponse.results.size()-1; o++) {
-
                 Transaction transaction = apiResponse.results.get(o);
                 transaction.status = TransactionStatus.OK;
                 try{
