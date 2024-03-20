@@ -116,11 +116,9 @@ public class APIController {
             newEmail = newEmail.concat(".2022@uni.strath.ac.uk");
 
             // new sort code
-
             String newSortCode = "%02d-%02d-%02d".formatted(random.nextInt(100), random.nextInt(100), random.nextInt(100));
 
             // new account number
-
             String newAccountNumber = "%08d".formatted(random.nextInt(100000000));
 
             // new password
@@ -134,13 +132,8 @@ public class APIController {
 
             // Get results
             System.out.println(" ");
-            System.out.println("UUID: " + uuid);
             System.out.println("Email: " + newEmail);
-            System.out.println("Name: " + name);
             System.out.println("Password: " + n);
-            System.out.println("Sort Code: " + newSortCode);
-            System.out.println("Account Number: " + newAccountNumber);
-            System.out.println("Starting Balance: " + startingBalance);
             System.out.println(" ");
 
             db.addUser(testUser);
