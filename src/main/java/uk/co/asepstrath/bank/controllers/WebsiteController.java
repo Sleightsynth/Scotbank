@@ -29,7 +29,6 @@ import uk.co.asepstrath.bank.util.Transaction;
  */
 @Path("/")
 public class WebsiteController {
-    // private final DataSource dataSource;
     private final Logger logger;
     private final DBController dbController;
 
