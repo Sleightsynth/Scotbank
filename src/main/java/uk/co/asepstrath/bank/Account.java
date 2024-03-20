@@ -1,9 +1,9 @@
 package uk.co.asepstrath.bank;
 
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Random;
 import java.util.UUID;
 
 import uk.co.asepstrath.bank.util.AccountCategory;
@@ -41,10 +41,10 @@ public class Account {
     }
 
     public Account(BigDecimal balance, Boolean foreign, AccountCategory accountType) {
-        Random rand = new Random();
+        SecureRandom random = new SecureRandom(); // Compliant for security-sensitive use cases
         this.id = UUID.randomUUID();
-        this.accountNumber = "%08d".formatted(rand.nextInt(100000000));
-        this.sortCode = "%02d-%02d-%02d".formatted(rand.nextInt(100), rand.nextInt(100), rand.nextInt(100));
+        this.accountNumber = "%08d".formatted(random.nextInt(100000000));
+        this.sortCode = "%02d-%02d-%02d".formatted(random.nextInt(100), random.nextInt(100), random.nextInt(100));
         this.balance = balance;
         this.accountCategory = accountType;
         this.foreign = foreign;

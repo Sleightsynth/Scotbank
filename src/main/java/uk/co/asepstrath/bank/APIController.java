@@ -16,9 +16,9 @@ import uk.co.asepstrath.bank.util.TransactionStatus;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Random;
 import java.util.UUID;
 
 @Path("/api")
@@ -108,7 +108,7 @@ public class APIController {
             String name = jsonObject.getString("name");
             BigDecimal startingBalance = jsonObject.getBigDecimal("startingBalance");
 
-            Random rand = new Random();
+            SecureRandom random = new SecureRandom(); // Compliant for security-sensitive use cases
 
             // new email
             String newEmail = name.replaceAll("\\.+", "")
@@ -117,14 +117,14 @@ public class APIController {
 
             // new sort code
 
-            String newSortCode = "%02d-%02d-%02d".formatted(rand.nextInt(100), rand.nextInt(100), rand.nextInt(100));
+            String newSortCode = "%02d-%02d-%02d".formatted(random.nextInt(100), random.nextInt(100), random.nextInt(100));
 
             // new account number
 
-            String newAccountNumber = "%08d".formatted(rand.nextInt(100000000));
+            String newAccountNumber = "%08d".formatted(random.nextInt(100000000));
 
             // new password
-            int n = rand.nextInt(1000);
+            int n = random.nextInt(1000);
             String newPassword = db.getSha512Hash(String.valueOf(n));
             User testUser = new User(UUID.randomUUID(), newEmail, newPassword,
                     name, "07123 45678", "45 Waterloo Street", false);
