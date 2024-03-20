@@ -9,9 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import javax.sql.DataSource;
 
@@ -167,6 +165,50 @@ public class DBController {
             // SEND IT!
             prepStmt.execute();
         }
+    }
+
+    public Map getTransactionCategory (Account AccountID) throws SQLException {
+        int billsCount = 0;
+        int entertainmentCount = 0;
+        int foodCount = 0;
+        int shoppingCount = 0;
+
+        int depositCount = 0;
+        int paymentCount = 0;
+        int transferCount = 0;
+        int withdrawlCount = 0;
+
+        List<Transaction> transactions = this.returnTransactions(AccountID);
+        for(Transaction transaction: transactions) {
+            if (transaction.getCategory() == TransactionCategory.Bills) {
+                billsCount++;
+            } else if (transaction.getCategory() == TransactionCategory.Entertainment) {
+                entertainmentCount++;
+            } else if (transaction.getCategory() == TransactionCategory.Food) {
+                foodCount++;
+            } else if (transaction.getCategory() == TransactionCategory.Grocery) {
+                shoppingCount++;
+            } else if (transaction.getCategory() == TransactionCategory.Deposit) {
+                depositCount++;
+            } else if (transaction.getCategory() == TransactionCategory.Payment) {
+                paymentCount++;
+            } else if (transaction.getCategory() == TransactionCategory.Withdrawal) {
+                withdrawlCount++;
+            } else if (transaction.getCategory() == TransactionCategory.Transfer) {
+                transferCount++;
+            }
+        }
+        Map<String, Integer> toReturn = new HashMap<>();
+        toReturn.put("Bills", billsCount);
+        toReturn.put("Entertainment", entertainmentCount);
+        toReturn.put("Food", foodCount);
+        toReturn.put("Shopping", shoppingCount);
+        toReturn.put("Deposit", depositCount);
+        toReturn.put("Payment", paymentCount);
+        toReturn.put("Withdrawl", withdrawlCount);
+        toReturn.put("Transfer", transferCount);
+
+        return toReturn;
     }
 
     /**

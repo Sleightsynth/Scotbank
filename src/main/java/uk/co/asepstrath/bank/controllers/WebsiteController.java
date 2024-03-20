@@ -180,7 +180,24 @@ public class WebsiteController {
 
     @GET("/spendingSummary")
     public ModelAndView spendingPage(Context ctx) {
-        return getUserAndAddToTemplate("spendingSummary.hbs", getUUIDOrNull(ctx));
+
+        UUID uuid = getUUIDOrNull(ctx);
+        if (uuid == null) {
+            ctx.sendRedirect("/login");
+
+            throw new StatusCodeException(StatusCode.I_AM_A_TEAPOT);
+        }
+        try {
+            Account account = dbController.returnAccount(uuid);
+            return getUserAndAddToTemplate("spendingSummary.hbs", getUUIDOrNull(ctx)).put(dbController.getTransactionCategory(account));
+        } catch (SQLException e) {
+            // If something does go wrong this will log the stack trace
+            logger.error("Database Error Occurred", e);
+            // And return a HTTP 500 error to the requester
+            throw new StatusCodeException(StatusCode.SERVER_ERROR, "Database Error Occurred");
+        }
+
+
     }
 
     @GET("/overview")
