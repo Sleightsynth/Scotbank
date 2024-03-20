@@ -1,8 +1,6 @@
 package uk.co.asepstrath.bank.controllers;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -23,7 +21,6 @@ import io.jooby.exception.StatusCodeException;
 import uk.co.asepstrath.bank.Account;
 import uk.co.asepstrath.bank.User;
 import uk.co.asepstrath.bank.util.Transaction;
-import uk.co.asepstrath.bank.util.TransactionStatus;
 
 /*
     Example Controller is a Controller from the MVC paradigm.

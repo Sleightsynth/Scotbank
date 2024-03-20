@@ -40,13 +40,6 @@ public class APIController {
 
     @GET("/transactions")
     public String test() {
-        /*
-         * Account test2 = new Account("API Testerson",new BigDecimal(12));
-         * JSONObject jo = new JSONObject("{ \"abc\" : \"def\" }");
-         * jo.put("name", "jon doe");
-         * jo.put("age", "22");
-         * jo.put("city", "chicago");
-         */
         return "Hi from API";
     }
 
@@ -111,8 +104,6 @@ public class APIController {
 
         JSONArray jsonArray = new JSONArray(responseBody);
 
-        // first one works, second works for 2 of them
-        // for (int i = 0; i < 1; i++) {
         for (int i = 0; i < jsonArray.length(); i++) { // there should be 100 accounts to go through
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             UUID uuid = UUID.fromString(jsonObject.getString("id")); // Assuming "id" is the UUID
@@ -206,9 +197,6 @@ public class APIController {
 
             for (int o = 0; o < apiResponse.results.size()-1; o++) {
 
-                /*if(count==318){
-                    System.out.println();
-                }*/
                 Transaction transaction = apiResponse.results.get(o);
                 transaction.status = TransactionStatus.OK;
                 try{
@@ -228,7 +216,6 @@ public class APIController {
                     transaction.reference = transaction.to;
                 }
                 transaction.time = new Timestamp(new java.util.Date().getTime());
-                //System.out.println("Transaction num: "+count+" UUID: "+transaction.id);
                 db.addTransaction(transaction);
                 count++;
             }
