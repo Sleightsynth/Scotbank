@@ -167,60 +167,47 @@ public class DBController {
         }
     }
 
-    public Map getTransactionCategory (Account AccountID) throws SQLException {
-        int billsCount = 0;
-        int entertainmentCount = 0;
-        int foodCount = 0;
-        int shoppingCount = 0;
-
-        int depositCount = 0;
-        int paymentCount = 0;
-        int transferCount = 0;
-        int withdrawlCount = 0;
+    public Map<String, Object> getTransactionCategory (Account AccountID) throws SQLException {
+        BigDecimal billsCount = BigDecimal.valueOf(0);
+        BigDecimal entertainmentCount = BigDecimal.valueOf(0);
+        BigDecimal foodCount = BigDecimal.valueOf(0);
+        BigDecimal groceryCount = BigDecimal.valueOf(0);
+        BigDecimal depositCount = BigDecimal.valueOf(0);
+        BigDecimal paymentCount = BigDecimal.valueOf(0);
+        BigDecimal transferCount = BigDecimal.valueOf(0);
+        BigDecimal withdrawlCount = BigDecimal.valueOf(0);
 
         List<Transaction> transactions = this.returnTransactions(AccountID);
         for(Transaction transaction: transactions) {
             if (transaction.getCategory() == TransactionCategory.Bills) {
-                billsCount++;
+                billsCount = billsCount.add(transaction.amount);
             } else if (transaction.getCategory() == TransactionCategory.Entertainment) {
-                entertainmentCount++;
+                entertainmentCount = entertainmentCount.add(transaction.amount);
             } else if (transaction.getCategory() == TransactionCategory.Food) {
-                foodCount++;
+                foodCount = foodCount.add(transaction.amount);
             } else if (transaction.getCategory() == TransactionCategory.Grocery) {
-                shoppingCount++;
+                groceryCount = groceryCount.add(transaction.amount);
             } else if (transaction.getCategory() == TransactionCategory.Deposit) {
-                depositCount++;
+                depositCount = depositCount.add(transaction.amount);
             } else if (transaction.getCategory() == TransactionCategory.Payment) {
-                paymentCount++;
+                paymentCount = paymentCount.add(transaction.amount);
             } else if (transaction.getCategory() == TransactionCategory.Withdrawal) {
-                withdrawlCount++;
+                withdrawlCount = withdrawlCount.add(transaction.amount);
             } else if (transaction.getCategory() == TransactionCategory.Transfer) {
-                transferCount++;
+                transferCount = transferCount.add(transaction.amount);
             }
         }
-        Map<String, Integer> toReturn = new HashMap<>();
+        Map<String, Object> toReturn = new HashMap<>();
         toReturn.put("Bills", billsCount);
         toReturn.put("Entertainment", entertainmentCount);
         toReturn.put("Food", foodCount);
-        toReturn.put("Shopping", shoppingCount);
+        toReturn.put("Grocery", groceryCount);
         toReturn.put("Deposit", depositCount);
         toReturn.put("Payment", paymentCount);
-        toReturn.put("Withdrawl", withdrawlCount);
+        toReturn.put("Withdrawal", withdrawlCount);
         toReturn.put("Transfer", transferCount);
 
         return toReturn;
-    }
-
-    /**
-     * Populates the Accounts table in the database with the list provided
-     * 
-     * @param accounts
-     * @throws SQLException
-     */
-    public void addAccounts(List<Account> accounts) throws SQLException {
-        for (Account acc : accounts) {
-            this.addAccount(acc);
-        }
     }
 
     public void addAccount(Account acc) throws SQLException {
