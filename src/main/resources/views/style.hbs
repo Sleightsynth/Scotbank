@@ -26,9 +26,23 @@
         border-radius: 3.5em;
     }
 
+    .box-section {
+        background-color: #fff;
+        padding: 3em;
+        margin: 1em;
+        border-radius: 2em;
+        justify-content: center;
+        text-align: center;
+    }
+
     h1, a {
         text-align: center;
         color: #0C1722;
+        font-size: 3em;
+    }
+
+    .banner h1 {
+        font-size: 4em;
     }
 
     h2 {
@@ -266,6 +280,10 @@
         display: block;
     }
 
+    #summaryChart {
+        min-width: 60vw;
+    }
+
     /*    Dynamic screen size*/
 
     @media screen and (max-width: 1000px) {
@@ -274,13 +292,21 @@
         }
 
         .sub-section {
-            margin: 0;
+            margin: 1em 0 0 0;
             padding: 3em;
             border-radius: 0;
         }
 
         form {
             max-width: 60vw;
+        }
+
+        .minimise .row {
+            flex-direction: column;
+        }
+
+        #summaryChart {
+            min-width: 100vw;
         }
     }
 </style>
