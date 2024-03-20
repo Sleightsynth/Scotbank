@@ -97,35 +97,39 @@ public class DBController {
 
     public List<Transaction> returnTransactions(Account account) throws SQLException {
 
-        Connection connection = dataSource.getConnection();
-        // Create Statement (batch of SQL Commands)
-        Statement statement = connection.createStatement();
-        // Perform SQL Query
-        ResultSet set = statement.executeQuery(
-                "SELECT * FROM Transaction WHERE Recipient='%s' OR Sender='%s'"
-                        .formatted(account.getUUID().toString(), account.getUUID().toString()));
+        try (Connection connection = dataSource.getConnection(); Statement stmt = connection.createStatement()) {
+            // Create Statement (batch of SQL Commands)
+            Statement statement = connection.createStatement();
+            // Perform SQL Query
+            ResultSet set = statement.executeQuery(
+                    "SELECT * FROM Transaction WHERE Recipient='%s' OR Sender='%s'"
+                            .formatted(account.getUUID().toString(), account.getUUID().toString()));
 
-        List<Transaction> transactions = new ArrayList<>();
-        while (set.next()) {
-            Transaction ts = new Transaction();
+            List<Transaction> transactions = new ArrayList<>();
+            while (set.next()) {
+                Transaction ts = new Transaction();
 
-            ts.time = set.getTimestamp("Timestamp");
-            ts.category = TransactionCategory.valueOf(set.getString("Category"));
-            ts.id = (UUID) set.getObject("Id");
-            ts.amount = BigDecimal.valueOf(set.getDouble("Amount"));
-            ts.status = TransactionStatus.valueOf(set.getString("Status"));
-            ts.reference = set.getString("Ref");
-            try{
-                ts.sender = returnAccount(UUID.fromString(set.getString("Sender")));
-            } catch (Exception ignored){}
-            try{
-                ts.recipient = returnAccount(UUID.fromString(set.getString("Recipient")));
-            } catch (Exception ignored){}
+                ts.time = set.getTimestamp("Timestamp");
+                ts.category = TransactionCategory.valueOf(set.getString("Category"));
+                ts.id = (UUID) set.getObject("Id");
+                ts.amount = BigDecimal.valueOf(set.getDouble("Amount"));
+                ts.status = TransactionStatus.valueOf(set.getString("Status"));
+                ts.reference = set.getString("Ref");
+                try {
+                    ts.sender = returnAccount(UUID.fromString(set.getString("Sender")));
+                } catch (Exception ignored) {
+                }
+                try {
+                    ts.recipient = returnAccount(UUID.fromString(set.getString("Recipient")));
+                } catch (Exception ignored) {
+                }
 
-            transactions.add(ts);
+                transactions.add(ts);
+            }
+
+
+            return transactions;
         }
-
-        return transactions;
     }
 
     /**
