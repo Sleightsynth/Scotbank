@@ -85,12 +85,6 @@ public class WebsiteController {
             session.put("User_Id", userId.toString());
             ctx.sendRedirect("/profile");
         } catch (StatusCodeException se) {
-            // Username or password is incorrect, should probably redirect to a new view
-            // saying their login is incorrect
-
-            // logger.error("Login Error Occurred", se);
-            //
-            // ctx.sendRedirect("/login");
             ctx.send(StatusCode.UNAUTHORIZED);
         } catch (SQLException e) {
             // If something does go wrong this will log the stack trace
@@ -103,17 +97,13 @@ public class WebsiteController {
     @GET("/logout")
     public void logout(Context ctx) {
         Session session = ctx.session();
-
         session.destroy();
-
         ctx.sendRedirect("/");
     }
 
     @GET("/register")
     public ModelAndView registerpage(Context ctx) {
-
         UUID uuid = getUUIDOrNull(ctx);
-
         if (uuid == null) {
             return getUserAndAddToTemplate("register.hbs", uuid);
         }
