@@ -4,6 +4,13 @@ import io.jooby.test.JoobyTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.co.asepstrath.bank.controllers.DBController;
+import uk.co.asepstrath.bank.util.AccountCategory;
+import uk.co.asepstrath.bank.util.Transaction;
+import uk.co.asepstrath.bank.util.TransactionCategory;
+import uk.co.asepstrath.bank.util.TransactionStatus;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 import javax.sql.DataSource;
@@ -86,19 +93,14 @@ public class DBControllerTest {
     }
 
     @Test
-    public void loginUserTest(){
+    public void loginUserTest() throws SQLException {
         UUID uuid = UUID.randomUUID();
         User user1 = new User(uuid, "e@mail.com", "password", "name", "07111111111", "thePlace", true);
         assertNotNull(user1);
-        try{dbController.addUser(user1);}
-        catch (SQLException e) {fail();}
-        try {
-            UUID returnUUID = dbController.loginUser(user1);
-            assertNotNull(returnUUID);
-            assertEquals(returnUUID, uuid);
-        } catch (SQLException e) {
-            fail();
-        }
+        dbController.addUser(user1);
+        UUID returnUUID = dbController.loginUser(user1);
+        assertNotNull(returnUUID);
+        assertEquals(returnUUID, uuid);
     }
     @Test
     public void loginUserNoUser(){
@@ -106,5 +108,21 @@ public class DBControllerTest {
         User user1 = new User(uuid, "egjgjhghg@mail.com", dbController.getSha512Hash("password"), "name", "07111111111", "thePlace",false);
         assertThrows(StatusCodeException.class, () -> dbController.loginUser(user1));
 
+    }
+
+    @Test
+    public void returnTransactionsTest() throws SQLException {
+        UUID uuid = UUID.randomUUID();
+        User user1 = new User(uuid, "e@mail.com", "password", "name", "07111111111", "thePlace", true);
+        assertNotNull(user1);
+        dbController.addUser(user1);
+        Account account = new Account(user1, UUID.randomUUID(), "", "", BigDecimal.valueOf(0), false, AccountCategory.Payment);
+        assertNotNull(account);
+        dbController.addAccount(account);
+        Transaction transaction = new Transaction(new Timestamp(new java.util.Date().getTime()), BigDecimal.valueOf(0), "", TransactionCategory.Payment, TransactionStatus.OK, UUID.randomUUID(), account, account, "","");
+        dbController.addTransaction(transaction);
+        List<Transaction> tran = dbController.returnTransactions(account);
+        assertNotNull(tran);
+        assertEquals(1, tran.size());
     }
 }
