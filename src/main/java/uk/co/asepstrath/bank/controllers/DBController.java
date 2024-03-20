@@ -296,8 +296,6 @@ public class DBController {
             }
 
             String userId = set.getString("Id");
-            // Account account = new Account(set.getString("Name"),
-            // set.getBigDecimal("AccountBalance"));
 
             return UUID.fromString(userId);
         }
